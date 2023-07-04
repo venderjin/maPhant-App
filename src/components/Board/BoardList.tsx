@@ -3,6 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import {
   StyleSheet,
   View,
@@ -10,17 +11,11 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-// const head = ({ navigation, route }: any) => {
-//   useEffect(() => {
-//     navigation.setOptions({
-//       headerRight: () => {
-//         <MaterialCommunityIcons
-//           name='home-variant' />
-//       },
-//     });
-//   }, []);
-// };
 const BoardList = () => {
+  const navigation = useNavigation();
+  const changePage = () => {
+    navigation.navigate("TotalBoard");
+  };
   return (
     <View style={styles.container}>
       {/* <View style={styles.header}>
@@ -46,32 +41,44 @@ const BoardList = () => {
       <View style={styles.board}>
         {/* <Text>중앙정렬</Text> */}
         <View style={{ flexDirection: "row" }}>
-          <View style={styles.boardList}>
-            <Feather name="message-square" size={24} color="black" />
-            <Text>전체 게시판</Text>
-          </View>
-          <View style={styles.boardList}>
-            <Feather name="message-square" size={24} color="black" />
-            <Text>지식 게시판</Text>
-          </View>
-          <View style={styles.boardList}>
-            <Feather name="message-square" size={24} color="black" />
-            <Text>QnA 게시판</Text>
-          </View>
+          <TouchableOpacity onPress={changePage}>
+            <View style={styles.boardList}>
+              <Feather name="message-square" size={24} color="black" />
+              <Text>전체 게시판</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.boardList}>
+              <Feather name="message-square" size={24} color="black" />
+              <Text>지식 게시판</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.boardList}>
+              <Feather name="message-square" size={24} color="black" />
+              <Text>QnA 게시판</Text>
+            </View>
+          </TouchableOpacity>
         </View>
         <View style={{ flexDirection: "row" }}>
-          <View style={styles.boardList}>
-            <Feather name="message-square" size={24} color="black" />
-            <Text>취업 / 진로</Text>
-          </View>
-          <View style={styles.boardList}>
-            <Feather name="message-square" size={24} color="black" />
-            <Text>홍보 게시판</Text>
-          </View>
-          <View style={styles.boardList}>
-            <Feather name="message-square" size={24} color="black" />
-            <Text>취미 게시판</Text>
-          </View>
+          <TouchableOpacity>
+            <View style={styles.boardList}>
+              <Feather name="message-square" size={24} color="black" />
+              <Text>취업 / 진로</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.boardList}>
+              <Feather name="message-square" size={24} color="black" />
+              <Text>홍보 게시판</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.boardList}>
+              <Feather name="message-square" size={24} color="black" />
+              <Text>취미 게시판</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
       <View style={styles.hotStudy}>
@@ -140,7 +147,7 @@ const styles = StyleSheet.create({
   },
   searchbar: {},
   board: {
-    flex: 3,
+    flex: 4,
     alignItems: "center",
     justifyContent: "center",
     // borderTopColor: "black",
