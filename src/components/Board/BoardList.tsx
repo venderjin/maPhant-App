@@ -10,93 +10,96 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 const BoardList = () => {
   const navigation = useNavigation();
   const changePage = () => {
-    navigation.navigate("TotalBoard");
+    navigation.navigate("TotalBoard" as never);
   };
   return (
-    <View style={styles.container}>
-      {/* <View style={styles.header}>
+    <ScrollView contentContainerStyle={{ flex: 1 }}>
+      <View style={styles.container}>
+        {/* <View style={styles.header}>
         <Text style={styles.textFont}>SoftWare</Text>
         <Text style={styles.textFont}>Bell</Text>
       </View> */}
-      <View style={styles.topic}>
-        <View style={styles.topicInner}>
-          <Text> 오늘의 열띈 주제는? </Text>
-          <TouchableOpacity style={styles.btn}>
-            <Text style={styles.btnFont}>투표하기</Text>
-          </TouchableOpacity>
+        <View style={styles.topic}>
+          <View style={styles.topicInner}>
+            <Text> 오늘의 열띈 주제는? </Text>
+            <TouchableOpacity style={styles.btn}>
+              <Text style={styles.btnFont}>투표하기</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-      <View style={{ borderBottomWidth: 1 }}></View>
-      <View style={styles.search}>
-        <TextInput
-          placeholder="게시판 검색..."
-          style={styles.searchbar}
-        ></TextInput>
-        <AntDesign name="search1" size={24} color="black" />
-      </View>
-      <View style={styles.board}>
-        {/* <Text>중앙정렬</Text> */}
-        <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity onPress={changePage}>
-            <View style={styles.boardList}>
-              <Feather name="message-square" size={24} color="black" />
-              <Text>전체 게시판</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.boardList}>
-              <Feather name="message-square" size={24} color="black" />
-              <Text>지식 게시판</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.boardList}>
-              <Feather name="message-square" size={24} color="black" />
-              <Text>QnA 게시판</Text>
-            </View>
-          </TouchableOpacity>
+        <View style={{ borderBottomWidth: 1 }}></View>
+        <View style={styles.search}>
+          <TextInput
+            placeholder="게시판 검색..."
+            style={styles.searchbar}
+          ></TextInput>
+          <AntDesign name="search1" size={24} color="black" />
         </View>
-        <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity>
-            <View style={styles.boardList}>
-              <Feather name="message-square" size={24} color="black" />
-              <Text>취업 / 진로</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.boardList}>
-              <Feather name="message-square" size={24} color="black" />
-              <Text>홍보 게시판</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.boardList}>
-              <Feather name="message-square" size={24} color="black" />
-              <Text>취미 게시판</Text>
-            </View>
-          </TouchableOpacity>
+        <View style={styles.board}>
+          {/* <Text>중앙정렬</Text> */}
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity onPress={changePage}>
+              <View style={styles.boardList}>
+                <Feather name="message-square" size={24} color="black" />
+                <Text>전체 게시판</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <View style={styles.boardList}>
+                <Feather name="message-square" size={24} color="black" />
+                <Text>지식 게시판</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <View style={styles.boardList}>
+                <Feather name="message-square" size={24} color="black" />
+                <Text>QnA 게시판</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity>
+              <View style={styles.boardList}>
+                <Feather name="message-square" size={24} color="black" />
+                <Text>취업 / 진로</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <View style={styles.boardList}>
+                <Feather name="message-square" size={24} color="black" />
+                <Text>홍보 게시판</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <View style={styles.boardList}>
+                <Feather name="message-square" size={24} color="black" />
+                <Text>취미 게시판</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-      <View style={styles.hotStudy}>
-        <View>
-          <TouchableOpacity style={{ marginBottom: 30 }}>
+        <View style={styles.hotStudy}>
+          <View>
+            <TouchableOpacity style={{ marginBottom: 30 }}>
+              <Text>
+                HOT 게시글{" "}
+                <MaterialCommunityIcons name="fire" size={24} color="black" />{" "}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity>
             <Text>
-              HOT 게시글{" "}
-              <MaterialCommunityIcons name="fire" size={24} color="black" />{" "}
+              스터디 <Entypo name="open-book" size={24} color="black" />
             </Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity>
-          <Text>
-            스터디 <Entypo name="open-book" size={24} color="black" />
-          </Text>
-        </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
