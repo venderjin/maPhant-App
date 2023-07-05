@@ -55,7 +55,11 @@ const BoardList = () => {
                 <Text>지식 게시판</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("QnABoard" as never);
+              }}
+            >
               <View style={styles.boardList}>
                 <Feather name="message-square" size={24} color="black" />
                 <Text>QnA 게시판</Text>

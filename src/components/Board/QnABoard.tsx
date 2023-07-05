@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 // const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -77,6 +78,7 @@ const boardData = [
 ];
 
 const HotBoard = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.total}>
@@ -86,7 +88,11 @@ const HotBoard = () => {
             HOT 게시글
             <MaterialCommunityIcons name="fire" size={25} color="black" />
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("DetailBoardList" as never);
+            }}
+          >
             <Text style={styles.detail}>더보기</Text>
           </TouchableOpacity>
         </View>
