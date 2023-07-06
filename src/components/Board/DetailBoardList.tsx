@@ -78,7 +78,9 @@ const DetailBoardList = () => {
               <Text style={styles.userName}>{board.userName}</Text>
             </View>
             <View>
-              <Text style={styles.comment}>{board.comment}</Text>
+              <Text style={styles.comment} numberOfLines={1}>
+                {board.comment}
+              </Text>
             </View>
             <View style={styles.head}>
               {board.good > 0 ? (

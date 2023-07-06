@@ -36,7 +36,7 @@ const boardData = [
     id: 4,
     board: "자유 게시판",
     title: "I'm fine, thank you.",
-    comment: "안녕하세요",
+    comment: "안녕하세요 ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
     userName: "dkanrjsk",
     created: "3시간 전",
     good: 0,
@@ -86,7 +86,9 @@ const DetailBoardList = () => {
               <Text style={styles.userName}>{board.userName}</Text>
             </View>
             <View>
-              <Text style={styles.comment}>{board.comment}</Text>
+              <Text style={styles.comment} numberOfLines={1}>
+                {board.comment}
+              </Text>
             </View>
             <View style={styles.head}>
               {board.good > 0 ? (
@@ -146,6 +148,7 @@ const styles = StyleSheet.create({
   comment: {
     fontSize: 15,
     marginVertical: 5,
+    marginRight: "50%",
   },
   bottom: {
     flex: 1,

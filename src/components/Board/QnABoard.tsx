@@ -33,7 +33,7 @@ const boardData = [
   {
     id: 3,
     title: "How are you?",
-    comment: "안녕하세요",
+    comment: "안녕하세요 ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
     userName: "dkanrjsk",
     created: "1시간 전",
     good: 8,
@@ -77,7 +77,7 @@ const boardData = [
   },
 ];
 
-const HotBoard = () => {
+const QnABoard = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
@@ -123,8 +123,12 @@ const HotBoard = () => {
           {boardData.map((board) => (
             <View key={board.id} style={styles.content}>
               <View style={styles.hBody}>
-                <Text style={styles.title}>{board.title} </Text>
-                <Text style={styles.comment}>{board.comment}</Text>
+                <Text style={styles.title} numberOfLines={1}>
+                  {board.title}{" "}
+                </Text>
+                <Text style={styles.comment} numberOfLines={1}>
+                  {board.comment}
+                </Text>
               </View>
               <View style={styles.bottom}>
                 <Text style={styles.userName}>{board.userName}</Text>
@@ -176,11 +180,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    maxWidth: 200,
   },
   comment: {
     fontSize: 15,
     marginVertical: 10,
     paddingBottom: 10,
+    marginRight: "50%",
   },
   bottom: {
     flex: 1,
@@ -200,4 +206,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HotBoard;
+export default QnABoard;
