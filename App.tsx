@@ -11,6 +11,7 @@ function App() {
       <Stack.Navigator>
         <Stack.Screen name="Home" component={Routes[0].component} />
         <Stack.Screen name="Login" component={Routes[1].component} />
+        <Stack.Screen name="QA" component={Routes[2].component} />
       </Stack.Navigator>
     </NavigationContainer>
   );

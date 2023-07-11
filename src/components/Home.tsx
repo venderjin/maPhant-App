@@ -6,6 +6,7 @@ const Home = ({ navigation }: any) => {
     <View style={styles.container}>
       <Text>Home</Text>
       <Button onPress={() => navigation.navigate("Login")} title="Login" />
+      <Button onPress={() => navigation.navigate("QA")} title="Q&A" />
       <StatusBar style="auto" />
     </View>
   );
