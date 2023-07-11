@@ -44,9 +44,7 @@ const BoardList = () => {
         <View style={styles.board}>
           {/* <Text>중앙정렬</Text> */}
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity
-              onPress={changePage}
-            >
+            <TouchableOpacity onPress={changePage}>
               <View style={styles.boardList}>
                 <Feather name="message-square" size={24} color="black" />
                 <Text>전체 게시판</Text>

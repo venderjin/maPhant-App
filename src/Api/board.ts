@@ -1,6 +1,6 @@
 import { BoardPost, BoardPostMockup } from "../types/Board";
 
-async function listArticle(
+function listArticle(
   board_id: String,
   page: Number = 1
 ): Promise<BoardPostMockup[]> {

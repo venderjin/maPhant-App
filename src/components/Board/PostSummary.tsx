@@ -22,17 +22,12 @@ function PostSummary(post: BoardPostMockup): JSX.Element {
   return (
     <View style={styles.body}>
       <Pressable onPress={() => console.log(post.title)}>
-        {post.board == "" ? (
-          <></>
-        ) : (
-          <Text style={styles.board}>{post.board}</Text>
-        )}
         <View style={styles.head}>
           <Text style={styles.title}>{post.title}</Text>
           <Text style={styles.userName}>{post.userName}</Text>
         </View>
         <View>
-          <Text style={styles.comment} numberOfLines={1}>
+          <Text style={styles.content} numberOfLines={1}>
             {post.comment}
           </Text>
         </View>
@@ -89,7 +84,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: "gray",
   },
-  comment: {
+  content: {
     fontSize: 15,
     marginVertical: 5,
     marginRight: "50%",

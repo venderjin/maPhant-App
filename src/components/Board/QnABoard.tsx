@@ -90,7 +90,7 @@ const QnABoard = () => {
           </Text>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("DetailBoardList" as never);
+              navigation.navigate("List" as never);
             }}
           >
             <Text style={styles.detail}>더보기</Text>
