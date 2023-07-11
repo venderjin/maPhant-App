@@ -17,7 +17,7 @@ type BoardPostMockup = {
   id: number;
   board: string;
   title: string;
-  comment: string;
+  content: string;
   userName: string;
   created: string;
   good: number;

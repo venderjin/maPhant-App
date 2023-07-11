@@ -5,7 +5,7 @@ import PostSummary from "../../components/Board/PostSummary";
 import { BoardPost, BoardPostMockup } from "../../types/Board";
 import { listArticle } from "../../Api/board";
 
-const DetailBoardList = () => {
+const DetailList = () => {
   const [boardData, setboardData] = useState<BoardPostMockup[]>([]);
   useEffect(() => {
     listArticle("all", 1).then((data: BoardPostMockup[]) => {
@@ -32,4 +32,4 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
 });
-export default DetailBoardList;
+export default DetailList;

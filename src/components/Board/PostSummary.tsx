@@ -28,7 +28,7 @@ function PostSummary(post: BoardPostMockup): JSX.Element {
         </View>
         <View>
           <Text style={styles.content} numberOfLines={1}>
-            {post.comment}
+            {post.content}
           </Text>
         </View>
         <View style={styles.head}>
