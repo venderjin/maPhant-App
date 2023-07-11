@@ -13,7 +13,7 @@ function listArticle(
       userName: "김민수",
       created: "20분 전",
       good: 0,
-      command: 0,
+      commant: 0,
     },
     {
       id: 2,
@@ -23,7 +23,7 @@ function listArticle(
       userName: "anjgkwl",
       created: "30분 전",
       good: 2,
-      command: 2,
+      commant: 2,
     },
     {
       id: 3,
@@ -33,7 +33,7 @@ function listArticle(
       userName: "dkanrjsk",
       created: "1시간 전",
       good: 8,
-      command: 5,
+      commant: 5,
     },
     {
       id: 4,
@@ -43,7 +43,7 @@ function listArticle(
       userName: "dkanrjsk",
       created: "3시간 전",
       good: 0,
-      command: 5,
+      commant: 5,
     },
     {
       id: 5,
@@ -53,7 +53,7 @@ function listArticle(
       userName: "dkanrjsk",
       created: "2023-06-30",
       good: 8,
-      command: 0,
+      commant: 0,
     },
     {
       id: 6,
@@ -63,7 +63,7 @@ function listArticle(
       userName: "dkssud",
       created: "2023-06-30",
       good: 7,
-      command: 5,
+      commant: 5,
     },
     {
       id: 7,
@@ -73,7 +73,7 @@ function listArticle(
       userName: "dkanrjsk",
       created: "2023-06-30",
       good: 8,
-      command: 5,
+      commant: 5,
     },
   ];
 

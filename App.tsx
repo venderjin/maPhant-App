@@ -4,7 +4,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import BoardList from "./src/App/Board/index";
 import List from "./src/App/Board/List";
-import QnABoard from "./src/App/Board/QnABoard";
+import TotalBoard from "./src/App/Board/TotalBoard";
+import QnABoard from "./src/App/Board/QnAList";
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -13,6 +14,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Board" component={BoardList} />
         <Stack.Screen name="List" component={List} />
+        <Stack.Screen name="TotalBoard" component={TotalBoard} />
         <Stack.Screen name="QnABoard" component={QnABoard} />
       </Stack.Navigator>
     </NavigationContainer>

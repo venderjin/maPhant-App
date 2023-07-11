@@ -21,7 +21,7 @@ type BoardPostMockup = {
   userName: string;
   created: string;
   good: number;
-  command: number;
+  commant: number;
 };
 
 export type { BoardPost, BoardPostMockup };

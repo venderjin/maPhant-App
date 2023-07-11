@@ -1,23 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, ScrollView, Pressable } from "react-native";
-
-import PostSummary from "../../components/Board/PostSummary";
-import { BoardPost, BoardPostMockup } from "../../types/Board";
+import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import { useEffect, useState } from "react";
+import { BoardPostMockup } from "../../types/Board";
 import { listArticle } from "../../Api/board";
+import PostSummary from "../../components/Board/PostSummary";
 
-const DetailList = () => {
+const DetailBoardList = () => {
   const [boardData, setboardData] = useState<BoardPostMockup[]>([]);
   useEffect(() => {
     listArticle("all", 1).then((data: BoardPostMockup[]) => {
       setboardData(data);
     });
   }, []);
-
   return (
     <ScrollView style={styles.container}>
       {boardData.map((board) => (
         <View key={board.id} style={styles.body}>
           <Pressable onPress={() => console.log(board.title)}>
+            <Text style={styles.board}>{board.board}</Text>
             <PostSummary post={board} />
           </Pressable>
         </View>
@@ -33,10 +32,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
+  board: {
+    fontSize: 10,
+    color: "gray",
+  },
   body: {
     borderBottomWidth: 1,
     borderBottomColor: "#f2f2f2",
     paddingVertical: 10,
   },
 });
-export default DetailList;
+
+export default DetailBoardList;
