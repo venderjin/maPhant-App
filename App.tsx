@@ -12,18 +12,18 @@ function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator initialRouteName="Home">
-        <Tab.Screen name="홈" component={Home} options={{ headerShown: false, tabBarIcon: () => <AntDesign name="home" size={30} color="black" /> }} />
+        <Tab.Screen name="홈" component={Home} options={{ headerShown: false, tabBarIcon: () => <AntDesign name="home" size={30} color="#5299EB" /> }} />
         <Tab.Screen
           name="게시판"
           component={BoardList}
-          options={{ headerShown: false, tabBarIcon: () => <FontAwesome5 name="list-ul" size={30} color="black" /> }}
+          options={{ headerShown: false, tabBarIcon: () => <FontAwesome5 name="list-ul" size={30} color="#5299EB" /> }}
         />
         {/* <Tab.Screen name="쪽지" component={Mail} options={{ headerShown: false, tabBarIcon: () => <Entypo name="chat" size={30} color="black" /> }} /> */}
-        <Tab.Screen name="Mail" component={Mail} options={{ headerShown: false, tabBarIcon: () => <AntDesign name="mail" size={24} color="black" /> }} />
+        <Tab.Screen name="Mail" component={Mail} options={{ headerShown: false, tabBarIcon: () => <AntDesign name="mail" size={24} color="#5299EB" /> }} />
         <Tab.Screen
           name="내 정보"
           component={Mypage}
-          options={{ headerShown: false, tabBarIcon: () => <Ionicons name="person-outline" size={30} color="black" /> }}
+          options={{ headerShown: false, tabBarIcon: () => <Ionicons name="person-outline" size={30} color="#5299EB" /> }}
         />
       </Tab.Navigator>
     </NavigationContainer>
