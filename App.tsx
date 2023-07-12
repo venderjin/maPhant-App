@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import BoardList from "./src/App/Board/index";
 import List from "./src/App/Board/List";
-import TotalBoard from "./src/App/Board/TotalBoard";
+import TotalBoard from "./src/App/Board/TotalList";
 import QnABoard from "./src/App/Board/QnAList";
 
 const Stack = createStackNavigator();
