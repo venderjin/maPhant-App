@@ -130,9 +130,9 @@ function Mail() {
           </View>
         </View>
       </ScrollView>
-      <View>
+      <View style={styles.icon}>
         {/* <Ionicons name="add-circle-outline" size={100} style={styles.icon} /> */}
-        <AntDesign name="pluscircleo" size={24} color="black" style={styles.icon} />
+        <AntDesign name="plus" size={24} color="black" />
       </View>
     </View>
   );
@@ -190,8 +190,14 @@ const styles = StyleSheet.create({
     alignContent: "space-between",
   },
   icon: {
-    backgroundColor: "transparent",
+    // backgroundColor: "transparent",
     color: "black",
+    position: "absolute",
+    right: "10%",
+    bottom: "5%",
+    backgroundColor: "#5299EB",
+    borderRadius: 50,
+    padding: 10,
   },
 });
 export default Mail;
