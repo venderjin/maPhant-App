@@ -1,20 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Home from "./src/components/Home";
+import BoardList from "./src/components/Board/BoardList";
+import Mail from "./src/components/Mail/Mail";
+import Mypage from "./src/components/Member/Mypage";
+import { AntDesign, FontAwesome5, Entypo, Ionicons } from "@expo/vector-icons";
+const Tab = createBottomTabNavigator();
 
-export default function App() {
+function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator initialRouteName="Home">
+        <Tab.Screen name="홈" component={Home} options={{ headerShown: false, tabBarIcon: () => <AntDesign name="home" size={30} color="#5299EB" /> }} />
+        <Tab.Screen
+          name="게시판"
+          component={BoardList}
+          options={{ headerShown: false, tabBarIcon: () => <FontAwesome5 name="list-ul" size={30} color="#5299EB" /> }}
+        />
+        {/* <Tab.Screen name="쪽지" component={Mail} options={{ headerShown: false, tabBarIcon: () => <Entypo name="chat" size={30} color="black" /> }} /> */}
+        <Tab.Screen name="Mail" component={Mail} options={{ headerShown: false, tabBarIcon: () => <AntDesign name="mail" size={24} color="#5299EB" /> }} />
+        <Tab.Screen
+          name="내 정보"
+          component={Mypage}
+          options={{ headerShown: false, tabBarIcon: () => <Ionicons name="person-outline" size={30} color="#5299EB" /> }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
