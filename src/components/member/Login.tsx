@@ -1,22 +1,15 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Image,
-} from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const Login = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <View style={styles.imageBox}>
-        <Image
-          style={styles.image}
-          source={require("../../../assets/favicon.png")}
-        />
+        <Image style={styles.image} source={require("../../../assets/favicon.png")} />
       </View>
       <View style={styles.LoginBox}>
         <View>
@@ -33,12 +26,22 @@ const Login = () => {
       </View>
       <View style={styles.TextButtonBox}>
         <View>
-          <TouchableOpacity style={styles.button1}>
+          <TouchableOpacity
+            style={styles.button1}
+            onPress={() => {
+              navigation.navigate("Signup" as never);
+            }}
+          >
             <Text style={styles.signup}> Don't have any account? Sign up</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.button1Box}>
-          <TouchableOpacity style={styles.button1}>
+          <TouchableOpacity
+            style={styles.button1}
+            onPress={() => {
+              navigation.navigate("Find" as never);
+            }}
+          >
             <Text style={styles.search}> ID / PW 찾기</Text>
           </TouchableOpacity>
         </View>

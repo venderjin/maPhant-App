@@ -4,14 +4,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 
 const BoardList = () => {
   const navigation = useNavigation();
@@ -35,10 +28,7 @@ const BoardList = () => {
         </View>
         <View style={{ borderBottomWidth: 1 }}></View>
         <View style={styles.search}>
-          <TextInput
-            placeholder="게시판 검색..."
-            style={styles.searchbar}
-          ></TextInput>
+          <TextInput placeholder="게시판 검색..." style={styles.searchbar}></TextInput>
           <AntDesign name="search1" size={24} color="black" />
         </View>
         <View style={styles.board}>
@@ -96,8 +86,7 @@ const BoardList = () => {
           <View>
             <TouchableOpacity onPress={changePage} style={{ marginBottom: 30 }}>
               <Text>
-                HOT 게시글{" "}
-                <MaterialCommunityIcons name="fire" size={24} color="black" />{" "}
+                HOT 게시글 <MaterialCommunityIcons name="fire" size={24} color="black" />{" "}
               </Text>
             </TouchableOpacity>
           </View>

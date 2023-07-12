@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import ScrollList from "../../components/Board/ScrollList";
@@ -34,7 +27,7 @@ const QnABoard = () => {
           </Text>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("List" as never);
+              navigation.navigate("DetailList" as never);
             }}
           >
             <Text style={styles.detail}>더보기</Text>

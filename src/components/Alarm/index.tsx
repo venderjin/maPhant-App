@@ -98,12 +98,7 @@ const Alarm = () => {
             style={board.show ? styles.showbody : styles.body}
           >
             <View style={styles.body2}>
-              <FontAwesome
-                name={board.icon}
-                size={24}
-                color="grey"
-                style={{ marginRight: 10 }}
-              />
+              {/* <FontAwesome name={board.icon} size={24} color="grey" style={{ marginRight: 10 }} /> */}
               <View style={styles.content}>
                 <Text style={styles.board}>{board.board}</Text>
                 <View style={styles.head}>
@@ -115,9 +110,7 @@ const Alarm = () => {
                   </Text>
                 </View>
                 <View style={styles.head}>
-                  <Text style={{ justifyContent: "flex-end", fontSize: 10 }}>
-                    {board.created}
-                  </Text>
+                  <Text style={{ justifyContent: "flex-end", fontSize: 10 }}>{board.created}</Text>
                 </View>
               </View>
             </View>

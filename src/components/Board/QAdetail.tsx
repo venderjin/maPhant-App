@@ -1,15 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Image,
-  Button,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image, Button, ScrollView } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const data = [
@@ -26,7 +17,7 @@ const data = [
   { id: 3, name: "지망이", date: " 2023.03,12" },
 ];
 
-const QA = () => {
+const QAdetail = () => {
   return (
     <View style={styles.container}>
       <View style={styles.nameBox}>
@@ -236,4 +227,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default QA;
+export default QAdetail;

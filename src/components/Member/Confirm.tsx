@@ -40,22 +40,19 @@ const Confirm = () => {
     }, 1000);
   };
 
-  function alert(){
-    Alert.alert(
-      "인증번호를 발송하시겠습니까?\n유효시간(10분)이내에 입력해주세요.",
-      "",
-      [
-        {
-          text: "취소",
-          style: "cancel",
+  function alert() {
+    Alert.alert("인증번호를 발송하시겠습니까?\n유효시간(10분)이내에 입력해주세요.", "", [
+      {
+        text: "취소",
+        style: "cancel",
+      },
+      {
+        text: "확인",
+        onPress: () => {
+          emailVerification(email);
         },
-        {
-          text: "확인",
-          onPress: () => {
-            emailVerification(email);
-          },
-        },
-      ])
+      },
+    ]);
   }
   useEffect(() => {
     const countDown = setInterval(() => {
@@ -99,11 +96,7 @@ const Confirm = () => {
             },
           ]}
         >
-          {certificationEmail ? (
-            <Text style={styles.buttonText}>인증</Text>
-          ) : (
-            <Text style={styles.buttonText}>인증 요청</Text>
-          )}
+          {certificationEmail ? <Text style={styles.buttonText}>인증</Text> : <Text style={styles.buttonText}>인증 요청</Text>}
         </TouchableOpacity>
       </View>
       <View style={styles.inputContainer}>
@@ -121,34 +114,30 @@ const Confirm = () => {
           activeOpacity={0.7}
           disabled={certificationEmail || email === ""}
           onPress={() => {
-            Alert.alert(
-              "인증번호 확인",
-              "입력한 인증번호를 확인하시겠습니까?",
-              [
-                {
-                  text: "취소",
-                  style: "cancel",
+            Alert.alert("인증번호 확인", "입력한 인증번호를 확인하시겠습니까?", [
+              {
+                text: "취소",
+                style: "cancel",
+              },
+              {
+                text: "확인",
+                onPress: () => {
+                  if (verificationCode === "123456") {
+                    // Verification successful
+                    Alert.alert("Success", "인증이 완료되었습니다.");
+                    setCertificationEmail(true);
+                  } else {
+                    // Verification failed
+                    Alert.alert("Error", "인증번호가 일치하지 않습니다.");
+                  }
                 },
-                {
-                  text: "확인",
-                  onPress: () => {
-                    if (verificationCode === "123456") {
-                      // Verification successful
-                      Alert.alert("Success", "인증이 완료되었습니다.");
-                      setCertificationEmail(true);
-                    } else {
-                      // Verification failed
-                      Alert.alert("Error", "인증번호가 일치하지 않습니다.");
-                    }
-                  },
-                },
-              ]
-            );
+              },
+            ]);
           }}
-          style={
-          {  ...styles.button,
-              borderColor: certificationEmail ? "#999" : verificationCode === "" ? "#999" : "#0055FF",
-              backgroundColor: certificationEmail ? "#999" : verificationCode === "" ? "#999" : "#F0F0F0",
+          style={{
+            ...styles.button,
+            borderColor: certificationEmail ? "#999" : verificationCode === "" ? "#999" : "#0055FF",
+            backgroundColor: certificationEmail ? "#999" : verificationCode === "" ? "#999" : "#F0F0F0",
           }}
         >
           <Text style={styles.buttonText}>확인</Text>
