@@ -1,21 +1,20 @@
-import React from "react";
-import { StyleSheet, View, SafeAreaView, Dimensions } from "react-native";
-import Home from "./src/component/Home";
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
 
-const App: React.FC = () => {
+export default function App() {
   return (
     <View style={styles.container}>
-      <Home />
+      <Text>Open up App.tsx to start working on your app!</Text>
+      <StatusBar style="auto" />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
-    backgroundColor: "#fff",
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
-
-export default App;
