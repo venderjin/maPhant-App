@@ -9,7 +9,6 @@ import {
   KeyboardAvoidingView,
   SafeAreaView,
   ScrollView,
-  FlatList,
 } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 
@@ -18,9 +17,10 @@ type Item = {
   name: string;
 }
 
-const Searchh = ( { setSearchUniv }: {setSearchUniv:any}) => {
+const Searchh = ({ setSearchUniv }: { setSearchUniv: any }) => {
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState<Item[]>([]);
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
 
   const data: Item[] = [
     { id: 1, name: "Apple" },
@@ -44,8 +44,14 @@ const Searchh = ( { setSearchUniv }: {setSearchUniv:any}) => {
     setSearchUniv(text);
   };
 
+  const renderSearchItem = ({ item }: { item: Item }) => (
+    <View style={styles.itemContainer}>
+      <Text style={styles.itemText}>{item.name}</Text>
+    </View>
+  );
+
   return (
-    <View >
+    <View>
       <SearchBar
         placeholder="Search University..."
         onChangeText={updateSearch}
@@ -54,16 +60,15 @@ const Searchh = ( { setSearchUniv }: {setSearchUniv:any}) => {
         inputContainerStyle={styles.searchBarInputContainer}
       />
 
-      <FlatList
-        data={filteredData}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          search=="" ? (<></>) : (
-          <View style={styles.itemContainer}>
-            <Text style={styles.itemText}>{item.name}</Text>
-          </View>)
-        )}
-      />
+      {search !== "" && (
+        <View>
+          {filteredData.map((item) => (
+            <View key={item.id} style={styles.itemContainer}>
+              <Text style={styles.itemText}>{item.name}</Text>
+            </View>
+          ))}
+        </View>
+      )}
     </View>
   );
 };
@@ -122,37 +127,22 @@ const Signup = () => {
     );
   };
 
-
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+      <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
-            <View style={styles.terms}>
-              <Text>
-                커뮤니티 이용수칙 등에 대한 이용약관 동의
-              </Text>
-              <TouchableOpacity style={styles.termsButton}>
-                <Text style={styles.termsText}>전체보기</Text>
-              </TouchableOpacity>
-            </View>
-            {renderTextInputWithLabel("email", email, setEmail)}
-            {renderTextInputWithLabel("pw", password, setPassword)}
-            {renderTextInputWithLabel(
-                "pw confirm",
-                passwordConfirm,
-                setPasswordConfirm
-            )}
-            {renderTextInputWithLabel("nickname", nickname, setNickname)}
-            {renderTextInputWithLabel("phone number", phoneNumber, setPhoneNumber)}
-            {renderTextInputWithLabel(
-                "student number",
-                studentNumber,
-                setStudentNumber
-            )}
-            <Searchh setSearchUniv={setSearchUniv} />
-            <TouchableOpacity style={styles.button}>
-                <Text style={styles.signup}> Signup</Text>
-            </TouchableOpacity>
+          {renderTextInputWithLabel("email", email, setEmail)}
+          {renderTextInputWithLabel("pw", password, setPassword)}
+          {renderTextInputWithLabel("pw confirm", passwordConfirm, setPasswordConfirm)}
+          {renderTextInputWithLabel("nickname", nickname, setNickname)}
+          {renderTextInputWithLabel("phone number", phoneNumber, setPhoneNumber)}
+          {renderTextInputWithLabel("student number", studentNumber, setStudentNumber)}
+          <Searchh setSearchUniv={setSearchUniv} />
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.signup}> Signup</Text>
+          </TouchableOpacity>
         </ScrollView>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 }
@@ -192,7 +182,9 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   scrollView: {
+    flexGrow: 1,
     marginTop: 50,
+    paddingBottom: 100,
   },
   searchBarContainer: {
     backgroundColor: "transparent",
@@ -213,20 +205,6 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
   },
-  terms: {
-    flex: 1,
-    justifyContent: "space-between",
-    flexDirection: "row",
-    marginBottom: 20,
-  },
-  termsButton: {
-    // backgroundColor: "#000",
-    borderBottomWidth: 1
-  },
-  termsText: {
-    // color: "white",
-    textAlign: "center",
-  }
 });
 
 export default Signup;
