@@ -1,8 +1,17 @@
 import React, { useState } from "react";
 import { SearchBar } from "@rneui/themed";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, SafeAreaView, ScrollView, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  ScrollView,
+  FlatList,
+} from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 
 type Item = {
   id: number;
@@ -27,7 +36,7 @@ const Searchh = ({ setSearchUniv }: { setSearchUniv: any }) => {
     setSearch(text);
 
     // 검색어를 이용하여 데이터를 필터링
-    const filteredItems = data.filter((item) => item.name.toLowerCase().includes(text.toLowerCase()));
+    const filteredItems = data.filter(item => item.name.toLowerCase().includes(text.toLowerCase()));
 
     setFilteredData(filteredItems);
     setSearchUniv(text);
@@ -45,7 +54,7 @@ const Searchh = ({ setSearchUniv }: { setSearchUniv: any }) => {
 
       <FlatList
         data={filteredData}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={item => item.id.toString()}
         renderItem={({ item }) =>
           search == "" ? (
             <></>
@@ -68,7 +77,6 @@ const Signup = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [studentNumber, setStudentNumber] = useState("");
   const [searchUniv, setSearchUniv] = useState("");
-  const navigation = useNavigation();
 
   const handleInputChange = (value: string, setter: any) => {
     setter(value);
@@ -103,7 +111,7 @@ const Signup = () => {
           style={{ ...styles.input, marginTop: isFocused ? 25 : 20 }}
           placeholder={placeholder}
           value={value}
-          onChangeText={(text) => handleInputChange(text, setter)}
+          onChangeText={text => handleInputChange(text, setter)}
           onFocus={handleFocus}
           onBlur={handleBlur}
         />
@@ -116,12 +124,7 @@ const Signup = () => {
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.terms}>
           <Text>커뮤니티 이용수칙 등에 대한 이용약관 동의</Text>
-          <TouchableOpacity
-            style={styles.termsButton}
-            onPress={() => {
-              navigation.navigate("TermsSet" as never);
-            }}
-          >
+          <TouchableOpacity style={styles.termsButton}>
             <Text style={styles.termsText}>전체보기</Text>
           </TouchableOpacity>
         </View>
@@ -132,13 +135,8 @@ const Signup = () => {
         {renderTextInputWithLabel("phone number", phoneNumber, setPhoneNumber)}
         {renderTextInputWithLabel("student number", studentNumber, setStudentNumber)}
         <Searchh setSearchUniv={setSearchUniv} />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            navigation.navigate("SearchUniversity" as never);
-          }}
-        >
-          <Text style={styles.signup}> Next</Text>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.signup}> Signup</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
