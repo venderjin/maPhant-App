@@ -1,4 +1,4 @@
-import Login from "../Member/Login";
+import Login from "../member/Login";
 import Home from "../Home";
 import Alarm from "../Alarm";
 import QnABoard from "../../App/Board/QnAList";
