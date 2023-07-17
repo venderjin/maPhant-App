@@ -26,12 +26,12 @@ const sections: sectionItem[] = [
       {
         title: "회원정보 수정",
         // description: "다른 기기를 추가하거나 삭제합니다.",
-        href: "/settings/devices",
+        href: "1",
       },
       {
         title: "로그아웃",
         // description: "장치를 로그아웃하여 새 계정으로 전환합니다.",
-        href: "/settings/logout",
+        href: "2",
       },
     ],
   },
@@ -44,12 +44,12 @@ const sections: sectionItem[] = [
       {
         title: "내가 쓴 글",
         // description: "알람을 받지 않을 시간을 설정합니다.",
-        href: "/settings/dnd",
+        href: "3",
       },
       {
         title: "내가 쓴 댓글",
         // description: "알림음을 설정합니다.",
-        href: "/settings/notiSound",
+        href: "4",
       },
     ],
   },
@@ -59,7 +59,7 @@ const sections: sectionItem[] = [
       {
         title: "회원탈퇴",
         // description: "공지사항 및 새소식을 확인합니다.",
-        href: "/settings/notices",
+        href: "5",
       },
     ],
   },
