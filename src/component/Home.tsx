@@ -10,6 +10,7 @@ import {
   TextInput,
   Image,
   SafeAreaView,
+  ImageSourcePropType,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -60,7 +61,7 @@ const Home: React.FC = () => {
         }}
       >
         <Image
-          source={image}
+          source={image as ImageSourcePropType}
           style={{ width: "100%", height: "100%", resizeMode: "stretch" }}
         />
       </View>
@@ -145,7 +146,7 @@ const Home: React.FC = () => {
   // HotTags *
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <View style={styles.mainContainer}>
       <StatusBar style="auto" />
       <View style={styles.titleContainer}>
         <Text style={styles.titleText}>software</Text>
@@ -283,7 +284,10 @@ const Home: React.FC = () => {
         <View style={styles.advertisementContainer}>
           <Image
             source={require("../../assets/adv1.png")}
-            style={{ width: "100%", height: "100%" }}
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
           />
         </View>
 
@@ -304,7 +308,7 @@ const Home: React.FC = () => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

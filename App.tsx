@@ -4,9 +4,9 @@ import Home from "./src/component/Home";
 
 const App: React.FC = () => {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Home />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -14,7 +14,6 @@ const styles = StyleSheet.create({
   container: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
-    backgroundColor: "#fff",
   },
 });
 
