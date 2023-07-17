@@ -6,15 +6,17 @@ import Mypage from "./src/components/Member/Mypage";
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import Routes from "./src/components/navigator/Routes";
-import { SafeAreaView, StyleSheet, Dimensions } from "react-native";
-import Home from "./src/components/Home";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeStack = () => (
   <Stack.Navigator>
-    <Stack.Screen name="Home" component={Routes[0].component} options={{ headerShown: false }} />
+    <Stack.Screen
+      name="Home"
+      component={Routes[0].component}
+      options={{ headerShown: false }}
+    />
     <Stack.Screen name="alarm" component={Routes[2].component} />
   </Stack.Navigator>
 );
@@ -32,7 +34,7 @@ const App = () => {
     <SafeAreaView style={styles.container}>
       <Home />
     </SafeAreaView>
-  );
+  );s
 };
 
 const styles = StyleSheet.create({

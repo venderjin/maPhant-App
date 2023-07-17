@@ -118,8 +118,11 @@ function Mail() {
       <ScrollView>
         <View style={styles.sender}>
           <View>
-            {mailData.map((mail) => (
-              <View key={mail.id} style={[styles.mail, mail.is_read ? styles.mail_true : styles.mail]}>
+            {mailData.map(mail => (
+              <View
+                key={mail.id}
+                style={[styles.mail, mail.is_read ? styles.mail_true : styles.mail]}
+              >
                 <View style={styles.space}>
                   <Text style={styles.nick}>{mail.sender_id_nick}</Text>
                   <Text style={styles.date}>{mail.sendDate}</Text>
