@@ -112,7 +112,17 @@ const Home: React.FC = () => {
   };*/
 
   const createTagView = (tag: Tags, index: number) => {
-    const colors = ["#FFC0CB", "#B5EEEA", "#CCCCCC", "#FFA07A", "#FFD700", "#ADFF2F", "#00FFFF", "#EE82EE", "#FFFF00"];
+    const colors = [
+      "#FFC0CB",
+      "#B5EEEA",
+      "#CCCCCC",
+      "#FFA07A",
+      "#FFD700",
+      "#ADFF2F",
+      "#00FFFF",
+      "#EE82EE",
+      "#FFFF00",
+    ];
     return (
       <View
         key={tag.id}
@@ -228,7 +238,13 @@ const Home: React.FC = () => {
 
           <View style={styles.infoDotBox}>
             {Array.from({ length: infoPageCount }, (_, index) => (
-              <View key={index} style={[styles.infoDot, index === currentinfoPage ? styles.activeinfoDot : styles.unactiveinfoDot]} />
+              <View
+                key={index}
+                style={[
+                  styles.infoDot,
+                  index === currentinfoPage ? styles.activeinfoDot : styles.unactiveinfoDot,
+                ]}
+              />
             ))}
           </View>
         </View>
@@ -259,15 +275,17 @@ const Home: React.FC = () => {
             ></View>
           </View>
 
-          <ScrollView horizontal={true} keyboardDismissMode="none" showsHorizontalScrollIndicator={false} style={styles.todaysHotTagBox}>
+          <ScrollView
+            horizontal={true}
+            keyboardDismissMode="none"
+            showsHorizontalScrollIndicator={false}
+            style={styles.todaysHotTagBox}
+          >
             {mapTag()}
           </ScrollView>
         </View>
 
         <View style={styles.advertisementContainer}>
-<<<<<<< HEAD:src/components/Home.tsx
-          <Image source={require("../../assets/adv1.png")} style={{ width: "100%", height: "100%" }} />
-=======
           <Image
             source={require("../../assets/adv1.png")}
             style={{
@@ -275,7 +293,6 @@ const Home: React.FC = () => {
               height: "100%",
             }}
           />
->>>>>>> Home:src/component/Home.tsx
         </View>
 
         <View style={styles.homeBlockLayout}>
