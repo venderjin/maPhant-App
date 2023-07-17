@@ -1,17 +1,15 @@
 import Login from "../Member/Login";
-import Home from "../Home";
 import Alarm from "../Alarm";
 import QnABoard from "../../App/Board/QnAList";
 import BoardList from "../../App/Board";
 import DetailList from "../../App/Board/List";
 import QAdetail from "../Board/QAdetail";
+import HomeRoute from "./HomeRoute";
 // ... import all other pages
 
 const Routes = [
-  {
-    name: "home",
-    component: Home,
-  },
+  ...HomeRoute,
+
   {
     name: "login",
     component: Login,
