@@ -20,6 +20,7 @@ const Confirm = () => {
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
   const [verificationCode, setVerificationCode] = useState("");
+  const [emailMessage, setEmailMessage] = useState("");
 
   // 이메일 중복체크
   const emailVerification = async (email: string) => {
@@ -143,6 +144,14 @@ const Confirm = () => {
           <Text style={styles.buttonText}>확인</Text>
         </TouchableOpacity>
       </View>
+      {/* 예외 처리 */}
+      {emailMessage === '' && verificationCode && !certificationEmail && (
+        <View style={{ position: "absolute", right: 72, paddingTop: 55, flexDirection: 'row' }}>
+          <Text style={styles.timerText}>
+            {`${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`}
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -181,8 +190,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#0055FF",
   },
-  label: {
-    width: 100,
+  timerText: {
+    fontSize: 12,
+    color: "#0055FF",
   },
 });
 
