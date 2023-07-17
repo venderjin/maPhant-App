@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "./src/components/Home";
 import BoardList from "./src/components/Board/BoardList";
 import Mail from "./src/components/Mail/Mail";
-import Mypage from "./src/components/Member/Mypage";
+import Mypage from "./src/components/member/Mypage";
 import { AntDesign, FontAwesome5, Entypo, Ionicons } from "@expo/vector-icons";
 const Tab = createBottomTabNavigator();
 
