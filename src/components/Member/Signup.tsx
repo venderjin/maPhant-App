@@ -110,8 +110,8 @@ const Signup = () => {
             <Field placeholder="비밀번호 확인" name="confirmPassword" component={CustomInput} />
             <Field placeholder="닉네임" name="nickname" component={CustomInput} />
             <Field placeholder="전화번호" name="phoneNumber" component={CustomInput} />
-            <Field placeholder="학번" name="studentNumber" component={CustomInput} />
             <Searchh setSearchUniv={setSearchUniv} />
+            <Field placeholder="학번" name="studentNumber" component={CustomInput} />
             <TouchableOpacity
               style={styles.button}
               onPress={() => handleSubmit()}
