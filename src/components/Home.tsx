@@ -10,7 +10,6 @@ import {
   TextInput,
   Image,
   SafeAreaView,
-  ImageProps,
   ImageSourcePropType,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -64,7 +63,10 @@ const Home: React.FC = () => {
           height: "100%",
         }}
       >
-        <Image source={image} style={{ width: "100%", height: "100%", resizeMode: "stretch" }} />
+        <Image
+          source={image as ImageSourcePropType}
+          style={{ width: "100%", height: "100%", resizeMode: "stretch" }}
+        />
       </View>
     ));
   };
@@ -110,7 +112,17 @@ const Home: React.FC = () => {
   };*/
 
   const createTagView = (tag: Tags, index: number) => {
-    const colors = ["#FFC0CB", "#B5EEEA", "#CCCCCC", "#FFA07A", "#FFD700", "#ADFF2F", "#00FFFF", "#EE82EE", "#FFFF00"];
+    const colors = [
+      "#FFC0CB",
+      "#B5EEEA",
+      "#CCCCCC",
+      "#FFA07A",
+      "#FFD700",
+      "#ADFF2F",
+      "#00FFFF",
+      "#EE82EE",
+      "#FFFF00",
+    ];
     return (
       <View
         key={tag.id}
@@ -137,7 +149,7 @@ const Home: React.FC = () => {
   // HotTags *
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <View style={styles.mainContainer}>
       <StatusBar style="auto" />
       <View style={styles.titleContainer}>
         <Text style={styles.titleText}>software</Text>
@@ -226,7 +238,13 @@ const Home: React.FC = () => {
 
           <View style={styles.infoDotBox}>
             {Array.from({ length: infoPageCount }, (_, index) => (
-              <View key={index} style={[styles.infoDot, index === currentinfoPage ? styles.activeinfoDot : styles.unactiveinfoDot]} />
+              <View
+                key={index}
+                style={[
+                  styles.infoDot,
+                  index === currentinfoPage ? styles.activeinfoDot : styles.unactiveinfoDot,
+                ]}
+              />
             ))}
           </View>
         </View>
@@ -257,13 +275,24 @@ const Home: React.FC = () => {
             ></View>
           </View>
 
-          <ScrollView horizontal={true} keyboardDismissMode="none" showsHorizontalScrollIndicator={false} style={styles.todaysHotTagBox}>
+          <ScrollView
+            horizontal={true}
+            keyboardDismissMode="none"
+            showsHorizontalScrollIndicator={false}
+            style={styles.todaysHotTagBox}
+          >
             {mapTag()}
           </ScrollView>
         </View>
 
         <View style={styles.advertisementContainer}>
-          <Image source={require("../../assets/adv1.png")} style={{ width: "100%", height: "100%" }} />
+          <Image
+            source={require("../../assets/adv1.png")}
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+          />
         </View>
 
         <View style={styles.homeBlockLayout}>
@@ -283,7 +312,7 @@ const Home: React.FC = () => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -77,4 +77,11 @@ const App = () => {
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
+  },
+});
+
 export default App;
