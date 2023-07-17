@@ -10,7 +10,6 @@ import {
   TextInput,
   Image,
   SafeAreaView,
-  ImageProps,
   ImageSourcePropType,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -64,7 +63,10 @@ const Home: React.FC = () => {
           height: "100%",
         }}
       >
-        <Image source={image} style={{ width: "100%", height: "100%", resizeMode: "stretch" }} />
+        <Image
+          source={image as ImageSourcePropType}
+          style={{ width: "100%", height: "100%", resizeMode: "stretch" }}
+        />
       </View>
     ));
   };
@@ -137,7 +139,7 @@ const Home: React.FC = () => {
   // HotTags *
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <View style={styles.mainContainer}>
       <StatusBar style="auto" />
       <View style={styles.titleContainer}>
         <Text style={styles.titleText}>software</Text>
@@ -263,7 +265,17 @@ const Home: React.FC = () => {
         </View>
 
         <View style={styles.advertisementContainer}>
+<<<<<<< HEAD:src/components/Home.tsx
           <Image source={require("../../assets/adv1.png")} style={{ width: "100%", height: "100%" }} />
+=======
+          <Image
+            source={require("../../assets/adv1.png")}
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+          />
+>>>>>>> Home:src/component/Home.tsx
         </View>
 
         <View style={styles.homeBlockLayout}>
@@ -283,7 +295,7 @@ const Home: React.FC = () => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
