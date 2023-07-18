@@ -82,14 +82,14 @@ const boardData = [
   },
 ];
 
-const Alarm = () => {
+const Alarm: React.FC = () => {
   // const [show, setShow] = useState<Boolean>(false);
   // const handlePress = () => {
   //   setShow(true);
   // };
   return (
     <ScrollView style={styles.container}>
-      {boardData.map((board) => (
+      {boardData.map(board => (
         <View key={board.id}>
           <Pressable
             onPress={() => {
