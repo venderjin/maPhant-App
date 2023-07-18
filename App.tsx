@@ -1,32 +1,15 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Mail from "./src/components/Mail/Mail";
+import Mail from "./src/App/Mail/Mail";
 // import Mypage from "./src/components/member/Mypage";
-import Mypage from "./src/components/Member/Mypage";
+import Mypage from "./src/App/Mypage/Mypage";
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
-import Routes from "./src/components/navigator/Routes";
-import { SafeAreaView, StyleSheet, Dimensions, useWindowDimensions } from "react-native";
-import Home from "./src/App/Home/Home";
-
+import Home from "./src/App/Home/Index";
+import BoardListStack from "./src/App/Board/Index";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-const HomeStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="Home" component={Routes[0].component} options={{ headerShown: false }} />
-    <Stack.Screen name="alarm" component={Routes[2].component} />
-  </Stack.Navigator>
-);
-const BoardListStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="Board" component={Routes[3].component} />
-    <Stack.Screen name="QnABoard" component={Routes[4].component} />
-    <Stack.Screen name="DetailList" component={Routes[5].component} />
-    <Stack.Screen name="QnAdetail" component={Routes[6].component} />
-  </Stack.Navigator>
-);
 
 const App = () => {
   return (
@@ -34,7 +17,7 @@ const App = () => {
       <Tab.Navigator initialRouteName="Home">
         <Tab.Screen
           name="홈"
-          component={HomeStack}
+          component={Home}
           options={{
             headerShown: false,
             tabBarIcon: () => <AntDesign name="home" size={30} color="#5299EB" />,

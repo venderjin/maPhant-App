@@ -1,5 +1,12 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  useWindowDimensions,
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
@@ -108,12 +115,24 @@ const mailData = [
 // }
 
 function Mail() {
+  const { width, height } = useWindowDimensions();
+  const [SCREEN_WIDTH, setSCREEN_WIDTH] = useState(width);
+  const [SCREEN_HEIGHT, setSCREEN_HEIGHT] = useState(height);
+
+  const [styles, setStyleSheet] = useState<any>(createStyle(SCREEN_WIDTH, SCREEN_HEIGHT));
+
+  useEffect(() => {
+    setSCREEN_WIDTH(width);
+    setSCREEN_HEIGHT(height);
+    setStyleSheet(createStyle(width, height));
+  }, [width, height]);
+
   const [is_read, setIsread] = useState();
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
       <View style={styles.header}>
-        <Text style={styles.mailText}>쪽지함</Text>
+        <Text style={styles.mailText}>Mail</Text>
       </View>
       <ScrollView>
         <View style={styles.sender}>
@@ -138,65 +157,65 @@ function Mail() {
 }
 
 // 2023-07-10T04:39:44.555Z
+const createStyle = (width: number, height: number) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    header: {
+      flexDirection: "row",
+      marginTop: "15%",
+      marginLeft: "7%",
+      marginRight: "7%",
+      marginBottom: "3%",
+    },
+    mailText: {
+      fontSize: 30,
+      fontWeight: "bold",
+    },
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // margin: "5%",
-    // backgroundColor: "yellow",
-  },
-  header: {
-    flexDirection: "row",
-    marginTop: "15%",
-    marginLeft: "8%",
-    marginBottom: "3%",
-    // borderBottomColor: "blue",
-  },
-  mailText: {
-    fontSize: 30,
-    fontWeight: "600",
-  },
+    sender: {
+      backgroundColor: "white",
+      // marginLeft: "5%",
+      border: "2px",
+    },
+    mail: {
+      // backgroundColor: "yellow",
+      padding: "3%",
+      borderBottomColor: "#D0D0D0",
+      borderBottomWidth: 1,
+    },
+    mail_true: {
+      backgroundColor: "#D8E1EC",
+    },
+    nick: {
+      fontSize: 22,
+      fontWeight: "700",
+    },
+    content: {
+      marginLeft: "7%",
+      paddingTop: "2%",
+      fontSize: 18,
+    },
+    space: {
+      marginLeft: "5%",
+      marginRight: "5%",
+      flexDirection: "row",
+      justifyContent: "space-between",
+    },
 
-  sender: {
-    backgroundColor: "white",
-    // marginLeft: "5%",
-    border: "2px",
-  },
-  mail: {
-    // backgroundColor: "yellow",
-    padding: "3%",
-  },
-  mail_true: {
-    backgroundColor: "#E6E6E6",
-  },
-  nick: {
-    fontSize: 22,
-    fontWeight: "700",
-  },
-  content: {
-    marginLeft: "7%",
-    paddingTop: "2%",
-    fontSize: 18,
-  },
-  space: {
-    marginLeft: "5%",
-    marginRight: "5%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-
-  date: {
-    alignContent: "space-between",
-  },
-  icon: {
-    // backgroundColor: "transparent",
-    color: "black",
-    position: "absolute",
-    right: "10%",
-    bottom: "5%",
-    backgroundColor: "#5299EB",
-    borderRadius: 50,
-    padding: 10,
-  },
-});
+    date: {
+      alignContent: "space-between",
+    },
+    icon: {
+      // backgroundColor: "transparent",
+      color: "black",
+      position: "absolute",
+      right: "10%",
+      bottom: "5%",
+      backgroundColor: "#5299EB",
+      borderRadius: 50,
+      padding: 10,
+    },
+  });
 export default Mail;

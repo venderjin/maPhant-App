@@ -50,7 +50,10 @@ const CustomInput = (props: any) => {
         }}
         onFocus={handleFocus}
         keyboardType={name === "phoneNumber" || name === "studentNumber" ? "numeric" : "default"}
+<<<<<<< HEAD
         secureTextEntry={name === "password" || name === "confirmPassword" ? true : false}
+=======
+>>>>>>> dbfd058eaf0bea3e15282a07a794b8711da3f08c
         {...inputProps}
       />
       {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
