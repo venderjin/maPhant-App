@@ -110,36 +110,30 @@ const mailData = [
 function Mail() {
   const [is_read, setIsread] = useState();
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
-        <StatusBar style="auto" />
-        <View style={styles.header}>
-          <Text style={styles.mailText}>쪽지함</Text>
-        </View>
-        <ScrollView>
-          <View style={styles.sender}>
-            <View>
-              {mailData.map(mail => (
-                <View
-                  key={mail.id}
-                  style={[styles.mail, mail.is_read ? styles.mail_true : styles.mail]}
-                >
-                  <View style={styles.space}>
-                    <Text style={styles.nick}>{mail.sender_id_nick}</Text>
-                    <Text style={styles.date}>{mail.sendDate}</Text>
-                  </View>
-                  <Text style={styles.content}>{mail.content}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        </ScrollView>
-        <View style={styles.icon}>
-          {/* <Ionicons name="add-circle-outline" size={100} style={styles.icon} /> */}
-          <AntDesign name="plus" size={24} color="black" />
-        </View>
+    <View style={styles.container}>
+      <StatusBar style="auto" />
+      <View style={styles.header}>
+        <Text style={styles.mailText}>쪽지함</Text>
       </View>
-    </SafeAreaView>
+      <ScrollView>
+        <View style={styles.sender}>
+          <View>
+            {mailData.map(mail => (
+              <View
+                key={mail.id}
+                style={[styles.mail, mail.is_read ? styles.mail_true : styles.mail]}
+              >
+                <View style={styles.space}>
+                  <Text style={styles.nick}>{mail.sender_id_nick}</Text>
+                  <Text style={styles.date}>{mail.sendDate}</Text>
+                </View>
+                <Text style={styles.content}>{mail.content}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 

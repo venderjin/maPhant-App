@@ -11,16 +11,11 @@ import {
   Image,
   SafeAreaView,
   ImageSourcePropType,
+  useWindowDimensions,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-
-const homeBlockLayoutWidth: number = SCREEN_WIDTH;
-const homeBlockLayoutHeight: number = SCREEN_HEIGHT / 7;
 
 interface Tags {
   id: string | undefined;
@@ -29,8 +24,21 @@ interface Tags {
 // type homeScreenProps = NativeStackScreenProps
 
 const Home: React.FC = () => {
+  const { width, height } = useWindowDimensions();
+  const [SCREEN_WIDTH, setSCREEN_WIDTH] = useState(width);
+  const [SCREEN_HEIGHT, setSCREEN_HEIGHT] = useState(height);
+
+  console.log("width : " + width);
+
+  useEffect(() => {
+    setSCREEN_WIDTH(width);
+    setSCREEN_HEIGHT(height);
+    setStyleSheet(createStyle(width, height));
+  }, [width, height]);
+
   // * Search
   const [text, setText] = useState<string>();
+  const [styles, setStyleSheet] = useState<any>(createStyle(SCREEN_WIDTH, SCREEN_HEIGHT));
 
   const clearTextHandler = () => {
     console.log("Search Text Delete Done");
@@ -43,14 +51,14 @@ const Home: React.FC = () => {
   const infoPageCount = 3; // 페이지 수
 
   const [info, setInfo] = useState<ImageSourcePropType[]>([
-    require("../../assets/image1.png"),
-    require("../../assets/image2.png"),
-    require("../../assets/image3.png"),
+    require("../../../assets/image1.png"),
+    require("../../../assets/image2.png"),
+    require("../../../assets/image3.png"),
   ]); // 들어갈 컨텐츠
 
   const handleScroll = (event: any) => {
     const offsetX = event.nativeEvent.contentOffset.x;
-    const infoPage = Math.round((offsetX / windowWidth) * 0.9);
+    const infoPage = Math.round((offsetX / SCREEN_WIDTH) * 0.9);
     setCurrentinfoPage(infoPage);
   };
 
@@ -59,7 +67,7 @@ const Home: React.FC = () => {
       <View
         key={index}
         style={{
-          width: windowWidth * 0.9,
+          width: SCREEN_WIDTH * 0.9,
           height: "100%",
         }}
       >
@@ -149,7 +157,7 @@ const Home: React.FC = () => {
   // HotTags *
 
   return (
-    <View style={styles.mainContainer}>
+    <SafeAreaView style={styles.mainContainer}>
       <StatusBar style="auto" />
       <View style={styles.titleContainer}>
         <Text style={styles.titleText}>software</Text>
@@ -287,7 +295,7 @@ const Home: React.FC = () => {
 
         <View style={styles.advertisementContainer}>
           <Image
-            source={require("../../assets/adv1.png")}
+            source={require("../../../assets/adv1.png")}
             style={{
               width: "100%",
               height: "100%",
@@ -312,136 +320,135 @@ const Home: React.FC = () => {
           </View>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
-const windowWidth = Dimensions.get("window").width;
+const createStyle = (width: number, height: number) =>
+  StyleSheet.create({
+    mainContainer: {
+      width: width,
+      height: height,
+    },
+    mainScroll: {
+      height: "100%",
+      backgroundColor: "#fff",
+    },
+    titleContainer: {
+      height: height * 0.07,
+      flexDirection: "row",
+      //backgroundColor: "blue",
+      alignItems: "flex-start",
+    },
+    titleText: {
+      fontSize: 40,
+      marginLeft: "4%",
+      fontWeight: "bold",
+    },
+    iconContainer: {
+      flex: 1,
+      flexDirection: "row",
+      //backgroundColor : 'skyblue',
+      justifyContent: "flex-end",
+    },
+    searchContainer: {
+      height: height * 0.07,
+      flexDirection: "row",
+      //backgroundColor: "teal",
+      justifyContent: "center",
+    },
+    searchBox: {
+      flex: 1,
+      flexDirection: "row",
+      marginTop: "2.5%",
+      marginBottom: "2.5%",
+      marginLeft: "5%",
+      marginRight: "5%",
+      paddingLeft: "3%",
+      paddingRight: "3%",
+      backgroundColor: "#e5e5e5",
+      borderRadius: 30,
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    infoContainer: {
+      height: Dimensions.get("window").height * 0.28,
+      //backgroundColor: "yellow",
+      paddingTop: "5%",
+      paddingLeft: "5%",
+      paddingRight: "5%",
+    },
 
-const styles = StyleSheet.create({
-  mainContainer: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
-  },
-  mainScroll: {
-    height: "100%",
-    backgroundColor: "#fff",
-  },
-  titleContainer: {
-    height: Dimensions.get("window").height * 0.07,
-    flexDirection: "row",
-    //backgroundColor: "blue",
-    alignItems: "flex-start",
-  },
-  titleText: {
-    fontSize: 40,
-    marginLeft: "4%",
-    fontWeight: "bold",
-  },
-  iconContainer: {
-    flex: 1,
-    flexDirection: "row",
-    //backgroundColor : 'skyblue',
-    justifyContent: "flex-end",
-  },
-  searchContainer: {
-    height: Dimensions.get("window").height * 0.07,
-    flexDirection: "row",
-    //backgroundColor: "teal",
-    justifyContent: "center",
-  },
-  searchBox: {
-    flex: 1,
-    flexDirection: "row",
-    marginTop: "2.5%",
-    marginBottom: "2.5%",
-    marginLeft: "5%",
-    marginRight: "5%",
-    paddingLeft: "3%",
-    paddingRight: "3%",
-    backgroundColor: "#e5e5e5",
-    borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  infoContainer: {
-    height: Dimensions.get("window").height * 0.28,
-    //backgroundColor: "yellow",
-    paddingTop: "5%",
-    paddingLeft: "5%",
-    paddingRight: "5%",
-  },
+    infoDotBox: {
+      flexDirection: "row",
+      justifyContent: "center",
+      marginTop: 10,
+    },
+    infoDot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      backgroundColor: "gray",
+      marginHorizontal: 5,
+    },
+    activeinfoDot: {
+      backgroundColor: "black",
+    },
+    unactiveinfoDot: {
+      backgroundColor: "gray",
+    },
+    todaysHotContainer: {
+      height: Dimensions.get("window").height * 0.13,
+      //backgroundColor: "green",
+      paddingLeft: "5%",
+      paddingRight: "5%",
+    },
+    todaysHotTitleBox: {
+      flex: 1,
+      flexDirection: "row",
+      //backgroundColor: "skyblue",
+      alignItems: "center",
+    },
 
-  infoDotBox: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  infoDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: "gray",
-    marginHorizontal: 5,
-  },
-  activeinfoDot: {
-    backgroundColor: "black",
-  },
-  unactiveinfoDot: {
-    backgroundColor: "gray",
-  },
-  todaysHotContainer: {
-    height: Dimensions.get("window").height * 0.13,
-    //backgroundColor: "green",
-    paddingLeft: "5%",
-    paddingRight: "5%",
-  },
-  todaysHotTitleBox: {
-    flex: 1,
-    flexDirection: "row",
-    //backgroundColor: "skyblue",
-    alignItems: "center",
-  },
+    todaysHotTitleText: {
+      fontSize: 25,
+      fontWeight: "bold",
+    },
+    todaysHotTagBox: {
+      flex: 1,
+      flexDirection: "row",
+      //backgroundColor: "purple",
+    },
+    advertisementContainer: {
+      height: Dimensions.get("window").height * 0.25,
+      backgroundColor: "pink",
+    },
+    homeBlockLayout: {
+      width: "100%",
+      // height: homeBlockLayoutHeight,
+      //backgroundColor: "blue",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    homeBlockContainer: {
+      width: "90%",
+      height: "100%",
+      //backgroundColor: "yellow",
+      alignItems: "center",
+      justifyContent: "space-around",
 
-  todaysHotTitleText: {
-    fontSize: 25,
-    fontWeight: "bold",
-  },
-  todaysHotTagBox: {
-    flex: 1,
-    flexDirection: "row",
-    //backgroundColor: "purple",
-  },
-  advertisementContainer: {
-    height: Dimensions.get("window").height * 0.25,
-    backgroundColor: "pink",
-  },
-  homeBlockLayout: {
-    width: "100%",
-    height: homeBlockLayoutHeight,
-    //backgroundColor: "blue",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  homeBlockContainer: {
-    width: "90%",
-    height: "100%",
-    //backgroundColor: "yellow",
-    alignItems: "center",
-    justifyContent: "space-around",
-
-    flexDirection: "row",
-  },
-  homeBlock: {
-    width: "23%",
-    height: "50%",
-    backgroundColor: "skyblue",
-    alignItems: "center",
-    borderColor: "black",
-    justifyContent: "center",
-    borderRadius: 15,
-    marginRight: "2%",
-  },
-});
+      flexDirection: "row",
+    },
+    homeBlock: {
+      width: "23%",
+      height: "50%",
+      backgroundColor: "skyblue",
+      alignItems: "center",
+      borderColor: "black",
+      justifyContent: "center",
+      borderRadius: 15,
+      marginRight: "2%",
+    },
+  });
 
 export default Home;

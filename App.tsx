@@ -7,6 +7,8 @@ import Mypage from "./src/components/Member/Mypage";
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import Routes from "./src/components/navigator/Routes";
+import { SafeAreaView, StyleSheet, Dimensions, useWindowDimensions } from "react-native";
+import Home from "./src/App/Home/Home";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
