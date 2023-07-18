@@ -49,8 +49,8 @@ const CustomInput = (props: any) => {
           setFieldTouched(name);
         }}
         onFocus={handleFocus}
-        keyboardType={name === "phone" || name === "student" ? "numeric" : "default"}
-        secureTextEntry={name === "pw" || name === "pwConfirm" ? true : false}
+        keyboardType={name === "phoneNumber" || name === "studentNumber" ? "numeric" : "default"}
+        secureTextEntry={name === "password" || name === "confirmPassword" ? true : false}
         {...inputProps}
       />
       {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
