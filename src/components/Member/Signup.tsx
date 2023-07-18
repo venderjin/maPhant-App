@@ -1,13 +1,45 @@
 import React, { useState } from "react";
-import { SearchBar } from "@rneui/themed";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, SafeAreaView, ScrollView, FlatList } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+// import { SearchBar } from "@rneui/themed";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "react-native";
+import { Formik, Field } from "formik";
+import * as Yup from "yup";
+import CustomInput from "./CustomInput";
 
 type Item = {
   id: number;
   name: string;
 };
+
+interface ISignupForm {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  nickname: string;
+  phoneNumber: string;
+  studentNumber: string;
+}
+
+const validationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("유효한 이메일 주소를 입력해주세요.")
+    .required("이메일은 필수 항목입니다."),
+  password: Yup.string()
+    .required("필수 정보입니다.")
+    .min(6, ({ min }) => `비밀번호는 최소 ${min}자 이상이어야 합니다.`),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password")], "비밀번호가 일치하지 않습니다.")
+    .required("필수 정보입니다."),
+  phoneNumber: Yup.string().matches(/^\d{3}-\d{4}-\d{4}$/, "000-0000-0000 형식으로 입력해주세요."),
+  nickname: Yup.string().required("필수 정보입니다."),
+  studentNumber: Yup.string().required("필수 정보입니다."),
+});
 
 const Searchh = ({ setSearchUniv }: { setSearchUniv: any }) => {
   const [search, setSearch] = useState("");
@@ -27,7 +59,7 @@ const Searchh = ({ setSearchUniv }: { setSearchUniv: any }) => {
     setSearch(text);
 
     // 검색어를 이용하여 데이터를 필터링
-    const filteredItems = data.filter((item) => item.name.toLowerCase().includes(text.toLowerCase()));
+    const filteredItems = data.filter(item => item.name.toLowerCase().includes(text.toLowerCase()));
 
     setFilteredData(filteredItems);
     setSearchUniv(text);
@@ -35,27 +67,13 @@ const Searchh = ({ setSearchUniv }: { setSearchUniv: any }) => {
 
   return (
     <View>
-      <SearchBar
-        placeholder="Search University..."
-        onChangeText={updateSearch}
-        value={search}
-        containerStyle={styles.searchBarContainer}
-        inputContainerStyle={styles.searchBarInputContainer}
-      />
-
-      <FlatList
-        data={filteredData}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) =>
-          search == "" ? (
-            <></>
-          ) : (
-            <View style={styles.itemContainer}>
-              <Text style={styles.itemText}>{item.name}</Text>
-            </View>
-          )
-        }
-      />
+      {filteredData.map(item =>
+        search === "" ? null : (
+          <View style={styles.itemContainer} key={item.id.toString()}>
+            <Text style={styles.itemText}>{item.name}</Text>
+          </View>
+        ),
+      )}
     </View>
   );
 };
@@ -68,80 +86,43 @@ const Signup = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [studentNumber, setStudentNumber] = useState("");
   const [searchUniv, setSearchUniv] = useState("");
-  const navigation = useNavigation();
 
-  const handleInputChange = (value: string, setter: any) => {
-    setter(value);
-  };
-
-  const renderTextInputWithLabel = (placeholder: any, value: string, setter: any) => {
-    const [isFocused, setIsFocused] = useState(false);
-
-    const handleFocus = () => {
-      setIsFocused(true);
-    };
-
-    const handleBlur = () => {
-      setIsFocused(false);
-    };
-
-    return (
-      <View>
-        <Text
-          style={[
-            styles.label,
-            {
-              top: isFocused || value ? 5 : 20,
-              fontSize: isFocused || value ? 12 : 16,
-              color: isFocused ? "#000" : "#aaa",
-            },
-          ]}
-        >
-          {placeholder}
-        </Text>
-        <TextInput
-          style={{ ...styles.input, marginTop: isFocused ? 25 : 20 }}
-          placeholder={placeholder}
-          value={value}
-          onChangeText={(text) => handleInputChange(text, setter)}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-        />
-      </View>
-    );
+  const SignupForm: ISignupForm = {
+    email: "",
+    password: "",
+    confirmPassword: "",
+    nickname: "",
+    phoneNumber: "",
+    studentNumber: "",
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-      <ScrollView contentContainerStyle={styles.scrollView}>
-        <View style={styles.terms}>
-          <Text>커뮤니티 이용수칙 등에 대한 이용약관 동의</Text>
-          <TouchableOpacity
-            style={styles.termsButton}
-            onPress={() => {
-              navigation.navigate("TermsSet" as never);
-            }}
-          >
-            <Text style={styles.termsText}>전체보기</Text>
-          </TouchableOpacity>
-        </View>
-        {renderTextInputWithLabel("email", email, setEmail)}
-        {renderTextInputWithLabel("pw", password, setPassword)}
-        {renderTextInputWithLabel("pw confirm", passwordConfirm, setPasswordConfirm)}
-        {renderTextInputWithLabel("nickname", nickname, setNickname)}
-        {renderTextInputWithLabel("phone number", phoneNumber, setPhoneNumber)}
-        {renderTextInputWithLabel("student number", studentNumber, setStudentNumber)}
-        <Searchh setSearchUniv={setSearchUniv} />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            navigation.navigate("SearchUniversity" as never);
-          }}
-        >
-          <Text style={styles.signup}> Next</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    <Formik
+      initialValues={SignupForm}
+      onSubmit={values => console.log(values)}
+      validationSchema={validationSchema}
+    >
+      {({ handleSubmit, isValid, values }) => (
+        <KeyboardAvoidingView style={styles.container} enabled>
+          <ScrollView contentContainerStyle={styles.scrollView}>
+            <Field placeholder="이메일" name="email" component={CustomInput} />
+            <Field placeholder="비밀번호" name="password" component={CustomInput} />
+            <Field placeholder="비밀번호 확인" name="confirmPassword" component={CustomInput} />
+            <Field placeholder="닉네임" name="nickname" component={CustomInput} />
+            <Field placeholder="전화번호" name="phoneNumber" component={CustomInput} />
+            <Searchh setSearchUniv={setSearchUniv} />
+            <Field placeholder="학번" name="studentNumber" component={CustomInput} />
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleSubmit()}
+              disabled={!isValid || values.email === ""}
+            >
+              <Text style={styles.signup}> Signup</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      )}
+    </Formik>
   );
 };
 
