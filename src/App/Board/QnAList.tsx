@@ -1,14 +1,14 @@
 import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import ScrollList from "../../components/Board/ScrollList";
+import ScrollList from "./ScrollList";
 import { useEffect, useState } from "react";
 import { listArticle } from "../../Api/board";
 import { BoardPostMockup } from "../../types/Board";
 
 // const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-const QnABoard = () => {
+const QnABoard: React.FC = () => {
   const navigation = useNavigation();
   const [boardData, setboardData] = useState<BoardPostMockup[]>([]);
   useEffect(() => {
@@ -34,7 +34,7 @@ const QnABoard = () => {
           </TouchableOpacity>
         </View>
         <ScrollView horizontal>
-          {boardData.map((board) => (
+          {boardData.map(board => (
             <View key={board.id} style={styles.content}>
               <ScrollList post={board} />
             </View>
@@ -50,7 +50,7 @@ const QnABoard = () => {
           </TouchableOpacity>
         </View>
         <ScrollView horizontal>
-          {boardData.map((board) => (
+          {boardData.map(board => (
             <View key={board.id} style={styles.content}>
               <ScrollList post={board} />
             </View>
