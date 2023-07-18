@@ -169,10 +169,10 @@ const Home: React.FC = () => {
           >
             <Icon
               name="moon-outline"
-              size={35}
-              color="black"
+              size={30}
+              color="#666666"
               style={{
-                marginRight: "3%",
+                marginRight: "5%",
               }}
             />
           </TouchableOpacity>
@@ -183,10 +183,10 @@ const Home: React.FC = () => {
           >
             <Icon
               name="notifications-outline"
-              size={35}
-              color="black"
+              size={30}
+              color="#666666"
               style={{
-                marginRight: "7%",
+                marginRight: "5%",
               }}
               onPress={() => {
                 navigation.navigate("alarm" as never);
@@ -199,7 +199,7 @@ const Home: React.FC = () => {
       <View style={styles.searchContainer}>
         <View style={styles.searchBox}>
           <View>
-            <Icon name="search" size={28} color="black" style={{}} />
+            <Icon name="search" size={25} color="#666666" style={{}} />
           </View>
           <TextInput
             value={text}
@@ -217,7 +217,7 @@ const Home: React.FC = () => {
             }}
           />
           <TouchableOpacity onPress={clearTextHandler}>
-            <Icon name="close" size={28} color="black" style={{}} />
+            <Icon name="close" size={25} color="#666666" style={{}} />
           </TouchableOpacity>
         </View>
       </View>
@@ -335,20 +335,22 @@ const createStyle = (width: number, height: number) =>
       backgroundColor: "#fff",
     },
     titleContainer: {
-      height: height * 0.07,
+      height: height * 0.06,
       flexDirection: "row",
-      //backgroundColor: "blue",
-      alignItems: "flex-start",
+      // backgroundColor: "blue",
+      alignItems: "center",
+      paddingLeft: "3%",
+      paddingRight: "3%",
     },
     titleText: {
-      fontSize: 40,
+      fontSize: 35,
       marginLeft: "4%",
       fontWeight: "bold",
     },
     iconContainer: {
       flex: 1,
       flexDirection: "row",
-      //backgroundColor : 'skyblue',
+      // backgroundColor: "skyblue",
       justifyContent: "flex-end",
     },
     searchContainer: {
@@ -366,7 +368,7 @@ const createStyle = (width: number, height: number) =>
       marginRight: "5%",
       paddingLeft: "3%",
       paddingRight: "3%",
-      backgroundColor: "#e5e5e5",
+      backgroundColor: "#D8E1EC",
       borderRadius: 30,
       alignItems: "center",
       justifyContent: "space-between",
@@ -374,9 +376,10 @@ const createStyle = (width: number, height: number) =>
     infoContainer: {
       height: Dimensions.get("window").height * 0.28,
       //backgroundColor: "yellow",
-      paddingTop: "5%",
+      paddingTop: "3%",
       paddingLeft: "5%",
       paddingRight: "5%",
+      // backgroundColor: "red",
     },
 
     infoDotBox: {
@@ -392,10 +395,10 @@ const createStyle = (width: number, height: number) =>
       marginHorizontal: 5,
     },
     activeinfoDot: {
-      backgroundColor: "black",
+      backgroundColor: "#5299EB",
     },
     unactiveinfoDot: {
-      backgroundColor: "gray",
+      backgroundColor: "#CBD7E6",
     },
     todaysHotContainer: {
       height: Dimensions.get("window").height * 0.13,
