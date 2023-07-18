@@ -82,7 +82,7 @@ const boardData = [
   },
 ];
 
-const Alarm = () => {
+const Alarm: React.FC = () => {
   // const [show, setShow] = useState<Boolean>(false);
   // const handlePress = () => {
   //   setShow(true);

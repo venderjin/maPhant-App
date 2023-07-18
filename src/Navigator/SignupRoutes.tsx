@@ -1,9 +1,9 @@
-import Login from "../member/Login";
-import Find from "../member/Find";
-import Signup from "../member/Signup";
-import TermsSet from "../member/Terms";
-import SearchUniversity from "../member/SearchUniv";
-import Confirm from "../member/Confirm";
+import Login from "../App/Member/Login";
+import Find from "../App/Member/Find";
+import Signup from "../App/Member/Signup";
+import TermsSet from "../App/Member/Terms";
+import SearchUniversity from "../App/Member/SearchUniv";
+import Confirm from "../App/Member/Confirm";
 
 const SignupRoutes = [
   {
