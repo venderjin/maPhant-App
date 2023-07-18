@@ -124,16 +124,19 @@ const Alarm: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "white",
     borderTopWidth: 1,
+    borderTopColor: "#D8E1EC",
   },
   body: {
-    borderWidth: 0.5,
+    borderBottomColor: "#D0D0D0",
+    borderBottomWidth: 1,
     paddingVertical: 10,
-    backgroundColor: "#e8fbe8",
+    backgroundColor: "#D8E1EC",
   },
   showbody: {
-    borderWidth: 0.5,
+    borderBottomColor: "#D0D0D0",
+    borderBottomWidth: 1,
     paddingVertical: 10,
   },
   head: {

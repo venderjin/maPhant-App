@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Mail from "./src/App/Mail/Mail";
 // import Mypage from "./src/components/member/Mypage";
-import Mypage from "./src/App/Member/Mypage";
+import Mypage from "./src/App/Mypage/Mypage";
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./src/App/Home/Index";
