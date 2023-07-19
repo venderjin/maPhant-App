@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Formik, Field } from "formik";
 import * as Yup from "yup";
-import CustomInput from "./CustomInput";
+import CustomInput from "../../components/Member/CustomInput";
 import { validateEmail } from "../../Api/member/signUp";
 
 type Item = {
@@ -88,7 +88,7 @@ const Searchh = ({ setSearchUniv }: { setSearchUniv: any }) => {
   );
 };
 
-const Signup = () => {
+const Signup: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");

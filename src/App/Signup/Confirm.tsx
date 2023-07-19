@@ -1,14 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Alert,
-} from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
 
-const Confirm = () => {
+const Confirm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [certificationEmail, setCertificationEmail] = useState(false);
   const [minutes, setMinutes] = useState(10);
@@ -60,10 +53,10 @@ const Confirm = () => {
         clearInterval(countDown);
       } else {
         if (seconds === 0) {
-          setMinutes((prevMinutes) => prevMinutes - 1);
+          setMinutes(prevMinutes => prevMinutes - 1);
           setSeconds(59);
         } else {
-          setSeconds((prevSeconds) => prevSeconds - 1);
+          setSeconds(prevSeconds => prevSeconds - 1);
         }
       }
     }, 1000);

@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import { SearchBar } from "@rneui/themed";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, SafeAreaView, ScrollView, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  ScrollView,
+  FlatList,
+} from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
@@ -9,7 +19,7 @@ type Item = {
   name: string;
 };
 
-const SearchUniversity = () => {
+const SearchUniversity: React.FC = () => {
   const [field, setField] = useState("");
   const [major, setMajor] = useState("");
   const [searchfield, setSearchField] = useState("");
@@ -41,7 +51,9 @@ const SearchUniversity = () => {
     setSearchField(text);
 
     // 검색어를 이용하여 데이터를 필터링
-    const filteredItems1 = data1.filter((item) => item.name.toLowerCase().includes(text.toLowerCase()));
+    const filteredItems1 = data1.filter(item =>
+      item.name.toLowerCase().includes(text.toLowerCase()),
+    );
 
     setFilteredData(filteredItems1);
     setField(text);
@@ -51,7 +63,9 @@ const SearchUniversity = () => {
     setSearchMajor(text);
 
     // 검색어를 이용하여 데이터를 필터링
-    const filteredItems2 = data2.filter((item) => item.name.toLowerCase().includes(text.toLowerCase()));
+    const filteredItems2 = data2.filter(item =>
+      item.name.toLowerCase().includes(text.toLowerCase()),
+    );
 
     setFilteredData(filteredItems2);
     setMajor(text);
@@ -70,7 +84,7 @@ const SearchUniversity = () => {
 
         <FlatList
           data={filteredData}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => item.id.toString()}
           renderItem={({ item }) =>
             field == "" ? (
               <></>
@@ -93,7 +107,7 @@ const SearchUniversity = () => {
 
         <FlatList
           data={filteredData}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => item.id.toString()}
           renderItem={({ item }) =>
             major == "" ? (
               <></>
