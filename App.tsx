@@ -11,6 +11,21 @@ import BoardListStack from "./src/App/Board/Index";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const HomeStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Home" component={Routes[0].component} options={{ headerShown: false }} />
+    <Stack.Screen name="alarm" component={Routes[2].component} />
+  </Stack.Navigator>
+);
+const BoardListStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Board" component={Routes[3].component} />
+    <Stack.Screen name="QnABoard" component={Routes[4].component} />
+    <Stack.Screen name="DetailList" component={Routes[5].component} />
+    <Stack.Screen name="QnAdetail" component={Routes[6].component} />
+  </Stack.Navigator>
+);
+
 const App = () => {
   return (
     <NavigationContainer>
