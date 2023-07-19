@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const Login = () => {
+const Login: React.FC = () => {
   const navigation = useNavigation();
 
   return (

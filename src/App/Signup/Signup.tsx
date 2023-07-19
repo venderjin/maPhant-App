@@ -35,7 +35,7 @@ const validationSchema = Yup.object().shape({
   university: Yup.string().required("필수 정보입니다."),
 });
 
-const Signup = () => {
+const Signup: React.FC = () => {
   const SignupForm: ISignupForm = {
     email: "",
     password: "",

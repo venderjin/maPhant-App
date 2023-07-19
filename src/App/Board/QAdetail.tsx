@@ -26,7 +26,7 @@ const data = [
   { id: 3, name: "지망이", date: " 2023.03,12" },
 ];
 
-const QAdetail: React.FC = () => {
+const QAdetail = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.nameBox}>
@@ -114,7 +114,10 @@ const QAdetail: React.FC = () => {
                   </TouchableOpacity>
                 </View>
               </View>
-              <TouchableOpacity style={styles.touchdetail}>
+              <TouchableOpacity
+                style={styles.touchdetail}
+                onPress={() => navigation.navigate("QA_answer")}
+              >
                 <View style={styles.answercontext}>
                   <Text style={styles.qatitle}>제목</Text>
                   <Text numberOfLines={3} style={styles.qacontext}>

@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Image,
-} from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from "react-native";
 
-const Find = () => {
+const Find: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.box}>
