@@ -12,6 +12,7 @@ function App() {
         <Stack.Screen name="Home" component={Routes[0].component} />
         <Stack.Screen name="Login" component={Routes[1].component} />
         <Stack.Screen name="QA" component={Routes[2].component} />
+        <Stack.Screen name="QA_answer" component={Routes[3].component} />
       </Stack.Navigator>
     </NavigationContainer>
   );
