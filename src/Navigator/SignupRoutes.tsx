@@ -6,14 +6,6 @@ import SearchUniversity from "../App/Signup/SearchUniv";
 import Confirm from "../App/Signup/Confirm";
 const SignupRoutes = [
   {
-    name: "Signin",
-    component: Login,
-  },
-  {
-    name: "find",
-    component: Find,
-  },
-  {
     name: "Signup",
     component: Signup,
   },
