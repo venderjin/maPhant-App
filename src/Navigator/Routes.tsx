@@ -7,8 +7,8 @@ import SigninRoutes from "./SigninRoutes";
 const Routes = [
   ...HomeRoute,
   ...BoardRoute,
-  ...SignupRoutes,
   ...SigninRoutes,
+  ...SignupRoutes,
   // {
   //   name: "login",
   //   component: Login,

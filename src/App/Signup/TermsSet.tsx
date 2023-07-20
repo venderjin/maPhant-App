@@ -12,11 +12,13 @@ import {
 } from "react-native";
 
 import CheckBox from "expo-checkbox";
+import { useNavigation } from "@react-navigation/native";
 
 const TermsSet: React.FC = () => {
   const [checkList, setCheckList] = useState<string[]>([]);
   const [buttonColor, setButtonColor] = useState<boolean>(false);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const navigation = useNavigation();
 
   const checkAll = (isChecked: boolean) => {
     if (isChecked) {
@@ -126,6 +128,9 @@ const TermsSet: React.FC = () => {
       <TouchableOpacity
         style={[styles.button, buttonColor ? null : styles.disabledButton]}
         disabled={!buttonColor}
+        onPress={() => {
+          navigation.navigate("Signup" as never);
+        }}
       >
         <Text style={styles.next}> 다음</Text>
       </TouchableOpacity>

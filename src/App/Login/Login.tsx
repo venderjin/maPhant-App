@@ -29,7 +29,7 @@ const Login: React.FC = () => {
           <TouchableOpacity
             style={styles.button1}
             onPress={() => {
-              navigation.navigate("Signup" as never);
+              navigation.navigate("TermsSet" as never);
             }}
           >
             <Text style={styles.signup}> Don't have any account? Sign up</Text>

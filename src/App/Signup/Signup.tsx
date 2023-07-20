@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView } from "react-native";
 import { Formik, Field } from "formik";
 import * as Yup from "yup";
+import { useNavigation } from "@react-navigation/native";
 import CustomInput from "../../components/Member/CustomInput";
 import Search from "../../components/Member/Search";
 
@@ -45,6 +46,7 @@ const Signup: React.FC = () => {
     studentNumber: "",
     university: "",
   };
+  const navigation = useNavigation();
 
   return (
     <Formik
@@ -69,8 +71,11 @@ const Signup: React.FC = () => {
             <Field placeholder="학번" name="studentNumber" component={CustomInput} />
             <TouchableOpacity
               style={styles.button}
-              onPress={() => handleSubmit()}
-              disabled={!isValid || values.email === ""}
+              onPress={() => {
+                // handleSubmit();
+                navigation.navigate("SearchUniversity" as never);
+              }}
+              // disabled={!isValid || values.email === ""}
             >
               <Text style={styles.signup}> Signup</Text>
             </TouchableOpacity>
