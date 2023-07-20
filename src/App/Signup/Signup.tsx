@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // import { SearchBar } from "@rneui/themed";
 import { StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView } from "react-native";
 import { Formik, Field } from "formik";
 import * as Yup from "yup";
 import CustomInput from "../../components/Member/CustomInput";
 import Search from "../../components/Member/Search";
-import { validateEmail, validateNickname } from "../../Api/member/signUp";
-
+import { signup, validateEmail, validateNickname } from "../../Api/member/signUp";
 interface ISignupForm {
   email: string;
   password: string;
   confirmPassword: string;
   nickname: string;
+  name: string;
   phoneNumber: string;
   studentNumber: string;
   university: string;
@@ -53,25 +53,50 @@ const validationSchema = Yup.object().shape({
 });
 
 const Signup = () => {
+  // const [loading, setLoading] = useState<Boolean>(false);
   const SignupForm: ISignupForm = {
     email: "",
     password: "",
     confirmPassword: "",
     nickname: "",
+    name: "",
     phoneNumber: "",
     studentNumber: "",
     university: "",
   };
-
   return (
     <Formik
       initialValues={SignupForm}
-      onSubmit={values => console.log(values)}
       validationSchema={validationSchema}
+      onSubmit={async values => {
+        await signup(
+          values.email,
+          values.password,
+          values.confirmPassword,
+          values.nickname,
+          values.name,
+          values.phoneNumber,
+          values.studentNumber,
+          values.university,
+        )
+          .then(response => {
+            // setLoading(true);
+            console.log(response);
+            console.log(values);
+            if (response.success) {
+              alert("회원가입이 완료되었습니다.");
+              //라우터 넣으면 됨
+            }
+          })
+          .catch(error => {
+            // setLoading(false);
+            alert(`회원가입 실패 ${error} \n다시 시도해주세요.`);
+          });
+      }}
     >
       {({ handleSubmit, isValid, values }) => (
-        <KeyboardAvoidingView style={styles.container} enabled>
-          <ScrollView contentContainerStyle={styles.scrollView}>
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          <KeyboardAvoidingView style={styles.container} enabled>
             <Field placeholder="이메일" name="email" component={CustomInput} />
             <Field placeholder="비밀번호" name="password" component={CustomInput} secureTextEntry />
             <Field
@@ -81,18 +106,19 @@ const Signup = () => {
               secureTextEntry
             />
             <Field placeholder="닉네임" name="nickname" component={CustomInput} />
+            <Field placeholder="이름" name="name" component={CustomInput} />
             <Field placeholder="전화번호" name="phoneNumber" component={CustomInput} />
             <Field placeholder="Search Univ..." name="university" component={Search} />
             <Field placeholder="학번" name="studentNumber" component={CustomInput} />
             <TouchableOpacity
               style={styles.button}
               onPress={() => handleSubmit()}
-              disabled={!isValid || values.email === ""}
+              disabled={!isValid}
             >
               <Text style={styles.signup}> Signup</Text>
             </TouchableOpacity>
-          </ScrollView>
-        </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
+        </ScrollView>
       )}
     </Formik>
   );
@@ -100,11 +126,10 @@ const Signup = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: "#fff",
     justifyContent: "center",
     paddingHorizontal: 40,
-    paddingTop: 80,
   },
   signup: {
     color: "white",
@@ -119,6 +144,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     marginTop: 50,
+    paddingBottom: 50,
   },
 });
 
