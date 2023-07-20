@@ -84,7 +84,6 @@ const Signup = () => {
             console.log(response);
             console.log(values);
             if (response.success) {
-              alert("회원가입이 완료되었습니다.");
               //라우터 넣으면 됨
             }
           })

@@ -48,4 +48,12 @@ function validateNickname(nickname: String) {
   }).then(response => response.json());
 }
 
-export { signup, validateEmail, validateNickname };
+function universityList() {
+  return fetch(`${constraints.SERVER_URL}/user/universitylist`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(response => response.json());
+}
+export { signup, validateEmail, validateNickname, universityList };
