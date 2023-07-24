@@ -1,4 +1,5 @@
 import constraints from "../constraints";
+import { PostAPI } from "../fetchAPI";
 
 function signup(
   email: String,
@@ -56,4 +57,30 @@ function universityList() {
     },
   }).then(response => response.json());
 }
-export { signup, validateEmail, validateNickname, universityList };
+
+function sendEmail(email: String) {
+  return PostAPI(`user/changepw/sendemail`, { email: email });
+}
+
+function authenticationCode(email: String, authcode: String) {
+  return PostAPI(`user/changepw/authenticationcode`, {
+    email: email,
+    authcode: authcode,
+  });
+}
+
+function newPassword(email: String, authcode: String) {
+  return PostAPI(`user/changepw/newpassword`, {
+    email: email,
+    authcode: authcode,
+  });
+}
+export {
+  signup,
+  validateEmail,
+  validateNickname,
+  universityList,
+  sendEmail,
+  authenticationCode,
+  newPassword,
+};
