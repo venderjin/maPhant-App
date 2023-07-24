@@ -55,7 +55,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     justifyContent: "center",
-    paddingHorizontal: 40,
+    // paddingHorizontal: 10%,
+    paddingLeft: "10%",
+    paddingRight: "10%",
   },
   imageBox: {
     flex: 1,
@@ -72,10 +74,10 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: "#f2f2f2",
-    paddingVertical: 15,
+    paddingVertical: "5%",
     paddingHorizontal: 20,
     borderRadius: 30,
-    marginTop: 20,
+    marginTop: "8%",
     fontSize: 18,
   },
   login: {
@@ -95,10 +97,11 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#000",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    // paddingVertical: 15,
+    paddingVertical: "5%",
+    // paddingHorizontal: 20,
     borderRadius: 30,
-    marginTop: 40,
+    marginTop: "7%",
   },
   button1Box: {
     flex: 1,
@@ -107,9 +110,10 @@ const styles = StyleSheet.create({
   },
 
   button1: {
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    marginBottom: 10,
+    paddingVertical: "5%",
+    paddingHorizontal: "5%",
+    marginTop: "3%",
+    // marginBottom: 10,
   },
 });
 
