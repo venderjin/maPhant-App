@@ -58,29 +58,21 @@ function universityList() {
   }).then(response => response.json());
 }
 
-function sendEmail(email: String) {
-  return PostAPI(`user/changepw/sendemail`, { email: email });
-}
+// function sendEmail(email: String) {
+//   return PostAPI(`user/changepw/sendemail`, { email: email });
+// }
 
-function authenticationCode(email: String, authcode: String) {
-  return PostAPI(`user/changepw/authenticationcode`, {
-    email: email,
-    authcode: authcode,
-  });
-}
+// function authenticationCode(email: String, authcode: String) {
+//   return PostAPI(`user/changepw/authenticationcode`, {
+//     email: email,
+//     authcode: authcode,
+//   });
+// }
 
-function newPassword(email: String, authcode: String) {
-  return PostAPI(`user/changepw/newpassword`, {
-    email: email,
-    authcode: authcode,
-  });
-}
-export {
-  signup,
-  validateEmail,
-  validateNickname,
-  universityList,
-  sendEmail,
-  authenticationCode,
-  newPassword,
-};
+// function newPassword(email: String, authcode: String) {
+//   return PostAPI(`user/changepw/newpassword`, {
+//     email: email,
+//     authcode: authcode,
+//   });
+// }
+export { signup, validateEmail, validateNickname, universityList };

@@ -6,14 +6,12 @@ import * as Yup from "yup";
 import { useNavigation } from "@react-navigation/native";
 import CustomInput from "../../components/Member/CustomInput";
 import Search from "../../components/Member/Search";
-import { Signupfet, validateEmail } from "../../Api/member/signUp";
 import { signup, validateEmail, validateNickname } from "../../Api/member/signUp";
 interface ISignupForm {
   email: string;
   password: string;
   confirmPassword: string;
   nickname: string;
-  name: string;
   name: string;
   phoneNumber: string;
   studentNumber: string;
@@ -95,26 +93,6 @@ const Signup: React.FC = () => {
             alert(`회원가입 실패 ${error} \n다시 시도해주세요.`);
           });
       }}
-      onSubmit={async values => {
-        await Signupfet(
-          values.email,
-          values.password,
-          values.confirmPassword,
-          values.nickname,
-          values.name,
-          values.phoneNumber,
-          values.studentNumber,
-          values.university,
-        )
-          .then(response => {
-            console.log("response :", response);
-            console.log(values);
-          })
-          .catch(error => {
-            console.log("실패");
-          });
-        console.log(values);
-      }}
     >
       {({ handleSubmit, isValid, values }) => (
         <ScrollView contentContainerStyle={styles.scrollView}>
@@ -138,11 +116,6 @@ const Signup: React.FC = () => {
               style={styles.button}
               onPress={() => handleSubmit()}
               disabled={!isValid || values.email === ""}
-              onPress={() => {
-                handleSubmit();
-                navigation.navigate("SearchUniversity" as never);
-              }}
-              // disabled={!isValid || values.email === ""}
             >
               <Text style={styles.signup}> Signup</Text>
             </TouchableOpacity>
