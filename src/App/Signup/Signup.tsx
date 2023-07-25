@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { useNavigation } from "@react-navigation/native";
 import CustomInput from "../../components/Member/CustomInput";
 import Search from "../../components/Member/Search";
-import { signup, validateEmail, validateNickname } from "../../Api/member/signUp";
+import { signup, universityList, validateEmail, validateNickname } from "../../Api/member/signUp";
 interface ISignupForm {
   email: string;
   password: string;
@@ -81,8 +81,6 @@ const Signup: React.FC = () => {
         )
           .then(response => {
             // setLoading(true);
-            console.log(response);
-            console.log(values);
             if (response.success) {
               //라우터 넣으면 됨
             }
@@ -107,8 +105,13 @@ const Signup: React.FC = () => {
             <Field placeholder="닉네임" name="nickname" component={CustomInput} />
             <Field placeholder="이름" name="name" component={CustomInput} />
             <Field placeholder="전화번호" name="phoneNumber" component={CustomInput} />
-            <Field placeholder="Search Univ..." name="university" component={Search} />
-            <Field placeholder="학번" name="studentNumber" component={CustomInput} />
+            <Field
+              placeholder="대학교 검색"
+              name="university"
+              component={Search}
+              list={() => universityList()}
+            />
+            <Field placeholder="학번" name="studenNumber" component={CustomInput} />
             <TouchableOpacity
               style={styles.button}
               onPress={() => handleSubmit()}
