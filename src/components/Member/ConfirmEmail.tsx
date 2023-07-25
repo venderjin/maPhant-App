@@ -16,7 +16,6 @@ const ConfirmEmail = ({
   const [certificationEmail, setCertificationEmail] = useState(false);
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
-  const [emailMessage, setEmailMessage] = useState("");
   const verificationCodeInputRef = useRef<TextInput>(null);
   const [showNextButton, setShowNextButton] = useState(false);
 
@@ -74,76 +73,72 @@ const ConfirmEmail = ({
 
   return (
     <View>
+      {certificationEmail && (
+        <View style={styles.timerContainer}>
+          <Text style={styles.timerText}>
+            {`${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`}
+          </Text>
+        </View>
+      )}
       <View>
         <TextInput
           value={email}
           onChangeText={value => {
             onEmailChange(value);
           }}
-          placeholder="이메일을 입력해주세요."
+          placeholder="이메일"
           keyboardType="email-address"
           style={styles.input}
-          editable={!certificationEmail}
         />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={emailVerification}
+          style={[
+            styles.button,
+            {
+              borderColor: email === "" ? "#999" : "#0055FF",
+              backgroundColor: email === "" ? "#999" : "#F0F0F0",
+              width: 80, // 버튼 길이 조정
+            },
+          ]}
+        >
+          <Text style={styles.buttonText}>인증 요청</Text>
+        </TouchableOpacity>
       </View>
-      {certificationEmail && (
-        <>
-          <View style={styles.inputContainer}>
-            <TextInput
-              ref={verificationCodeInputRef}
-              value={authcode}
-              onChangeText={value => {
-                onAuthcodeChange(value);
-                console.log(authcode);
-              }}
-              placeholder="인증 번호 6자리를 입력해 주세요."
-              keyboardType="numeric"
-              style={styles.input}
-            />
-          </View>
-          <View style={styles.timerContainer}>
-            <Text style={styles.timerText}>
-              {`${minutes < 10 ? `0${minutes}` : minutes}:${
-                seconds < 10 ? `0${seconds}` : seconds
-              }`}
-            </Text>
-          </View>
-        </>
-      )}
-      <View style={styles.buttonContainer}>
-        {!certificationEmail ? (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={emailVerification}
-            disabled={certificationEmail || email === ""}
-            style={[
-              styles.button,
-              {
-                borderColor: certificationEmail ? "#999" : email === "" ? "#999" : "#0055FF",
-                backgroundColor: certificationEmail ? "#999" : email === "" ? "#999" : "#F0F0F0",
-                width: certificationEmail ? 80 : 80, // 버튼 길이 조정
-              },
-            ]}
-          >
-            <Text style={styles.buttonText}>인증 요청</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={verifyCode}
-            style={[
-              styles.button,
-              {
-                borderColor: authcode === "" ? "#999" : "#0055FF",
-                backgroundColor: authcode === "" ? "#999" : "#F0F0F0",
-                width: 80, // 버튼 길이 조정
-              },
-            ]}
-          >
-            <Text style={styles.buttonText}>확인</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      {minutes === 0 && seconds === 0
+        ? null
+        : certificationEmail && (
+            <>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  ref={verificationCodeInputRef}
+                  value={authcode}
+                  onChangeText={value => {
+                    onAuthcodeChange(value);
+                  }}
+                  placeholder="인증 번호 6자리를 입력해 주세요."
+                  keyboardType="numeric"
+                  style={styles.input}
+                />
+              </View>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={verifyCode}
+                  style={[
+                    styles.button,
+                    {
+                      borderColor: authcode === "" ? "#999" : "#0055FF",
+                      backgroundColor: authcode === "" ? "#999" : "#F0F0F0",
+                      width: 80, // 버튼 길이 조정
+                    },
+                  ]}
+                >
+                  <Text style={styles.buttonText}>확인</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
     </View>
   );
 };
