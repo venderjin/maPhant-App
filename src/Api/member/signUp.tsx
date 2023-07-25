@@ -58,9 +58,9 @@ function universityList() {
   }).then(response => response.json());
 }
 
-// function sendEmail(email: String) {
-//   return PostAPI(`user/changepw/sendemail`, { email: email });
-// }
+function sendEmail(email: String) {
+  return PostAPI(`user/changepw/sendemail`, { email: email });
+}
 
 function authenticationCode(email: String, authCode: String) {
   return PostAPI(`user/changepw/authenticationcode`, {
