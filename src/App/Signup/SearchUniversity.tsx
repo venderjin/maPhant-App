@@ -11,8 +11,8 @@ import {
   ScrollView,
   FlatList,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import Search from "../../components/Member/Search";
 
 type Item = {
   id: number;
@@ -73,7 +73,8 @@ const SearchUniversity: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <View>
+      <View style={styles.FlistContainer}>
+        <Search filteredData={filteredData} />
         <SearchBar
           placeholder="Search Field..."
           onChangeText={updateSearch1}
@@ -81,7 +82,6 @@ const SearchUniversity: React.FC = () => {
           containerStyle={styles.searchBarContainer}
           inputContainerStyle={styles.searchBarInputContainer}
         />
-
         <FlatList
           data={filteredData}
           keyExtractor={item => item.id.toString()}
@@ -96,7 +96,8 @@ const SearchUniversity: React.FC = () => {
           }
         />
       </View>
-      <View>
+      <View style={styles.MlistContainer}>
+      <Search filteredData={filteredData} />
         <SearchBar
           placeholder="Search Major..."
           onChangeText={updateSearch2}
@@ -138,6 +139,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 40,
     paddingTop: 80,
+  },
+  FlistContainer: {
+    flex: 1,
+    marginBottom: 20,
+  },
+  MlistContainer: {
+    flex: 1,
+    marginTop: 20,
   },
   finish: {
     color: "white",

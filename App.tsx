@@ -1,67 +1,208 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Mail from "./src/App/Mail/Mail";
-// import Mypage from "./src/components/member/Mypage";
-import Mypage from "./src/App/Mypage/Mypage";
-import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { createStackNavigator } from "@react-navigation/stack";
-import Home from "./src/App/Home/Index";
-import BoardListStack from "./src/App/Board/Index";
-import Login from "./src/App/Login/Index";
-import TermsSet from "./src/App/Signup/TermsSet";
-const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
+import React, { useState } from "react";
+import { SearchBar } from "@rneui/themed";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  ScrollView,
+  FlatList,
+  Keyboard,
+} from "react-native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Search from "./src/components/Member/Search";
 
-const App = () => {
-  let isLogged = false;
-  if (isLogged == false) {
-    return (
-      <NavigationContainer>
-        <Login />
-      </NavigationContainer>
+type Item = {
+  id: number;
+  name: string;
+};
+
+const Stack = createNativeStackNavigator();
+
+export default function() {
+  return <NavigationContainer>
+    <Stack.Navigator>
+    <Stack.Screen name="test" component={SearchUniversity}/>
+    </Stack.Navigator>
+  </NavigationContainer>
+}
+
+function SearchUniversity() {
+  const [field, setField] = useState("");
+  const [major, setMajor] = useState("");
+  const [searchfield, setSearchField] = useState("");
+  const [searchmajor, setSearchMajor] = useState("");
+  const [filteredDataField, setFilteredDataField] = useState<Item[]>([]);
+  const [filteredDataMajor, setFilteredDataMajor] = useState<Item[]>([]);
+
+  const navigation = useNavigation();
+
+  const data1: Item[] = [
+    { id: 1, name: "Apple" },
+    { id: 2, name: "Banana" },
+    { id: 3, name: "Orange" },
+    { id: 4, name: "Pineapple" },
+    { id: 5, name: "Mango" },
+    { id: 6, name: "Strawberry" },
+    { id: 7, name: "Lemon" },
+  ];
+  const data2: Item[] = [
+    { id: 1, name: "Apple" },
+    { id: 2, name: "Banana" },
+    { id: 3, name: "Orange" },
+    { id: 4, name: "Pineapple" },
+    { id: 5, name: "Mango" },
+    { id: 6, name: "Strawberry" },
+    { id: 7, name: "Lemon" },
+  ];
+
+  const updateSearch1 = (text: string) => {
+    setSearchField(text);
+
+    // 검색어를 이용하여 데이터를 필터링
+    const filteredItems1 = data1.filter(item =>
+      item.name.toLowerCase().includes(text.toLowerCase()),
     );
-  }
+
+    setFilteredDataField(filteredItems1);
+    setField(text);
+  };
+
+  const updateSearch2 = (text: string) => {
+    setSearchMajor(text);
+
+    // 검색어를 이용하여 데이터를 필터링
+    const filteredItems2 = data2.filter(item =>
+      item.name.toLowerCase().includes(text.toLowerCase()),
+    );
+
+    setFilteredDataMajor(filteredItems2);
+    setMajor(text);
+  };
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen
-          name="홈"
-          component={Home}
-          options={{
-            headerShown: false,
-            tabBarIcon: () => <AntDesign name="home" size={30} color="#5299EB" />,
-          }}
+    <View style={styles.container}>
+      <KeyboardAvoidingView behavior="padding" style={styles.keyboardAvoidingContainer}>
+      <View style={styles.FlistContainer}>
+      <Search filteredData={filteredDataField} />
+      <View>
+        <SearchBar
+          placeholder="Search Field..."
+          onChangeText={updateSearch1}
+          value={searchfield}
+          containerStyle={styles.searchBarContainer}
+          inputContainerStyle={styles.searchBarInputContainer}
         />
-        <Tab.Screen
-          name="게시판"
-          component={BoardListStack}
-          options={{
-            headerShown: false,
-            tabBarIcon: () => <FontAwesome5 name="list-ul" size={30} color="#5299EB" />,
-          }}
+
+        <FlatList
+          data={filteredDataField}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) =>
+            field == "" ? (
+              <></>
+            ) : (
+              <View style={styles.itemContainer}>
+                <Text style={styles.itemText}>{item.name}</Text>
+              </View>
+            )
+          }
         />
-        {/* <Tab.Screen name="쪽지" component={Mail} options={{ headerShown: false, tabBarIcon: () => <Entypo name="chat" size={30} color="black" /> }} /> */}
-        <Tab.Screen
-          name="Mail"
-          component={Mail}
-          options={{
-            headerShown: false,
-            tabBarIcon: () => <AntDesign name="mail" size={24} color="#5299EB" />,
-          }}
+      </View>
+      </View>
+      </KeyboardAvoidingView>
+      <KeyboardAvoidingView behavior="padding" style={styles.keyboardAvoidingContainer}>
+      <View style={styles.MlistContainer}>
+      <Search filteredData={filteredDataMajor} />
+      <View>
+        <SearchBar
+          placeholder="Search Major..."
+          onChangeText={updateSearch2}
+          value={searchmajor}
+          containerStyle={styles.searchBarContainer}
+          inputContainerStyle={styles.searchBarInputContainer}
         />
-        <Tab.Screen
-          name="내 정보"
-          component={Mypage}
-          options={{
-            headerShown: false,
-            tabBarIcon: () => <Ionicons name="person-outline" size={30} color="#5299EB" />,
-          }}
+
+        <FlatList
+          data={filteredDataMajor}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) =>
+            major == "" ? (
+              <></>
+            ) : (
+              <View style={styles.itemContainer}>
+                <Text style={styles.itemText}>{item.name}</Text>
+              </View>
+            )
+          }
         />
-      </Tab.Navigator>
-    </NavigationContainer>
+      </View>
+      </View>
+      </KeyboardAvoidingView>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          navigation.navigate("Confirm" as never);
+        }}
+      >
+        <Text style={styles.finish}> Finish</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
-export default App;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    paddingHorizontal: 40,
+    paddingTop: 20,
+  },
+  keyboardAvoidingContainer: {
+    flex: 1,
+  },
+  FlistContainer: {
+    flex: 1,
+    marginBottom: 40,
+  },
+  MlistContainer: {
+    flex: 1,
+    marginTop: 30,
+  },
+  finish: {
+    color: "white",
+    textAlign: "center",
+  },
+  button: {
+    backgroundColor: "#000",
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    marginTop: 40,
+  },
+  searchBarContainer: {
+    backgroundColor: "transparent",
+    borderBottomColor: "transparent",
+    borderTopColor: "transparent",
+    paddingHorizontal: -5,
+    marginTop: 10,
+  },
+  searchBarInputContainer: {
+    backgroundColor: "#f2f2f2",
+    borderRadius: 30,
+  },
+  itemContainer: {
+    padding: 20,
+    borderBottomColor: "#ccc",
+    borderBottomWidth: 1,
+  },
+  itemText: {
+    fontSize: 16,
+  },
+});
+
+// export default SearchUniversity;
