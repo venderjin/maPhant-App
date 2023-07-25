@@ -12,7 +12,7 @@ import Login from "./src/App/Login/Index";
 import TermsSet from "./src/App/Signup/TermsSet";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
+// 스위치 ,, react native
 const App = () => {
   let isLogged = false;
   if (isLogged == false) {
