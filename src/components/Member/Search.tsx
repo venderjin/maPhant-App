@@ -4,7 +4,7 @@ import { SearchBar } from "@rneui/themed";
 import { universityList } from "../../Api/member/signUp";
 import { AutocompleteDropdown, TAutocompleteDropdownItem } from "react-native-autocomplete-dropdown";
 
-const Search = (props: any) => {
+const Search = (props: any, { list }: { list: Promise<any> }) => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState<String[]>([]);
   const [filteredData, setFilteredData] = useState<TAutocompleteDropdownItem[]>([]);
@@ -23,14 +23,13 @@ const Search = (props: any) => {
   const hasError = errors[name] && touched[name];
 
   useEffect(() => {
-    universityList().then(res => {
-      console.log(res.data);
+    props.list().then(res => {
       setData(res.data);
       const formattedData = res.data.map((item:any, index:any) => ({ id: index.toString(), title: item }));
       setFilteredData(formattedData);
       return res.data;
     });
-  }, [search]);
+  }, [search, list]);
 
   const updateSearch = (text: string) => {
     setSearch(text);
