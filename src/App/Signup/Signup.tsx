@@ -67,6 +67,7 @@ const Signup: React.FC = () => {
   return (
     <Formik
       initialValues={SignupForm}
+      // onSubmit={values => console.log(values)}
       validationSchema={validationSchema}
       onSubmit={async values => {
         await signup(

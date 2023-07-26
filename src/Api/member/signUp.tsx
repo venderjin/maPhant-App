@@ -35,7 +35,7 @@ function validateEmail(email: String) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email: email }),
+    body: JSON.stringify({ email }),
   }).then(response => response.json());
 }
 
@@ -45,7 +45,7 @@ function validateNickname(nickname: String) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ nickname: nickname }),
+    body: JSON.stringify({ nickname }),
   }).then(response => response.json());
 }
 
@@ -62,17 +62,18 @@ function sendEmail(email: String) {
   return PostAPI(`user/changepw/sendemail`, { email: email });
 }
 
-function authenticationCode(email: String, authcode: String) {
+function authenticationCode(email: String, authCode: String) {
   return PostAPI(`user/changepw/authenticationcode`, {
-    email: email,
-    authcode: authcode,
+    email,
+    authCode,
   });
 }
 
-function newPassword(email: String, authcode: String) {
+function newPassword(email: String, password: String, passwordChk: String) {
   return PostAPI(`user/changepw/newpassword`, {
-    email: email,
-    authcode: authcode,
+    email,
+    password,
+    passwordChk,
   });
 }
 export {

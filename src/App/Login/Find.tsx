@@ -8,6 +8,10 @@ import { useState } from "react";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
+    .matches(/\w*[a-z]\w*/, "비밀번호에는 소문자가 포함되어야 합니다.")
+    .matches(/\w*[A-Z]\w*/, "비밀번호에는 대문자가 포함되어야 합니다.")
+    .matches(/\d/, "비밀번호에는 숫자가 포함되어야 합니다.")
+    .matches(/[!@#$%^&*()\-_"=+{}; :,<.>]/, "비밀번호에는 특수문자가 포함되어야 합니다.")
     .required("필수 정보입니다.")
     .min(8, ({ min }) => `비밀번호는 최소 ${min}자 이상이어야 합니다.`),
   confirmPassword: Yup.string()
@@ -24,7 +28,7 @@ const Find = () => {
     <Formik
       initialValues={{ password: "", confirmPassword: "" }}
       onSubmit={async values => {
-        await newPassword(email, authcode)
+        await newPassword(email, values.password, values.confirmPassword)
           .then(result => {
             if (result.success) {
               alert("비밀번호가 변경되었습니다.");
