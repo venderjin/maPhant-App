@@ -1,28 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // import { SearchBar } from "@rneui/themed";
 import { StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView } from "react-native";
 import { Formik, Field } from "formik";
 import * as Yup from "yup";
 import CustomInput from "../../components/Member/CustomInput";
 import Search from "../../components/Member/Search";
-import {
-  validateEmail,
-  validateNickname,
-  validatePasswordCheck,
-  validatePassword,
-  validatePhnum,
-} from "../../Api/member/signUp";
+import { signup, validateEmail, validateNickname } from "../../Api/member/signUp";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-
 interface ISignupForm {
   email: string;
   password: string;
-  passwordCheck: string;
+  confirmPassword: string;
   nickname: string;
   name: string;
   phoneNumber: string;
-  sno: string;
-  univName: string;
+  studentNumber: string;
+  university: string;
 }
 
 const validationSchema = Yup.object().shape({
@@ -38,86 +31,96 @@ const validationSchema = Yup.object().shape({
       return testContext.createError({ message: result.errors });
     }),
   password: Yup.string()
+    .matches(/\w*[a-z]\w*/, "비밀번호에는 소문자가 포함되어야 합니다.")
+    .matches(/\w*[A-Z]\w*/, "비밀번호에는 대문자가 포함되어야 합니다.")
+    .matches(/\d/, "비밀번호에는 숫자가 포함되어야 합니다.")
+    .matches(/[!@#$%^&*()\-_"=+{}; :,<.>]/, "비밀번호에는 특수문자가 포함되어야 합니다.")
     .required("필수 정보입니다.")
-    .min(6, ({ min }) => `비밀번호는 최소 ${min}자 이상이어야 합니다.`)
-    .test(async (value, testContext) => {
-      let result = await validatePassword(value);
-      if (result.success) return true;
-      return testContext.createError({ message: result.errors });
-    }),
-  passwordCheck: Yup.string()
+    .min(8, ({ min }) => `비밀번호는 최소 ${min}자 이상이어야 합니다.`),
+  confirmPassword: Yup.string()
     .oneOf([Yup.ref("password")], "비밀번호가 일치하지 않습니다.")
     .required("필수 정보입니다."),
-  // .test(async (value, testContext) => {
-  //   let result = await validatePasswordCheck(value);
-  //   if (result.success) return true;
-  //   return testContext.createError({ message: result.errors });
-  // }),
   phoneNumber: Yup.string().matches(/^\d{3}-\d{4}-\d{4}$/, "000-0000-0000 형식으로 입력해주세요."),
-  // .test(async (value, testContext) => {
-  //   let result = await validatePhnum(value);
-  //   if (result.success) return true;
-  //   return testContext.createError({message: result.errors})
-  // }),
   nickname: Yup.string()
+    // .matches(/^[a-zA-Z0-9가-힣_-]{3,20}$/, "닉네임은 3자 이상 20자 이하이어야 합니다.")
     .required("필수 정보입니다.")
     .test(async (value, testContext) => {
       let result = await validateNickname(value);
       if (result.success) return true;
       return testContext.createError({ message: result.errors });
     }),
-  name: Yup.string().required("필수 정보입니다."),
-  sno: Yup.string().required("필수 정보입니다."),
-  univName: Yup.string().required("필수 정보입니다."),
+  studentNumber: Yup.string().required("필수 정보입니다."),
+  university: Yup.string().required("필수 정보입니다."),
 });
 
-const Signup: React.FC = () => {
+const Signup = () => {
+  // const [loading, setLoading] = useState<Boolean>(false);
   const SignupForm: ISignupForm = {
     email: "",
     password: "",
-    passwordCheck: "",
+    confirmPassword: "",
     nickname: "",
-    phoneNumber: "",
     name: "",
-    sno: "",
-    univName: "",
+    phoneNumber: "",
+    studentNumber: "",
+    university: "",
   };
   const navigation = useNavigation<NavigationProp<{ Confirm: ISignupForm }>>();
-
   return (
     <Formik
       initialValues={SignupForm}
-      onSubmit={value => {
-        navigation.navigate("Confirm", value);
-        console.info(value);
-      }}
       validationSchema={validationSchema}
+      onSubmit={async values => {
+        await signup(
+          values.email,
+          values.password,
+          values.confirmPassword,
+          values.nickname,
+          values.name,
+          values.phoneNumber,
+          values.studentNumber,
+          values.university,
+        )
+          .then(response => {
+            // setLoading(true);
+            console.log(response);
+            console.log(values);
+            if (response.success) {
+              //라우터 넣으면 됨
+              navigation.navigate("Confirm", values);
+            }
+          })
+          .catch(error => {
+            // setLoading(false);
+            alert(`회원가입 실패 ${error} \n다시 시도해주세요.`);
+          });
+      }}
     >
       {({ handleSubmit, isValid, values }) => (
-        <KeyboardAvoidingView style={styles.container} enabled>
-          <ScrollView contentContainerStyle={styles.scrollView}>
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          <KeyboardAvoidingView style={styles.container} enabled>
             <Field placeholder="이메일" name="email" component={CustomInput} />
             <Field placeholder="비밀번호" name="password" component={CustomInput} secureTextEntry />
             <Field
               placeholder="비밀번호 확인"
-              name="passwordCheck"
+              name="confirmPassword"
               component={CustomInput}
               secureTextEntry
             />
             <Field placeholder="닉네임" name="nickname" component={CustomInput} />
             <Field placeholder="이름" name="name" component={CustomInput} />
-            {/* <Field placeholder="전화번호" name="phoneNumber" component={CustomInput} /> */}
-            <Field placeholder="Search Univ..." name="univName" component={Search} />
-            <Field placeholder="학번" name="sno" component={CustomInput} />
+            <Field placeholder="전화번호" name="phoneNumber" component={CustomInput} />
+            <Field placeholder="학교 검색" name="university" component={Search} />
+            <Field placeholder="학번" name="studentNumber" component={CustomInput} />
             <TouchableOpacity
               style={styles.button}
               onPress={() => handleSubmit()}
-              disabled={!isValid || values.email === ""}
+              disabled={!isValid}
             >
               <Text style={styles.signup}> Signup</Text>
             </TouchableOpacity>
-          </ScrollView>
-        </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
+        </ScrollView>
       )}
     </Formik>
   );
@@ -125,11 +128,10 @@ const Signup: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: "#fff",
     justifyContent: "center",
     paddingHorizontal: 40,
-    paddingTop: 80,
   },
   signup: {
     color: "white",
@@ -144,6 +146,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     marginTop: 50,
+    paddingBottom: 50,
   },
 });
 
