@@ -5,7 +5,7 @@ import { Formik, Field } from "formik";
 import * as Yup from "yup";
 import CustomInput from "../../components/Member/CustomInput";
 import Search from "../../components/Member/Search";
-import { signup, validateEmail, validateNickname } from "../../Api/member/signUp";
+import { signup, universityList, validateEmail, validateNickname } from "../../Api/member/signUp";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 interface ISignupForm {
   email: string;
@@ -110,12 +110,17 @@ const Signup = () => {
             <Field placeholder="닉네임" name="nickname" component={CustomInput} />
             <Field placeholder="이름" name="name" component={CustomInput} />
             <Field placeholder="전화번호" name="phoneNumber" component={CustomInput} />
-            <Field placeholder="학교 검색" name="university" component={Search} />
+            <Field
+              placeholder="학교 검색"
+              name="university"
+              component={Search}
+              list={universityList}
+            />
             <Field placeholder="학번" name="studentNumber" component={CustomInput} />
             <TouchableOpacity
               style={styles.button}
               onPress={() => handleSubmit()}
-              disabled={!isValid}
+              // disabled={!isValid}
             >
               <Text style={styles.signup}> Signup</Text>
             </TouchableOpacity>

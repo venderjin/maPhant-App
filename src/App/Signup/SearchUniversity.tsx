@@ -17,8 +17,8 @@ import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-interface ISearchForm{
-  field: string; 
+interface ISearchForm {
+  field: string;
   major: string;
 }
 
@@ -29,51 +29,56 @@ const SearchUniversity: React.FC = () => {
     major: Yup.string().required("전공 입력해 주세요."),
   });
 
-  const SearchForm:ISearchForm = {
-    field:"", major:""
-  }
-  const navigation = useNavigation<NavigationProp<{ Confirm: ISearchForm }>>();
+  const SearchForm: ISearchForm = {
+    field: "",
+    major: "",
+  };
+  // const navigation = useNavigation<NavigationProp<{ Login: ISearchForm }>>();
 
   return (
     <Formik
-    initialValues={SearchForm}
-    validationSchema={validationSchema}
-    onSubmit={async values=>{
-      // navigation.navigate("Confirm", values)
-      await categorymajor(
-        route.params.email,
-        values.field,
-        values.major,
-      )
-      .then(response => {
-        if (response.success) {
-
-        }
-      })
-      .catch(error => {
-        alert();
-      })
-    }}
+      initialValues={SearchForm}
+      validationSchema={validationSchema}
+      onSubmit={async values => {
+        await categorymajor(route.params.email, values.field, values.major)
+          .then(response => {
+            if (response.success) {
+              // navigation.navigate("Login", values)
+            }
+          })
+          .catch(error => {
+            alert();
+          });
+      }}
     >
-{({ handleSubmit, isValid, values }) => (
-    <View style={styles.container}>
-      <View style={styles.FlistContainer}>
-        <Field name="field" list={fieldList} component={Search}/>
-      </View>
-      <View style={styles.MlistContainer}>
-        <Field name="major" list={majorList} component={Search}/>
-      </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          handleSubmit();
-          navigation.navigate("Confirm" as never);
-        }}
-      >
-        <Text style={styles.finish}> Finish</Text>
-      </TouchableOpacity>
-    </View>
-)}
+      {({ handleSubmit, isValid, values }) => (
+        <View style={styles.container}>
+          <View style={styles.FlistContainer}>
+            <Field
+              placeholder="계열 입력해 주세요."
+              name="field"
+              list={fieldList}
+              component={Search}
+            />
+          </View>
+          <View style={styles.MlistContainer}>
+            <Field
+              placeholder="전공 입력해 주세요."
+              name="major"
+              list={majorList}
+              component={Search}
+            />
+          </View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              handleSubmit();
+            }}
+          >
+            <Text style={styles.finish}> Finish</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </Formik>
   );
 };
