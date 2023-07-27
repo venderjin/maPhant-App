@@ -7,14 +7,24 @@ import Mypage from "./src/App/Mypage/Mypage";
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./src/App/Home/Index";
-import BoardListStack from "./src/App/Board/Index";
+import BoardListStack from "./src/App/Board/index";
+import Login from "./src/App/Login/Index";
+import TermsSet from "./src/App/Signup/TermsSet";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
+// 스위치 ,, react native
 const App = () => {
+  let isLogged = false;
+  if (isLogged == false) {
+    return (
+      <NavigationContainer>
+        <Login />
+      </NavigationContainer>
+    );
+  }
   return (
     <NavigationContainer>
-      <Tab.Navigator initialRouteName="Home">
+      <Tab.Navigator>
         <Tab.Screen
           name="홈"
           component={Home}
@@ -50,16 +60,6 @@ const App = () => {
         />
       </Tab.Navigator>
     </NavigationContainer>
-    // <NavigationContainer>
-    //   <Stack.Navigator initialRouteName="Signin">
-    //     <Stack.Screen name="Signin" component={SignupRoutes[0].component} />
-    //     <Stack.Screen name="Find" component={SignupRoutes[1].component} />
-    //     <Stack.Screen name="Signup" component={SignupRoutes[2].component} />
-    //     <Stack.Screen name="TermsSet" component={SignupRoutes[3].component} />
-    //     <Stack.Screen name="SearchUniversity" component={SignupRoutes[4].component} />
-    //     <Stack.Screen name="Confirm" component={SignupRoutes[5].component} />
-    //   </Stack.Navigator>
-    // </NavigationContainer>
   );
 };
 
