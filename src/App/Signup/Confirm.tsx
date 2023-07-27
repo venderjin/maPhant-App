@@ -1,7 +1,7 @@
-import { useRoute } from "@react-navigation/native";
+import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
-
+import { confirmEmail } from "../../Api/member/signUp";
 const Confirm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [certificationEmail, setCertificationEmail] = useState(false);
@@ -12,6 +12,8 @@ const Confirm: React.FC = () => {
   const verificationCodeInputRef = useRef<TextInput>(null);
   const [showNextButton, setShowNextButton] = useState(false);
   const route = useRoute();
+  // const navigation = useNavigation()
+  const navigation = useNavigation<NavigationProp<{}>>();
   useEffect(() => {
     console.log(route.params);
     setEmail(route.params.email);
@@ -22,20 +24,11 @@ const Confirm: React.FC = () => {
     setSeconds(0);
   };
 
-  const emailVerification = () => {
-    if (!email) {
-      Alert.alert("Error", "이메일을 입력해주세요.");
-      return;
+  const checkCode = () => {
+    if (showNextButton) {
+      navigation.navigate("SearchUniversity");
     }
-
-    // API를 호출하여 이메일 인증 로직 구현
-
-    // 이메일 인증 성공
-    setCertificationEmail(true);
-    startTimer();
-    verificationCodeInputRef.current?.focus();
   };
-
   const verifyCode = () => {
     if (!verificationCode) {
       Alert.alert("Error", "인증 번호를 입력해주세요.");
@@ -43,14 +36,15 @@ const Confirm: React.FC = () => {
     }
 
     // API를 호출하여 인증 번호 검증 로직 구현
-
-    if (verificationCode === "123456") {
-      Alert.alert("Success", "인증이 완료되었습니다.");
-      // 인증 완료 처리
-      setShowNextButton(true);
-    } else {
-      Alert.alert("Error", "인증번호가 일치하지 않습니다.");
-    }
+    confirmEmail(email, verificationCode)
+      .then(res => {
+        if (res.success) {
+          Alert.alert("Success", "인증이 완료되었습니다.");
+          // 인증 완료 처리
+          setShowNextButton(true);
+        }
+      })
+      .catch(error => console.log(error));
   };
 
   useEffect(() => {
@@ -101,29 +95,28 @@ const Confirm: React.FC = () => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        {certificationEmail && (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={verifyCode}
-            style={[
-              styles.button,
-              {
-                borderColor: verificationCode === "" ? "#999" : "#0055FF",
-                backgroundColor: verificationCode === "" ? "#999" : "#F0F0F0",
-                width: 80, // 버튼 길이 조정
-              },
-            ]}
-          >
-            <Text style={styles.buttonText}>확인</Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={verifyCode}
+          style={[
+            styles.button,
+            {
+              borderColor: verificationCode === "" ? "#999" : "#0055FF",
+              backgroundColor: verificationCode === "" ? "#999" : "#F0F0F0",
+              width: 80, // 버튼 길이 조정
+            },
+          ]}
+        >
+          <Text style={styles.buttonText}>확인</Text>
+        </TouchableOpacity>
       </View>
       {showNextButton && (
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => {
+          onPress={
             // 다음 버튼 클릭 시 수행할 동작 추가하면 될 듯
-          }}
+            checkCode
+          }
           style={[styles.button, { backgroundColor: "#5299EB", marginTop: 20 }]}
         >
           <Text style={[styles.buttonText, { color: "#FFFFFF" }]}>다음</Text>

@@ -102,6 +102,13 @@ function categorymajor(email: String, category: String, major: String) {
     major,
   });
 }
+function confirmEmail(email: string, authCode: string) {
+  return PostAPI(`email/confirmEmail`, {
+    email,
+    authCode,
+  });
+}
+
 export {
   signup,
   validateEmail,
@@ -113,4 +120,5 @@ export {
   authenticationCode,
   newPassword,
   categorymajor,
+  confirmEmail,
 };
