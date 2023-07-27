@@ -7,12 +7,12 @@ import Mypage from "./src/App/Mypage/Mypage";
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./src/App/Home/Index";
-import BoardListStack from "./src/App/Board/Index";
+import BoardListStack from "./src/App/Board/index";
 import Login from "./src/App/Login/Index";
 import TermsSet from "./src/App/Signup/TermsSet";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
+// 스위치 ,, react native
 const App = () => {
   let isLogged = false;
   if (isLogged == false) {
@@ -22,7 +22,6 @@ const App = () => {
       </NavigationContainer>
     );
   }
-
   return (
     <NavigationContainer>
       <Tab.Navigator>
