@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import { BoardPostMockup } from "../../types/Board";
 import { listArticle } from "../../Api/board";
-import PostSummary from "../../components/Board/PostSummary";
+import PostSummary from "./PostSummary";
 
 const DetailBoardList = () => {
   const [boardData, setboardData] = useState<BoardPostMockup[]>([]);
@@ -13,7 +13,7 @@ const DetailBoardList = () => {
   }, []);
   return (
     <ScrollView style={styles.container}>
-      {boardData.map((board) => (
+      {boardData.map(board => (
         <View key={board.id} style={styles.body}>
           <Pressable onPress={() => console.log(board.title)}>
             <Text style={styles.board}>{board.board}</Text>

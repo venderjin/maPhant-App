@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Pressable,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import { StyleSheet, View, ScrollView, Pressable, TouchableOpacity, Text } from "react-native";
 
-import PostSummary from "../../components/Board/PostSummary";
+import PostSummary from "./PostSummary";
 import { BoardPost, BoardPostMockup } from "../../types/Board";
 import { listArticle } from "../../Api/board";
 
 import { Entypo } from "@expo/vector-icons";
-const DetailList = () => {
+const DetailList: React.FC = () => {
   const [boardData, setboardData] = useState<BoardPostMockup[]>([]);
   useEffect(() => {
     listArticle("all", 1).then((data: BoardPostMockup[]) => {
@@ -24,7 +17,7 @@ const DetailList = () => {
   return (
     <View style={styles.container}>
       <ScrollView>
-        {boardData.map((board) => (
+        {boardData.map(board => (
           <View key={board.id} style={styles.body}>
             <Pressable onPress={() => console.log(board.title)}>
               <PostSummary post={board} />
