@@ -30,7 +30,7 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
       setData(res.data);
       const formattedData = res.data.map((item: any, index: any) => ({
         id: index.toString(),
-        title: item,
+        title: item
       }));
       setFilteredData(formattedData);
       return res.data;
@@ -46,7 +46,7 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
     console.log(filteredItems);
     const formattedData = filteredItems.map((item, index) => ({
       id: index.toString(),
-      title: item.toString(),
+      title: item.toString()
     }));
     setFilteredData(formattedData);
   };
