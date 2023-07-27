@@ -51,7 +51,7 @@ function validateNickname(nickname: String) {
 
 function universityList() {
   return fetch(`${constraints.SERVER_URL}/user/universitylist`, {
-    method: "POST",
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
@@ -60,7 +60,7 @@ function universityList() {
 
 function fieldList() {
   return fetch(`${constraints.SERVER_URL}/user/categorylist`, {
-    method: "POST",
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
@@ -69,7 +69,7 @@ function fieldList() {
 
 function majorList() {
   return fetch(`${constraints.SERVER_URL}/user/majorlist`, {
-    method: "POST",
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
