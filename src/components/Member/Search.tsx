@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Touchable } from "react-native";
 import { SearchBar } from "@rneui/themed";
 import { universityList } from "../../Api/member/signUp";
-import { AutocompleteDropdown, TAutocompleteDropdownItem } from "react-native-autocomplete-dropdown";
+import {
+  AutocompleteDropdown,
+  TAutocompleteDropdownItem,
+} from "react-native-autocomplete-dropdown";
 
 const Search = (props: any, { list }: { list: Promise<any> }) => {
   const [search, setSearch] = useState("");
@@ -13,7 +16,7 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
   const handleItemClick = (itemTitle: string) => {
     setSearch(itemTitle);
     setFieldValue(name, itemTitle);
-  }
+  };
 
   const {
     field: { name, onBlur, value },
@@ -25,7 +28,10 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
   useEffect(() => {
     props.list().then(res => {
       setData(res.data);
-      const formattedData = res.data.map((item:any, index:any) => ({ id: index.toString(), title: item }));
+      const formattedData = res.data.map((item: any, index: any) => ({
+        id: index.toString(),
+        title: item,
+      }));
       setFilteredData(formattedData);
       return res.data;
     });
@@ -35,10 +41,13 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
     setSearch(text);
 
     // 검색어를 이용하여 데이터를 필터링
-    const filteredItems = data.filter(item => item.toLowerCase().includes(text.toLowerCase()));
+    const filteredItems = data.filter(item => item.includes(text));
     console.log(text);
     console.log(filteredItems);
-    const formattedData = filteredItems.map((item, index) => ({ id: index.toString(), title: item.toString() }));
+    const formattedData = filteredItems.map((item, index) => ({
+      id: index.toString(),
+      title: item.toString(),
+    }));
     setFilteredData(formattedData);
   };
 
@@ -87,9 +96,9 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
             setFieldValue(name, "");
           }
         }}
-        dataSet={
-          filteredData.map((item, index) => ({
-            id : index.toString(), title : item.title || ""
+        dataSet={filteredData.map((item, index) => ({
+          id: index.toString(),
+          title: item.title || "",
         }))}
       />
     </View>
