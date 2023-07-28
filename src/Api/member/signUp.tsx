@@ -26,7 +26,13 @@ function signup(
       sno: sNo,
       univName: university,
     }),
-  }).then(response => response.json());
+  })
+    .then(response => response.json())
+    .catch(error => {
+      // 기타 오류 처리 (네트워크 요청 오류, 서버 응답 파싱 오류 등)
+      console.error("오류 발생:", error);
+      throw new Error("요청 처리 중 오류가 발생하였습니다.");
+    });
 }
 
 function validateEmail(email: String) {
@@ -36,6 +42,15 @@ function validateEmail(email: String) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email }),
+  }).then(response => response.json());
+}
+function validatePassword(password: String) {
+  return fetch(`${constraints.SERVER_URL}/user/validation/password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ password }),
   }).then(response => response.json());
 }
 
@@ -112,6 +127,7 @@ function confirmEmail(email: string, authCode: string) {
 export {
   signup,
   validateEmail,
+  validatePassword,
   validateNickname,
   universityList,
   fieldList,
