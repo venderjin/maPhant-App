@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
 import { authenticationCode, sendEmail } from "../../Api/member/signUp";
+import { Container, Input, Spacer, TextButton } from "../common";
 
 const ConfirmEmail = ({
   onEmailChange,
@@ -72,7 +73,7 @@ const ConfirmEmail = ({
   }, [minutes, seconds]);
 
   return (
-    <View>
+    <Container style={{ backgroundColor: "white", borderBottomWidth: 1, borderColor: "#F0F0F0" }}>
       {certificationEmail && (
         <View style={styles.timerContainer}>
           <Text style={styles.timerText}>
@@ -81,14 +82,14 @@ const ConfirmEmail = ({
         </View>
       )}
       <View>
-        <TextInput
+        <Input
+          style={{ backgroundColor: "#F0F0F0" }}
           value={email}
           onChangeText={value => {
             onEmailChange(value);
           }}
           placeholder="이메일"
-          keyboardType="email-address"
-          style={styles.input}
+          inputMode="email"
         />
         <TouchableOpacity
           activeOpacity={0.7}
@@ -109,63 +110,39 @@ const ConfirmEmail = ({
         ? null
         : certificationEmail && (
             <>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  ref={verificationCodeInputRef}
-                  value={authcode}
-                  onChangeText={value => {
-                    onAuthcodeChange(value);
-                  }}
-                  placeholder="인증 번호 6자리를 입력해 주세요."
-                  keyboardType="numeric"
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={verifyCode}
-                  style={[
-                    styles.button,
-                    {
-                      borderColor: authcode === "" ? "#999" : "#0055FF",
-                      backgroundColor: authcode === "" ? "#999" : "#F0F0F0",
-                      width: 80, // 버튼 길이 조정
-                    },
-                  ]}
-                >
-                  <Text style={styles.buttonText}>확인</Text>
-                </TouchableOpacity>
-              </View>
+              <Spacer size={20} />
+              <Input
+                ref={verificationCodeInputRef}
+                style={{ backgroundColor: "#F0F0F0" }}
+                value={authcode}
+                onChangeText={value => {
+                  onAuthcodeChange(value);
+                }}
+                placeholder="인증 번호 6자리를 입력해 주세요."
+                inputMode="numeric"
+              />
+              <Spacer size={10} />
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={verifyCode}
+                style={[
+                  styles.button,
+                  {
+                    borderColor: authcode === "" ? "#999" : "#0055FF",
+                    backgroundColor: authcode === "" ? "#999" : "#F0F0F0",
+                    width: 80, // 버튼 길이 조정
+                  },
+                ]}
+              >
+                <Text style={styles.buttonText}>확인</Text>
+              </TouchableOpacity>
             </>
           )}
-    </View>
+    </Container>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingHorizontal: 40,
-    paddingTop: 80,
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  input: {
-    backgroundColor: "#f2f2f2",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    marginTop: 20,
-    fontSize: 18,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
   button: {
     borderWidth: 1,
     borderRadius: 4,
@@ -184,13 +161,6 @@ const styles = StyleSheet.create({
   timerText: {
     fontSize: 12,
     color: "#0055FF",
-  },
-  label: {
-    position: "absolute",
-    left: 10,
-    fontSize: 16,
-    color: "#aaa",
-    backgroundColor: "transparent",
   },
 });
 
