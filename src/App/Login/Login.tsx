@@ -2,115 +2,67 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-root-toast";
+
+import { Container, ImageBox, Input, TextButton, Spacer } from "../../components/common";
+// import UserAPI from "../../Api/memberAPI";
 
 const Login: React.FC = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const navigation = useNavigation();
+  const handleLogin = () => {
+    if (email.length < 5 || password.length < 4) {
+      Toast.show("이메일과 비밀번호를 확인해주세요", { duration: Toast.durations.SHORT });
+      return;
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.imageBox}>
-        <Image style={styles.image} source={require("../../../assets/favicon.png")} />
-      </View>
-      <View style={styles.LoginBox}>
-        <View>
-          <TextInput style={styles.input} placeholder="E-MAIL" />
-        </View>
-        <View>
-          <TextInput style={styles.input} placeholder="PW" />
-        </View>
-        <View>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.login}> Login</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={styles.TextButtonBox}>
-        <View>
-          <TouchableOpacity
-            style={styles.button1}
-            onPress={() => {
-              navigation.navigate("TermsSet" as never);
-            }}
-          >
-            <Text style={styles.signup}> Don't have any account? Sign up</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.button1Box}>
-          <TouchableOpacity
-            style={styles.button1}
-            onPress={() => {
-              navigation.navigate("Find" as never);
-            }}
-          >
-            <Text style={styles.search}> ID / PW 찾기</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
+    <Container isFullScreen={true}>
+      <Spacer size={100} />
+      <ImageBox
+        source={require("../../../assets/favicon.png")}
+        isCenter={true}
+        width={100}
+      ></ImageBox>
+      <Spacer size={100} />
+      <Container style={{ width: "100%" }} isItemCenter={true} paddingHorizontal={0}>
+        <Input
+          style={{ paddingVertical: "5%" }}
+          paddingHorizontal={20}
+          borderRadius={30}
+          placeholder="E-MAIL"
+          onChangeText={text => setEmail(text)}
+          value={email}
+        ></Input>
+        <Spacer size={15} />
+        <Input
+          style={{ paddingVertical: "5%" }}
+          paddingHorizontal={20}
+          borderRadius={30}
+          placeholder="PW"
+          onChangeText={text => setPassword(text)}
+          value={password}
+          secureTextEntry={true}
+        ></Input>
+        <Spacer size={50} />
+        <TextButton onPress={handleLogin}>로그인</TextButton>
+      </Container>
+      <Spacer size={30} />
+      <TextButton
+        backgroundColor="transparent"
+        paddingVertical={16}
+        onPress={() => {
+          navigation.navigate("Signup" as never);
+        }}
+      >
+        Don't have any account? Sign up
+      </TextButton>
+      <Spacer size={50} />
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    paddingHorizontal: 40,
-  },
-  imageBox: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  image: {
-    marginTop: "30%",
-    width: 100,
-    height: 100,
-  },
-  LoginBox: {
-    flex: 1,
-  },
-  input: {
-    backgroundColor: "#f2f2f2",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    marginTop: 20,
-    fontSize: 18,
-  },
-  login: {
-    color: "white",
-    textAlign: "center",
-  },
-  search: {
-    color: "black",
-    textAlign: "center",
-  },
-  signup: {
-    color: "black",
-    textAlign: "center",
-  },
-  TextButtonBox: {
-    flex: 1,
-  },
-  button: {
-    backgroundColor: "#000",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    marginTop: 40,
-  },
-  button1Box: {
-    flex: 1,
-    justifyContent: "flex-end",
-    marginBottom: "10%",
-  },
-
-  button1: {
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    marginBottom: 10,
-  },
-});
 
 export default Login;
