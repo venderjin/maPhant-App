@@ -93,7 +93,7 @@ const Container: React.FC<ContainerProps> = props => {
   // 높이와 키보드 높이를 상태로 관리
   const [height, setHeight] = useState<number | string>(adjustedHeight());
   const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
-  
+
   // 컴포넌트 마운트될 때, 높이와 키보드 높이 설정 이벤트 리스너 추가
   useEffect(() => {
     // 기기의 화면 크기마다 컨테이너 높이 변경
@@ -188,7 +188,7 @@ const TextButton: React.FC<TextButtonProps> = props => {
   const {
     style = {},
     children,
-    backgroundColor = "#5229EB"//theme.colors.primary,
+    backgroundColor = "#5229EB", //theme.colors.primary,
     fontSize = 16,
     fontColor,
     widthFull = false,
