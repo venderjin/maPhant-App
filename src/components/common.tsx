@@ -188,7 +188,7 @@ const TextButton: React.FC<TextButtonProps> = props => {
   const {
     style = {},
     children,
-    backgroundColor = theme.colors.primary,
+    backgroundColor = "#5229EB"//theme.colors.primary,
     fontSize = 16,
     fontColor,
     widthFull = false,
