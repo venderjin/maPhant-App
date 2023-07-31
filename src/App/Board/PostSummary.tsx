@@ -37,9 +37,7 @@ function PostSummary(post: BoardPostMockup): JSX.Element {
             <Text style={styles.commant}>&#9; {post.commant}</Text>
           </>
         ) : null}
-        <Text style={{ justifyContent: "flex-end", fontSize: 10 }}>
-          {post.created}
-        </Text>
+        <Text style={{ justifyContent: "flex-end", fontSize: 10 }}>{post.created}</Text>
       </View>
     </>
   );

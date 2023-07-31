@@ -26,7 +26,13 @@ function signup(
       sno: sNo,
       univName: university,
     }),
-  }).then(response => response.json());
+  })
+    .then(response => response.json())
+    .catch(error => {
+      // 기타 오류 처리 (네트워크 요청 오류, 서버 응답 파싱 오류 등)
+      console.error("오류 발생:", error);
+      throw new Error("요청 처리 중 오류가 발생하였습니다.");
+    });
 }
 
 function validateEmail(email: String) {
@@ -36,6 +42,15 @@ function validateEmail(email: String) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email }),
+  }).then(response => response.json());
+}
+function validatePassword(password: String) {
+  return fetch(`${constraints.SERVER_URL}/user/validation/password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ password }),
   }).then(response => response.json());
 }
 
@@ -51,7 +66,25 @@ function validateNickname(nickname: String) {
 
 function universityList() {
   return fetch(`${constraints.SERVER_URL}/user/universitylist`, {
-    method: "POST",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(response => response.json());
+}
+
+function fieldList() {
+  return fetch(`${constraints.SERVER_URL}/user/categorylist`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(response => response.json());
+}
+
+function majorList() {
+  return fetch(`${constraints.SERVER_URL}/user/majorlist`, {
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
@@ -76,12 +109,32 @@ function newPassword(email: String, password: String, passwordChk: String) {
     passwordChk,
   });
 }
+
+function categorymajor(email: String, category: String, major: String) {
+  return PostAPI(`user/selection/categorymajor`, {
+    email,
+    category,
+    major,
+  });
+}
+function confirmEmail(email: string, authCode: string) {
+  return PostAPI(`email/confirmEmail`, {
+    email,
+    authCode,
+  });
+}
+
 export {
   signup,
   validateEmail,
+  validatePassword,
   validateNickname,
   universityList,
+  fieldList,
+  majorList,
   sendEmail,
   authenticationCode,
   newPassword,
+  categorymajor,
+  confirmEmail,
 };

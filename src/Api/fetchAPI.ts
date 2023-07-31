@@ -1,7 +1,7 @@
 import constraints from "./constraints";
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
-function fetchAPI(method: Method, url: string, body?: JSON) {
+function fetchAPI(method: Method, url: string, body?: object) {
   const options: { method: Method; headers: HeadersInit; body?: string } = {
     method: method,
     headers: {
@@ -19,13 +19,13 @@ function fetchAPI(method: Method, url: string, body?: JSON) {
 function GetAPI(url: string) {
   return fetchAPI("GET", url);
 }
-function PostAPI(url: string, body?: JSON) {
+function PostAPI(url: string, body?: object) {
   return fetchAPI("POST", url, body);
 }
-function PutAPI(url: string, body?: JSON) {
+function PutAPI(url: string, body?: object) {
   return fetchAPI("PUT", url, body);
 }
-function DeleteAPI(url: string, body?: JSON) {
+function DeleteAPI(url: string, body?: object) {
   return fetchAPI("DELETE", url, body);
 }
 

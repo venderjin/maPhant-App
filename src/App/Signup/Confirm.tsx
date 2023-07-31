@@ -1,6 +1,7 @@
+import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
-
+import { confirmEmail } from "../../Api/member/signUp";
 const Confirm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [certificationEmail, setCertificationEmail] = useState(false);
@@ -10,26 +11,24 @@ const Confirm: React.FC = () => {
   const [emailMessage, setEmailMessage] = useState("");
   const verificationCodeInputRef = useRef<TextInput>(null);
   const [showNextButton, setShowNextButton] = useState(false);
+  const route = useRoute();
+  // const navigation = useNavigation()
+  const navigation = useNavigation<NavigationProp<{}>>();
+  useEffect(() => {
+    console.log(route.params);
+    setEmail(route.params.email);
+  }, []);
 
   const startTimer = () => {
     setMinutes(10);
     setSeconds(0);
   };
 
-  const emailVerification = () => {
-    if (!email) {
-      Alert.alert("Error", "이메일을 입력해주세요.");
-      return;
+  const checkCode = () => {
+    if (showNextButton) {
+      navigation.navigate("SearchUniversity");
     }
-
-    // API를 호출하여 이메일 인증 로직 구현
-
-    // 이메일 인증 성공
-    setCertificationEmail(true);
-    startTimer();
-    verificationCodeInputRef.current?.focus();
   };
-
   const verifyCode = () => {
     if (!verificationCode) {
       Alert.alert("Error", "인증 번호를 입력해주세요.");
@@ -37,14 +36,15 @@ const Confirm: React.FC = () => {
     }
 
     // API를 호출하여 인증 번호 검증 로직 구현
-
-    if (verificationCode === "123456") {
-      Alert.alert("Success", "인증이 완료되었습니다.");
-      // 인증 완료 처리
-      setShowNextButton(true);
-    } else {
-      Alert.alert("Error", "인증번호가 일치하지 않습니다.");
-    }
+    confirmEmail(email, verificationCode)
+      .then(res => {
+        if (res.success) {
+          Alert.alert("Success", "인증이 완료되었습니다.");
+          // 인증 완료 처리
+          setShowNextButton(true);
+        }
+      })
+      .catch(error => console.log(error));
   };
 
   useEffect(() => {
@@ -68,80 +68,55 @@ const Confirm: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.timerContainer}>
+        <Text style={styles.timerText}>
+          {`${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`}
+        </Text>
+      </View>
       <View style={styles.inputContainer}>
         <Text>이메일</Text>
         <TextInput
           value={email}
-          onChangeText={setEmail}
           placeholder="이메일을 입력해주세요."
           keyboardType="email-address"
           style={styles.input}
-          editable={!certificationEmail}
+          editable={false}
         />
       </View>
-      {certificationEmail && (
-        <View style={styles.inputContainer}>
-          <Text>인증 번호</Text>
-          <TextInput
-            ref={verificationCodeInputRef}
-            value={verificationCode}
-            onChangeText={setVerificationCode}
-            placeholder="인증 번호 6자리를 입력해 주세요."
-            keyboardType="numeric"
-            style={styles.input}
-          />
-        </View>
-      )}
+      <View style={styles.inputContainer}>
+        <Text>인증 번호</Text>
+        <TextInput
+          ref={verificationCodeInputRef}
+          value={verificationCode}
+          onChangeText={setVerificationCode}
+          placeholder="인증 번호 6자리를 입력해 주세요."
+          keyboardType="numeric"
+          style={styles.input}
+        />
+      </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={emailVerification}
-          disabled={certificationEmail || email === ""}
+          onPress={verifyCode}
           style={[
             styles.button,
             {
-              borderColor: certificationEmail ? "#999" : email === "" ? "#999" : "#0055FF",
-              backgroundColor: certificationEmail ? "#999" : email === "" ? "#999" : "#F0F0F0",
-              width: certificationEmail ? 80 : 80, // 버튼 길이 조정
+              borderColor: verificationCode === "" ? "#999" : "#0055FF",
+              backgroundColor: verificationCode === "" ? "#999" : "#F0F0F0",
+              width: 80, // 버튼 길이 조정
             },
           ]}
         >
-          {certificationEmail ? (
-            <Text style={styles.buttonText}>인증</Text>
-          ) : (
-            <Text style={styles.buttonText}>인증 요청</Text>
-          )}
+          <Text style={styles.buttonText}>확인</Text>
         </TouchableOpacity>
-        {certificationEmail && (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={verifyCode}
-            style={[
-              styles.button,
-              {
-                borderColor: verificationCode === "" ? "#999" : "#0055FF",
-                backgroundColor: verificationCode === "" ? "#999" : "#F0F0F0",
-                width: 80, // 버튼 길이 조정
-              },
-            ]}
-          >
-            <Text style={styles.buttonText}>확인</Text>
-          </TouchableOpacity>
-        )}
       </View>
-      {certificationEmail && (
-        <View style={styles.timerContainer}>
-          <Text style={styles.timerText}>
-            {`${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`}
-          </Text>
-        </View>
-      )}
       {showNextButton && (
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => {
+          onPress={
             // 다음 버튼 클릭 시 수행할 동작 추가하면 될 듯
-          }}
+            checkCode
+          }
           style={[styles.button, { backgroundColor: "#5299EB", marginTop: 20 }]}
         >
           <Text style={[styles.buttonText, { color: "#FFFFFF" }]}>다음</Text>

@@ -19,7 +19,7 @@ const validationSchema = Yup.object().shape({
     .required("필수 정보입니다."),
 });
 
-const Find = () => {
+const Find: React.FC  = () => {
   const [email, setEmail] = useState("");
   const [authcode, setAuthcode] = useState("");
 

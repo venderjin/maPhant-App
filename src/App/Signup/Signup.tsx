@@ -3,10 +3,18 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView } from "react-native";
 import { Formik, Field } from "formik";
 import * as Yup from "yup";
-import { useNavigation } from "@react-navigation/native";
 import CustomInput from "../../components/Member/CustomInput";
 import Search from "../../components/Member/Search";
-import { signup, universityList, validateEmail, validateNickname } from "../../Api/member/signUp";
+import {
+  signup,
+  universityList,
+  validateEmail,
+  validateNickname,
+  validatePassword,
+} from "../../Api/member/signUp";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 interface ISignupForm {
   email: string;
   password: string;
@@ -24,7 +32,7 @@ const validationSchema = Yup.object().shape({
       /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/,
       "학교 이메일 형식으로 입력해주세요(.ac.kr 또는 .edu)",
     )
-    .required("이메일은 필수 항목입니다.")
+    .required("학교 이메일 형식으로 입력해주세요(.ac.kr 또는 .edu)")
     .test(async (value, testContext) => {
       let result = await validateEmail(value);
       if (result.success) return true;
@@ -36,7 +44,13 @@ const validationSchema = Yup.object().shape({
     .matches(/\d/, "비밀번호에는 숫자가 포함되어야 합니다.")
     .matches(/[!@#$%^&*()\-_"=+{}; :,<.>]/, "비밀번호에는 특수문자가 포함되어야 합니다.")
     .required("필수 정보입니다.")
-    .min(8, ({ min }) => `비밀번호는 최소 ${min}자 이상이어야 합니다.`),
+    .min(8, ({ min }) => `비밀번호는 최소 ${min}자 이상이어야 합니다.`)
+    .required("영문 대, 소문자, 숫자, 특수문자 1개 이상 으로 구성된 8자 이상으로 입력해주세요.")
+    .test(async (value, testContext) => {
+      let result = await validatePassword(value);
+      if (result.success) return true;
+      return testContext.createError({ message: result.errors });
+    }),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password")], "비밀번호가 일치하지 않습니다.")
     .required("필수 정보입니다."),
@@ -53,7 +67,8 @@ const validationSchema = Yup.object().shape({
   university: Yup.string().required("필수 정보입니다."),
 });
 
-const Signup: React.FC = () => {
+const Signup = () => {
+  // const [loading, setLoading] = useState<Boolean>(false);
   const SignupForm: ISignupForm = {
     email: "",
     password: "",
@@ -64,13 +79,13 @@ const Signup: React.FC = () => {
     studentNumber: "",
     university: "",
   };
+  const navigation = useNavigation<NavigationProp<{ Confirm: ISignupForm }>>();
   return (
     <Formik
       initialValues={SignupForm}
-      // onSubmit={values => console.log(values)}
       validationSchema={validationSchema}
       onSubmit={async values => {
-        await signup(
+        signup(
           values.email,
           values.password,
           values.confirmPassword,
@@ -79,49 +94,49 @@ const Signup: React.FC = () => {
           values.phoneNumber,
           values.studentNumber,
           values.university,
-        )
-          .then(response => {
-            // setLoading(true);
-            if (response.success) {
-              //라우터 넣으면 됨
-            }
-          })
-          .catch(error => {
-            // setLoading(false);
-            alert(`회원가입 실패 ${error} \n다시 시도해주세요.`);
-          });
+        ).then(response => {
+          // setLoading(true);
+          // console.log(response);
+          // console.log(values);
+          if (response.success) {
+            //라우터 넣으면 됨
+            navigation.navigate("Confirm", values);
+          } else {
+            console.log(response.errors);
+            alert(response.errors);
+          }
+        });
       }}
     >
       {({ handleSubmit, isValid, values }) => (
-        <ScrollView contentContainerStyle={styles.scrollView}>
-          <KeyboardAvoidingView style={styles.container} enabled>
-            <Field placeholder="이메일" name="email" component={CustomInput} />
-            <Field placeholder="비밀번호" name="password" component={CustomInput} secureTextEntry />
-            <Field
-              placeholder="비밀번호 확인"
-              name="confirmPassword"
-              component={CustomInput}
-              secureTextEntry
-            />
-            <Field placeholder="닉네임" name="nickname" component={CustomInput} />
-            <Field placeholder="이름" name="name" component={CustomInput} />
-            <Field placeholder="전화번호" name="phoneNumber" component={CustomInput} />
-            <Field
-              placeholder="대학교 검색"
-              name="university"
-              component={Search}
-              list={() => universityList()}
-            />
-            <Field placeholder="학번" name="studenNumber" component={CustomInput} />
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => handleSubmit()}
-              disabled={!isValid || values.email === ""}
-            >
-              <Text style={styles.signup}> Signup</Text>
-            </TouchableOpacity>
-          </KeyboardAvoidingView>
-        </ScrollView>
+        // <ScrollView contentContainerStyle={styles.scrollView}>
+        <KeyboardAwareScrollView style={styles.container}>
+          <Field placeholder="이메일" name="email" component={CustomInput} />
+          <Field placeholder="비밀번호" name="password" component={CustomInput} secureTextEntry />
+          <Field
+            placeholder="비밀번호 확인"
+            name="confirmPassword"
+            component={CustomInput}
+            secureTextEntry
+          />
+          <Field placeholder="닉네임" name="nickname" component={CustomInput} />
+          <Field placeholder="이름" name="name" component={CustomInput} />
+          {/* <Field placeholder="전화번호" name="phoneNumber" component={CustomInput} /> */}
+          <Field
+            placeholder="학교 검색"
+            name="university"
+            component={Search}
+            list={universityList}
+          />
+          <Field placeholder="학번" name="studentNumber" component={CustomInput} />
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handleSubmit()}
+            // disabled={!isValid}
+          >
+            <Text style={styles.signup}> Signup</Text>
+          </TouchableOpacity>
+        </KeyboardAwareScrollView>
       )}
     </Formik>
   );
@@ -131,8 +146,9 @@ const styles = StyleSheet.create({
   container: {
     // flex: 1,
     backgroundColor: "#fff",
-    justifyContent: "center",
-    paddingHorizontal: 40,
+    // justifyContent: "center",
+    paddingHorizontal: "10%",
+    paddingTop: "10%",
   },
   signup: {
     color: "white",
@@ -144,10 +160,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 30,
     marginTop: 40,
-  },
-  scrollView: {
-    marginTop: 50,
-    paddingBottom: 50,
   },
 });
 
