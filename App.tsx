@@ -1,5 +1,6 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import React, { useState } from "react";
+import { AppearanceProvider } from "react-native-appearance";
+import { NavigationContainer, DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Mail from "./src/App/Mail/Mail";
 // import Mypage from "./src/components/member/Mypage";
@@ -7,26 +8,32 @@ import Mypage from "./src/App/Mypage/Mypage";
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./src/App/Home/Index";
-import BoardListStack from "./src/App/Board/Index";
+import BoardListStack from "./src/App/Board/index";
 import SignupRoutes from "./src/Navigator/SignupRoutes";
-import Signup from "./src/App/Member/Signup";
+// import Signup from "./src/App/Member/Signup";
 import Login from "./src/App/Login/Index";
+import { boolean } from "yup";
+import { ThemeContext, ThemeContextType } from "./src/App/Style/ThemeContext";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
   let isLogged = false;
+  const [isDark, setIsDark] = useState<boolean>(false);
+  console.log(DarkTheme);
   if (isLogged == false) {
     return (
-      <NavigationContainer>
-        <Login />
-      </NavigationContainer>
+      <ThemeContext.Provider value={[isDark, setIsDark]}>
+        <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
+          <Home />
+        </NavigationContainer>
+      </ThemeContext.Provider>
     );
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
       <Tab.Navigator>
         <Tab.Screen
           name="홈"
