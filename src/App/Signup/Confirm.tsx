@@ -37,10 +37,11 @@ const Confirm: React.FC = () => {
       Alert.alert("Error", "인증 번호를 입력해주세요.");
       return;
     }
-
+    console.log(email, verificationCode);
     // API를 호출하여 인증 번호 검증 로직 구현
     confirmEmail(email, verificationCode)
       .then(res => {
+        console.log(res);
         if (res.success) {
           Alert.alert("Success", "인증이 완료되었습니다.");
           // 인증 완료 처리
@@ -90,10 +91,10 @@ const Confirm: React.FC = () => {
       <Container style={{ marginBottom: 20 }}>
         <Text>인증 번호</Text>
         <Input
-          ref={verificationCodeInputRef}
+          inputRef={verificationCodeInputRef}
           value={verificationCode}
           onChangeText={setVerificationCode}
-          placeholder="인증번호 6자리를 입력해주세요."
+          placeholder="인증번호 6자리를 입력해주세요. ㅅㅂ 입력이 되야 뭘 하지"
           keyboardType="numeric"
           style={styles.input}
         />

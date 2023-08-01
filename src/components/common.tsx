@@ -1,6 +1,6 @@
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
-import { LegacyRef, useEffect, useState } from "react";
+import { ForwardedRef, LegacyRef, useEffect, useState } from "react";
 import {
   ColorValue,
   Dimensions,
@@ -74,7 +74,7 @@ type InputProps = {
   editable?: boolean;
   inputMode?: InputModeOptions;
   keyboardType?: KeyboardTypeOptions;
-  ref?: LegacyRef<TextInput>;
+  inputRef?: LegacyRef<TextInput>;
 } & DefaultProps;
 
 const Container: React.FC<ContainerProps> = props => {
@@ -82,7 +82,7 @@ const Container: React.FC<ContainerProps> = props => {
   const {
     style = {},
     children,
-    paddingHorizontal = 16,
+    paddingHorizontal,
     paddingVertical = 8,
     isFullScreen = false,
     isFullWindow = false,
@@ -253,9 +253,9 @@ const Input: React.FC<InputProps> = props => {
     onChangeText,
     value,
     keyboardType,
-    ref,
+    inputRef,
     secureTextEntry = false,
-    editable = false,
+    editable = true,
     paddingHorizontal = 16,
     paddingVertical = 8,
     borderRadius = 16,
@@ -276,7 +276,7 @@ const Input: React.FC<InputProps> = props => {
   return (
     <View style={style_container}>
       <TextInput
-        ref={ref}
+        ref={inputRef}
         style={style_text}
         value={value}
         editable={editable}
