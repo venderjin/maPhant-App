@@ -2,10 +2,48 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import UserStorage from "../../storage/UserStorage";
+import Toast from "react-native-root-toast";
+import { PostAPI, GetAPI } from "../../Api/fetchAPI";
+import { UserData } from "../../Api/memberAPI";
+import UserAPI from "../../Api/memberAPI";
 
 const Login: React.FC = () => {
   const navigation = useNavigation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
+  const loginHandler = () => {
+    if (!email.match(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/)) {
+      Toast.show("이메일 형식을 확인해주세요", { duration: Toast.durations.SHORT });
+      return;
+    } else if (password.length < 4) {
+      Toast.show("비밀번호는 4자리 이상 입니다", { duration: Toast.durations.SHORT });
+      return;
+    }
+
+    UserAPI.login(email, password)
+      .then(res => {
+        if (res.message == "Not found") {
+          Toast.show("존재하지 않는 이메일 입니다", { duration: Toast.durations.SHORT });
+          return;
+        } else if (res.message == "Invalid password") {
+          Toast.show("비밀번호가 틀렸습니다", { duration: Toast.durations.SHORT });
+          return;
+        } else {
+          console.log(res);
+          UserStorage.setUserToken(res["pubKey"], res["privKey"]);
+
+          return UserAPI.getProfile();
+        }
+      })
+      .then(res => {
+        UserStorage.setUserProfile(res.data);
+      })
+      .catch(err => {
+        Toast.show(err.toString()), { duration: Toast.durations.SHORT };
+      });
+  };
   return (
     <View style={styles.container}>
       <View style={styles.imageBox}>
@@ -13,13 +51,23 @@ const Login: React.FC = () => {
       </View>
       <View style={styles.LoginBox}>
         <View>
-          <TextInput style={styles.input} placeholder="E-MAIL" />
+          <TextInput
+            style={styles.input}
+            placeholder="E-MAIL"
+            value={email}
+            onChangeText={text => setEmail(text)}
+          />
         </View>
         <View>
-          <TextInput style={styles.input} placeholder="PW" />
+          <TextInput
+            style={styles.input}
+            placeholder="PW"
+            value={password}
+            onChangeText={text => setPassword(text)}
+          />
         </View>
         <View>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={loginHandler}>
             <Text style={styles.login}> Login</Text>
           </TouchableOpacity>
         </View>
