@@ -35,11 +35,11 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
   useEffect(() => {
     props.list().then((res: any) => {
       setData(res.data);
-      // const formattedData = res.data.map((item: any, index: any) => ({
-      //   id: index.toString(),
-      //   title: item
-      // }));
-      // setFilteredData(formattedData);
+      const formattedData = res.data.map((item: any, index: any) => ({
+        id: index.toString(),
+        title: item,
+      }));
+      setFilteredData(formattedData);
       return res.data;
     });
   }, [search, list]);

@@ -25,6 +25,8 @@ interface ISignupForm {
   studentNumber: string;
   university: string;
 }
+import { Spacer, Container, TextButton } from "../../components/common";
+import DropDownPicker from "react-native-dropdown-picker";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -81,86 +83,104 @@ const Signup = () => {
   };
   const navigation = useNavigation<NavigationProp<{ Confirm: ISignupForm }>>();
   return (
-    <Formik
-      initialValues={SignupForm}
-      validationSchema={validationSchema}
-      onSubmit={async values => {
-        signup(
-          values.email,
-          values.password,
-          values.confirmPassword,
-          values.nickname,
-          values.name,
-          values.phoneNumber,
-          values.studentNumber,
-          values.university,
-        ).then(response => {
-          // setLoading(true);
-          // console.log(response);
-          // console.log(values);
-          if (response.success) {
-            //라우터 넣으면 됨
-            navigation.navigate("Confirm", values);
-          } else {
-            console.log(response.errors);
-            alert(response.errors);
-          }
-        });
-      }}
-    >
-      {({ handleSubmit, isValid, values }) => (
-        // <ScrollView contentContainerStyle={styles.scrollView}>
-        <KeyboardAwareScrollView style={styles.container}>
-          <Field placeholder="이메일" name="email" component={CustomInput} />
-          <Field placeholder="비밀번호" name="password" component={CustomInput} secureTextEntry />
-          <Field
-            placeholder="비밀번호 확인"
-            name="confirmPassword"
-            component={CustomInput}
-            secureTextEntry
-          />
-          <Field placeholder="닉네임" name="nickname" component={CustomInput} />
-          <Field placeholder="이름" name="name" component={CustomInput} />
-          {/* <Field placeholder="전화번호" name="phoneNumber" component={CustomInput} /> */}
-          <Field
-            placeholder="학교 검색"
-            name="university"
-            component={Search}
-            list={universityList}
-          />
-          <Field placeholder="학번" name="studentNumber" component={CustomInput} />
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleSubmit()}
-            // disabled={!isValid}
-          >
-            <Text style={styles.signup}> Signup</Text>
-          </TouchableOpacity>
-        </KeyboardAwareScrollView>
-      )}
-    </Formik>
+    <Container isForceKeyboardAvoiding={true}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ backgroundColor: "white" }}
+      >
+        <Formik
+          initialValues={SignupForm}
+          validationSchema={validationSchema}
+          onSubmit={async values => {
+            await signup(
+              values.email,
+              values.password,
+              values.confirmPassword,
+              values.nickname,
+              values.name,
+              values.phoneNumber,
+              values.studentNumber,
+              values.university,
+            )
+              .then(response => {
+                if (response.success) {
+                  //라우터 넣으면 됨
+                  navigation.navigate("Confirm", values);
+                }
+              })
+              .catch(error => {
+                alert(`회원가입 실패 ${error} \n다시 시도해주세요.`);
+              });
+          }}
+        >
+          {({ handleSubmit, isValid, values }) => (
+            <Container
+              style={{
+                flex: 1,
+                backgroundColor: "#fff",
+                justifyContent: "center",
+                paddingHorizontal: 30,
+              }}
+            >
+              <Field placeholder="이메일" name="email" component={CustomInput} />
+              <Spacer size={10} />
+
+              <Field
+                placeholder="비밀번호"
+                name="password"
+                component={CustomInput}
+                secureTextEntry
+              />
+              <Spacer size={10} />
+
+              <Field
+                placeholder="비밀번호 확인"
+                name="confirmPassword"
+                component={CustomInput}
+                secureTextEntry
+              />
+              <Spacer size={10} />
+
+              <Field placeholder="닉네임" name="nickname" component={CustomInput} />
+              <Spacer size={10} />
+
+              <Field placeholder="이름" name="name" component={CustomInput} />
+              <Spacer size={10} />
+
+              <Field placeholder="전화번호" name="phoneNumber" component={CustomInput} />
+              <Spacer size={10} />
+
+              <Field
+                placeholder="학교 검색"
+                name="university"
+                component={Search}
+                list={universityList}
+              />
+              <Spacer size={10} />
+
+              <Field placeholder="학번" name="studentNumber" component={CustomInput} />
+              <Spacer size={10} />
+
+              <TextButton
+                disabled={true}
+                style={{ marginTop: 30 }}
+                backgroundColor="#000"
+                paddingHorizontal={20}
+                paddingVertical={15}
+                borderRadius={30}
+                fontSize={18}
+                onPress={() => handleSubmit()}
+                fontColor="white"
+              >
+                Signup
+              </TextButton>
+              <Spacer size={30} />
+            </Container>
+          )}
+        </Formik>
+      </ScrollView>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    backgroundColor: "#fff",
-    // justifyContent: "center",
-    paddingHorizontal: "10%",
-    paddingTop: "10%",
-  },
-  signup: {
-    color: "white",
-    textAlign: "center",
-  },
-  button: {
-    backgroundColor: "#000",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    marginTop: 40,
-  },
-});
 
 export default Signup;
