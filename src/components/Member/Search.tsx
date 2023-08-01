@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, TouchableOpacity, Touchable } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Touchable,
+  FlatList,
+  ScrollView,
+} from "react-native";
 import { SearchBar } from "@rneui/themed";
 import { universityList } from "../../Api/member/signUp";
 import {
@@ -12,7 +20,6 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
   const [data, setData] = useState<String[]>([]);
   const [filteredData, setFilteredData] = useState<TAutocompleteDropdownItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<string>("");
-
   const handleItemClick = (itemTitle: string) => {
     setSearch(itemTitle);
     setFieldValue(name, itemTitle);
@@ -26,7 +33,7 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
   const hasError = errors[name] && touched[name];
 
   useEffect(() => {
-    props.list().then(res => {
+    props.list().then((res: any) => {
       setData(res.data);
       // const formattedData = res.data.map((item: any, index: any) => ({
       //   id: index.toString(),
@@ -36,6 +43,16 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
       return res.data;
     });
   }, [search, list]);
+  const sliceResults = (items: TAutocompleteDropdownItem[]) => {
+    const slicedItems = [];
+    let i = 0;
+    const numColumns = 3;
+    while (i < items.length) {
+      slicedItems.push(items.slice(i, i + numColumns));
+      i += numColumns;
+    }
+    return slicedItems;
+  };
 
   const updateSearch = (text: string) => {
     setSearch(text);
@@ -44,15 +61,30 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
     const filteredItems = data.filter(item => item.includes(text));
     console.log(text);
     console.log(filteredItems);
-    const formattedData = filteredItems.map((item, index) => ({
-      id: index.toString(),
-      title: item.toString()
-    }));
+    const formattedData = filteredItems
+      .map((item, index) => ({
+        id: index.toString(),
+        title: item.toString(),
+      }))
+      .flat();
     setFilteredData(formattedData);
   };
 
+  const renderItemGroup = (itemGroup: TAutocompleteDropdownItem[]) => (
+    <View style={styles.itemContainer}>
+      {itemGroup.map(item => (
+        <TouchableOpacity
+          key={item.id}
+          style={styles.itemContainer}
+          onPress={() => (item && item.title ? handleItemClick(item.title) : null)}
+        >
+          <Text style={styles.itemText}>{item.title}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
   return (
-    <View>
+    <View style={styles.container}>
       <SearchBar
         onChangeText={text => {
           updateSearch(text);
@@ -67,20 +99,21 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
         inputContainerStyle={styles.searchBarInputContainer}
         {...inputProps}
       />
-      {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
-      {filteredData.map((item, index) =>
-        search === "" ? null : (
-          <TouchableOpacity
-            key={index}
-            style={styles.itemContainer}
-            onPress={() => (item && item.title ? handleItemClick(item.title) : null)}
-          >
-            <Text style={styles.itemText}>{item.title}</Text>
-          </TouchableOpacity>
-        ),
-      )}
 
-      <AutocompleteDropdown
+      <FlatList
+        data={sliceResults(filteredData)}
+        keyExtractor={(item, index) => index.toString()}
+        horizontal
+        pagingEnabled // 이 옵션을 추가하여 3개씩 스크롤되도록 설정합니다.
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {renderItemGroup(item)}
+          </ScrollView>
+        )}
+      />
+
+      {/* <AutocompleteDropdown
         clearOnFocus={false}
         closeOnBlur={true}
         closeOnSubmit={false}
@@ -100,12 +133,15 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
           id: index.toString(),
           title: item.title || "",
         }))}
-      />
+      /> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   searchBarContainer: {
     backgroundColor: "transparent",
     borderBottomColor: "transparent",
