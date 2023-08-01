@@ -15,7 +15,7 @@ const Tab = createBottomTabNavigator();
 // 스위치 ,, react native
 const App = () => {
   let isLogged = false;
-  if (isLogged == false) {
+  if (isLogged == true) {
     return (
       <NavigationContainer>
         <Login />
