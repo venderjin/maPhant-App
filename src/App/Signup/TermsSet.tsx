@@ -13,7 +13,10 @@ import {
 
 import CheckBox from "expo-checkbox";
 import { useNavigation } from "@react-navigation/native";
+<<<<<<< HEAD
+=======
 import { TextButton, Container } from "../../components/common";
+>>>>>>> origin/dev
 
 const TermsSet: React.FC = () => {
   const [checkList, setCheckList] = useState<string[]>([]);
