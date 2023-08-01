@@ -13,7 +13,9 @@ const DetailList: React.FC = () => {
       setboardData(data);
     });
   }, []);
-
+  const createBoard = () => {
+    console.log("글쓰기 화면으로 바뀌어야함");
+  };
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -26,7 +28,7 @@ const DetailList: React.FC = () => {
         ))}
       </ScrollView>
       <View style={styles.btn}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={createBoard}>
           <Text>
             <Entypo name="plus" size={24} color="black" />
           </Text>

@@ -1,27 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { AppearanceProvider } from "react-native-appearance";
 import { NavigationContainer, DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Mail from "./src/App/Mail/Mail";
-// import Mypage from "./src/components/member/Mypage";
 import Mypage from "./src/App/Mypage/Mypage";
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./src/App/Home/Index";
 import BoardListStack from "./src/App/Board/index";
 import SignupRoutes from "./src/Navigator/SignupRoutes";
 // import Signup from "./src/App/Member/Signup";
-import Login from "./src/App/Login/Index";
 import { boolean } from "yup";
 import { ThemeContext, ThemeContextType } from "./src/App/Style/ThemeContext";
+import Login from "./src/App/Login/Index";
+import { Provider, useSelector, useDispatch } from "react-redux";
+import AppLoading from "expo-app-loading";
+import reduxStore, { userSlice } from "./src/storage/reduxStore";
+import UserStorage from "./src/storage/UserStorage";
+import UIStore from "./src/storage/UIStore";
+import Spinner from "react-native-loading-spinner-overlay";
 
-const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-  let isLogged = false;
   const [isDark, setIsDark] = useState<boolean>(false);
   console.log(DarkTheme);
+  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+
+  useEffect(() => {
+    UserStorage.getUserToken().then(res => {
+      let token = null;
+      let privKey = null;
+
+      token = res ? res.token : null;
+      privKey = res ? res.privKey : null;
+
+      if (token != null && privKey != null) {
+        UserStorage.setUserToken(token, privKey);
+        UserStorage.getUserProfile().then(res => {
+          if (res) {
+            UserStorage.setUserProfile(res);
+          }
+        });
+      }
+    });
+  }, []);
+
+  const isLogged = useSelector(UserStorage.isUserLoggedInSelector);
+
   if (isLogged == false) {
     return (
       <ThemeContext.Provider value={[isDark, setIsDark]}>
@@ -31,7 +56,6 @@ const App = () => {
       </ThemeContext.Provider>
     );
   }
-
   return (
     <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
       <Tab.Navigator>
@@ -73,4 +97,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default AppWrapper;

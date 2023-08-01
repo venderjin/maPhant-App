@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
 import { authenticationCode, sendEmail } from "../../Api/member/signUp";
+<<<<<<< HEAD
+=======
+import { Container, Input, Spacer, TextButton } from "../common";
+>>>>>>> origin/dev
 
 const ConfirmEmail = ({
   onEmailChange,
@@ -72,7 +76,11 @@ const ConfirmEmail = ({
   }, [minutes, seconds]);
 
   return (
+<<<<<<< HEAD
     <View>
+=======
+    <Container style={{ backgroundColor: "white", borderBottomWidth: 1, borderColor: "#F0F0F0" }}>
+>>>>>>> origin/dev
       {certificationEmail && (
         <View style={styles.timerContainer}>
           <Text style={styles.timerText}>
@@ -81,14 +89,23 @@ const ConfirmEmail = ({
         </View>
       )}
       <View>
+<<<<<<< HEAD
         <TextInput
+=======
+        <Input
+          style={{ backgroundColor: "#F0F0F0" }}
+>>>>>>> origin/dev
           value={email}
           onChangeText={value => {
             onEmailChange(value);
           }}
           placeholder="이메일"
+<<<<<<< HEAD
           keyboardType="email-address"
           style={styles.input}
+=======
+          inputMode="email"
+>>>>>>> origin/dev
         />
         <TouchableOpacity
           activeOpacity={0.7}
@@ -109,6 +126,7 @@ const ConfirmEmail = ({
         ? null
         : certificationEmail && (
             <>
+<<<<<<< HEAD
               <View style={styles.inputContainer}>
                 <TextInput
                   ref={verificationCodeInputRef}
@@ -140,10 +158,42 @@ const ConfirmEmail = ({
             </>
           )}
     </View>
+=======
+              <Spacer size={20} />
+              <Input
+                ref={verificationCodeInputRef}
+                style={{ backgroundColor: "#F0F0F0" }}
+                value={authcode}
+                onChangeText={value => {
+                  onAuthcodeChange(value);
+                }}
+                placeholder="인증 번호 6자리를 입력해 주세요."
+                inputMode="numeric"
+              />
+              <Spacer size={10} />
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={verifyCode}
+                style={[
+                  styles.button,
+                  {
+                    borderColor: authcode === "" ? "#999" : "#0055FF",
+                    backgroundColor: authcode === "" ? "#999" : "#F0F0F0",
+                    width: 80, // 버튼 길이 조정
+                  },
+                ]}
+              >
+                <Text style={styles.buttonText}>확인</Text>
+              </TouchableOpacity>
+            </>
+          )}
+    </Container>
+>>>>>>> origin/dev
   );
 };
 
 const styles = StyleSheet.create({
+<<<<<<< HEAD
   container: {
     flex: 1,
     backgroundColor: "#fff",
@@ -166,6 +216,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 20,
   },
+=======
+>>>>>>> origin/dev
   button: {
     borderWidth: 1,
     borderRadius: 4,
@@ -185,6 +237,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#0055FF",
   },
+<<<<<<< HEAD
   label: {
     position: "absolute",
     left: 10,
@@ -192,6 +245,8 @@ const styles = StyleSheet.create({
     color: "#aaa",
     backgroundColor: "transparent",
   },
+=======
+>>>>>>> origin/dev
 });
 
 export default ConfirmEmail;

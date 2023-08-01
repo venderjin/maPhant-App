@@ -1,14 +1,14 @@
 import HomeRoute from "./HomeRoute";
 import BoardRoute from "./BoardRoute";
-import SignupRoutes from "./SignupRoutes";
+import SignupRoutes from "./SigninRoutes";
 import SigninRoutes from "./SigninRoutes";
 // ... import all other pages
 
 const Routes = [
   ...HomeRoute,
   ...BoardRoute,
-  ...SignupRoutes,
   ...SigninRoutes,
+  ...SignupRoutes,
   // {
   //   name: "login",
   //   component: Login,

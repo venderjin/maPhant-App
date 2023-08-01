@@ -16,6 +16,10 @@ import Search from "../../components/Member/Search";
 import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
+<<<<<<< HEAD
+=======
+import { Container, TextButton } from "../../components/common";
+>>>>>>> origin/dev
 
 interface ISearchForm {
   field: string;
@@ -52,22 +56,33 @@ const SearchUniversity: React.FC = () => {
       }}
     >
       {({ handleSubmit, isValid, values }) => (
+<<<<<<< HEAD
         <View style={styles.container}>
           <View style={styles.FlistContainer}>
+=======
+        <Container style={styles.container}>
+          <Container style={styles.FlistContainer}>
+>>>>>>> origin/dev
             <Field
               placeholder="계열 입력해 주세요."
               name="field"
               list={fieldList}
               component={Search}
             />
+<<<<<<< HEAD
           </View>
           <View style={styles.MlistContainer}>
+=======
+          </Container>
+          <Container style={styles.MlistContainer}>
+>>>>>>> origin/dev
             <Field
               placeholder="전공 입력해 주세요."
               name="major"
               list={majorList}
               component={Search}
             />
+<<<<<<< HEAD
           </View>
           <TouchableOpacity
             style={styles.button}
@@ -78,6 +93,23 @@ const SearchUniversity: React.FC = () => {
             <Text style={styles.finish}> Finish</Text>
           </TouchableOpacity>
         </View>
+=======
+          </Container>
+          <TextButton
+            style={{
+              backgroundColor: "#000",
+              paddingVertical: 15,
+              paddingHorizontal: 20,
+              borderRadius: 30,
+              marginTop: 40,
+            }}
+            fontColor={"white"}
+            onPress={handleSubmit}
+          >
+            Finish
+          </TextButton>
+        </Container>
+>>>>>>> origin/dev
       )}
     </Formik>
   );
@@ -99,6 +131,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 20,
   },
+<<<<<<< HEAD
   finish: {
     color: "white",
     textAlign: "center",
@@ -110,6 +143,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginTop: 40,
   },
+=======
+>>>>>>> origin/dev
   searchBarContainer: {
     backgroundColor: "transparent",
     borderBottomColor: "transparent",
