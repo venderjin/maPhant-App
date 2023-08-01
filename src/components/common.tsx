@@ -66,6 +66,7 @@ type InputProps = {
   value?: string;
   secureTextEntry?: boolean;
   inputMode?: InputModeOptions;
+  ref?: any;
 } & DefaultProps;
 
 const Container: React.FC<ContainerProps> = props => {
@@ -228,6 +229,7 @@ const Input: React.FC<InputProps> = props => {
   const theme = useTheme();
   const {
     style = {},
+    ref,
     placeholder = "",
     onChangeText,
     value,
