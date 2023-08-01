@@ -41,7 +41,7 @@ const Login: React.FC = () => {
         UserStorage.setUserProfile(res.data);
       })
       .catch(err => {
-        Toast.show(err.toString()), { duration: Toast.durations.SHORT };
+        //Toast.show(err.toString()), { duration: Toast.durations.SHORT };
       });
   };
   return (
