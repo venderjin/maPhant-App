@@ -68,10 +68,17 @@ const TermsSet: React.FC = () => {
         paddingTop: 30,
       }}
     >
-      <Container style={{ flexDirection: "row", marginBottom: 15 }}>
-        <CheckBox value={checkList.length === 4} onValueChange={checkAll}></CheckBox>
-        <Text style={{ marginLeft: 10 }}>이용약관 전체동의</Text>
-      </Container>
+      <TouchableOpacity
+        onPress={() => {
+          checkAll(checkList.length != 4);
+        }}
+      >
+        <Container style={{ flexDirection: "row", marginBottom: 15 }}>
+          <CheckBox value={checkList.length === 4} onValueChange={checkAll}></CheckBox>
+          <Text style={{ marginLeft: 10 }}>이용약관 전체동의</Text>
+        </Container>
+      </TouchableOpacity>
+
       <Container style={{ borderWidth: 1, borderColor: "#6666" }}>
         <Container paddingHorizontal={2}>
           <TouchableOpacity onPress={() => toggleExpansion("terms")}>
