@@ -8,7 +8,6 @@ const Write: React.FC = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [checkList, setCheckList] = useState<string[]>([]);
-  const [buttonColor, setButtonColor] = useState<boolean>(false);
 
   const check = (name: string, isChecked: boolean) => {
     if (isChecked) {
@@ -17,14 +16,6 @@ const Write: React.FC = () => {
       setCheckList(checkList.filter(choice => choice !== name));
     }
   };
-
-  useEffect(() => {
-    if (checkList.includes("private") && checkList.includes("anonymous")) {
-      setButtonColor(true);
-    } else {
-      setButtonColor(false);
-    }
-  }, [checkList]);
 
   const complete = () => {};
   return (
