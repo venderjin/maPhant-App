@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, TouchableOpacity, Touchable } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Touchable, ScrollView } from "react-native";
 import { SearchBar } from "@rneui/themed";
 import { universityList } from "../../Api/member/signUp";
 import {
@@ -28,11 +28,11 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
   useEffect(() => {
     props.list().then(res => {
       setData(res.data);
-      // const formattedData = res.data.map((item: any, index: any) => ({
-      //   id: index.toString(),
-      //   title: item
-      // }));
-      // setFilteredData(formattedData);
+      const formattedData = res.data.map((item: any, index: any) => ({
+        id: index.toString(),
+        title: item,
+      }));
+      setFilteredData(formattedData);
       return res.data;
     });
   }, [search, list]);
@@ -46,7 +46,7 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
     console.log(filteredItems);
     const formattedData = filteredItems.map((item, index) => ({
       id: index.toString(),
-      title: item.toString()
+      title: item.toString(),
     }));
     setFilteredData(formattedData);
   };
