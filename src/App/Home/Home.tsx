@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -12,11 +12,14 @@ import {
   SafeAreaView,
   ImageSourcePropType,
   useWindowDimensions,
+  useColorScheme,
+  Appearance,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
+import { Theme, ThemeProvider, useNavigation, useTheme } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-
+import { ThemeContext } from "../Style/ThemeContext";
+import DarkTheme from "@react-navigation/native/src/theming/DarkTheme";
 interface Tags {
   id: string | undefined;
   title: string | undefined;
@@ -27,18 +30,25 @@ const Home: React.FC = () => {
   const { width, height } = useWindowDimensions();
   const [SCREEN_WIDTH, setSCREEN_WIDTH] = useState(width);
   const [SCREEN_HEIGHT, setSCREEN_HEIGHT] = useState(height);
+  const [isDark, setIsDark] = useContext(ThemeContext);
+  const theme = useTheme();
 
-  console.log("width : " + width);
+  const changeMode = () => {
+    setIsDark(!isDark);
+  };
+
+  // console.log("width : " + width);
 
   useEffect(() => {
     setSCREEN_WIDTH(width);
     setSCREEN_HEIGHT(height);
-    setStyleSheet(createStyle(width, height));
-  }, [width, height]);
+
+    setStyleSheet(createStyle(width, height, theme));
+  }, [width, height, isDark]);
 
   // * Search
   const [text, setText] = useState<string>();
-  const [styles, setStyleSheet] = useState<any>(createStyle(SCREEN_WIDTH, SCREEN_HEIGHT));
+  const [styles, setStyleSheet] = useState<any>(createStyle(SCREEN_WIDTH, SCREEN_HEIGHT, theme));
 
   const clearTextHandler = () => {
     console.log("Search Text Delete Done");
@@ -157,6 +167,8 @@ const Home: React.FC = () => {
   // HotTags *
 
   return (
+    //view화면
+
     <SafeAreaView style={styles.mainContainer}>
       <StatusBar style="auto" />
       <View style={styles.titleContainer}>
@@ -166,6 +178,7 @@ const Home: React.FC = () => {
             style={{
               justifyContent: "center",
             }}
+            onPress={changeMode}
           >
             <Icon
               name="moon-outline"
@@ -324,7 +337,7 @@ const Home: React.FC = () => {
   );
 };
 
-const createStyle = (width: number, height: number) =>
+const createStyle = (width: number, height: number, theme: Theme) =>
   StyleSheet.create({
     mainContainer: {
       width: width,
@@ -332,7 +345,6 @@ const createStyle = (width: number, height: number) =>
     },
     mainScroll: {
       height: "100%",
-      backgroundColor: "#fff",
     },
     titleContainer: {
       height: height * 0.06,
@@ -343,6 +355,7 @@ const createStyle = (width: number, height: number) =>
       paddingRight: "3%",
     },
     titleText: {
+      color: theme.colors.text,
       fontSize: 35,
       marginLeft: "4%",
       fontWeight: "bold",
@@ -414,6 +427,7 @@ const createStyle = (width: number, height: number) =>
     },
 
     todaysHotTitleText: {
+      color: theme.colors.text,
       fontSize: 25,
       fontWeight: "bold",
     },

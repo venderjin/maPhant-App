@@ -16,6 +16,7 @@ import Search from "../../components/Member/Search";
 import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
+import { Container, TextButton } from "../../components/common";
 
 interface ISearchForm {
   field: string;
@@ -52,32 +53,37 @@ const SearchUniversity: React.FC = () => {
       }}
     >
       {({ handleSubmit, isValid, values }) => (
-        <View style={styles.container}>
-          <View style={styles.FlistContainer}>
+        <Container style={styles.container}>
+          <Container style={styles.FlistContainer}>
             <Field
               placeholder="계열 입력해 주세요."
               name="field"
               list={fieldList}
               component={Search}
             />
-          </View>
-          <View style={styles.MlistContainer}>
+          </Container>
+          <Container style={styles.MlistContainer}>
             <Field
               placeholder="전공 입력해 주세요."
               name="major"
               list={majorList}
               component={Search}
             />
-          </View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              handleSubmit();
+          </Container>
+          <TextButton
+            style={{
+              backgroundColor: "#000",
+              paddingVertical: 15,
+              paddingHorizontal: 20,
+              borderRadius: 30,
+              marginTop: 40,
             }}
+            fontColor={"white"}
+            onPress={handleSubmit}
           >
-            <Text style={styles.finish}> Finish</Text>
-          </TouchableOpacity>
-        </View>
+            Finish
+          </TextButton>
+        </Container>
       )}
     </Formik>
   );
@@ -98,17 +104,6 @@ const styles = StyleSheet.create({
   MlistContainer: {
     flex: 1,
     marginTop: 20,
-  },
-  finish: {
-    color: "white",
-    textAlign: "center",
-  },
-  button: {
-    backgroundColor: "#000",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    marginTop: 40,
   },
   searchBarContainer: {
     backgroundColor: "transparent",

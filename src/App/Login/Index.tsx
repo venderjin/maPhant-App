@@ -4,7 +4,7 @@ import SigninRoutes from "../../Navigator/SigninRoutes";
 const Stack = createStackNavigator();
 
 export default () => (
-  <Stack.Navigator initialRouteName="Login ">
+  <Stack.Navigator initialRouteName="SearchUniversity">
     <Stack.Screen name="Login" component={SigninRoutes[0].component} />
     <Stack.Screen name="Find" component={SigninRoutes[1].component} />
     <Stack.Screen name="TermsSet" component={SigninRoutes[2].component} />

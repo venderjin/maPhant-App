@@ -1,6 +1,6 @@
 import HomeRoute from "./HomeRoute";
 import BoardRoute from "./BoardRoute";
-import SignupRoutes from "./SignupRoutes";
+import SignupRoutes from "./SigninRoutes";
 import SigninRoutes from "./SigninRoutes";
 // ... import all other pages
 
