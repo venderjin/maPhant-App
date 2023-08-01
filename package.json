@@ -34,7 +34,8 @@
     "react-native-sha512": "^1.0.2",
     "react-redux": "^8.1.2",
     "yup": "^1.2.0",
-    "expo-device": "~5.2.1"
+    "expo-device": "~5.2.1",
+    "expo-splash-screen": "~0.18.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
