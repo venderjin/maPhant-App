@@ -1,23 +1,14 @@
 import { SearchBar } from "@rneui/themed";
-import React, { useEffect,useState } from "react";
-import {
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import {
-  TAutocompleteDropdownItem,
-} from "react-native-autocomplete-dropdown";
+import React, { useEffect, useState } from "react";
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { TAutocompleteDropdownItem } from "react-native-autocomplete-dropdown";
 
+import { searchList } from "../../types/SearchList";
 
-const Search = (props: any, { list }: { list: Promise<any> }) => {
+const Search = (props, { list }: { list: Promise<searchList[]> }) => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState<TAutocompleteDropdownItem[]>([]);
-  const [selectedItem, setSelectedItem] = useState<string>("");
   const handleItemClick = (itemTitle: string) => {
     setSearch(itemTitle);
     setFieldValue(name, itemTitle);
@@ -25,15 +16,14 @@ const Search = (props: any, { list }: { list: Promise<any> }) => {
 
   const {
     field: { name, onBlur, value },
-    form: { errors, touched, setFieldValue, setFieldTouched },
+    form: { setFieldValue, setFieldTouched },
     ...inputProps
   } = props;
-  const hasError = errors[name] && touched[name];
 
   useEffect(() => {
-    props.list().then((res: any) => {
+    props.list().then(res => {
       setData(res.data);
-      const formattedData = res.data.map((item: any, index: any) => ({
+      const formattedData = res.data.map((item: string, index: number) => ({
         id: index.toString(),
         title: item,
       }));
