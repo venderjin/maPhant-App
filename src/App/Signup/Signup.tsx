@@ -12,21 +12,11 @@ import {
   validateNickname,
   validatePassword,
 } from "../../Api/member/signUp";
+import { Container, Spacer, TextButton } from "../../components/common";
 import CustomInput from "../../components/Member/CustomInput";
 import Search from "../../components/Member/Search";
-
-interface ISignupForm {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  nickname: string;
-  name: string;
-  phoneNumber: string;
-  studentNumber: string;
-  university: string;
-}
-import { Container, Spacer, TextButton } from "../../components/common";
 import UIStore from "../../storage/UIStore";
+import { ISignupForm } from "../../types/SignUp";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()

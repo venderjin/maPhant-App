@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 
 import { UserData } from "../../Api/memberAPI";
 import UserStorage from "../../storage/UserStorage";
+import { NavigationProps } from "../../Navigator/Routes";
 
 type sectionItem = {
   title?: string;
@@ -75,7 +76,7 @@ const sections: sectionItem[] = [
 
 function Section({ item }: { item: sectionItem }) {
   const last_idx = item.contents.length - 1;
-  const navigation = useNavigation<NavigationProps>();
+  // const navigation = useNavigation<NavigationProps>();
 
   return (
     <View style={styles.view}>
@@ -89,6 +90,7 @@ function Section({ item }: { item: sectionItem }) {
         >
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             <FontAwesome
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               name={item.icon as any}
               size={18}
               style={{ marginTop: 3 }}
@@ -105,8 +107,8 @@ function Section({ item }: { item: sectionItem }) {
         }}
       >
         {item.contents.map((content, index) => (
-          <View>
-            <Pressable key={content.href} onPress={content.onclick}>
+          <View key={index}>
+            <Pressable onPress={content.onclick}>
               <View
                 style={{
                   alignContent: "space-between",
