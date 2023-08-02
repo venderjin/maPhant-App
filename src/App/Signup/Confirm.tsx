@@ -1,12 +1,9 @@
 import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect, useRef, useState } from "react";
-import { Alert, StyleSheet, Text, TextInput } from "react-native";
+import React, { useEffect, useRef,useState } from "react";
+import { Alert,StyleSheet, Text, TextInput , View,TouchableOpacity } from "react-native";
 
 import { confirmEmail } from "../../Api/member/signUp";
 import { Container, Input, TextButton } from "../../components/common";
-interface ISignupForm {
-  email: string;
-}
 const Confirm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [minutes, setMinutes] = useState(10);
@@ -35,10 +32,11 @@ const Confirm: React.FC = () => {
       Alert.alert("Error", "인증 번호를 입력해주세요.");
       return;
     }
-
+    console.log(email, verificationCode);
     // API를 호출하여 인증 번호 검증 로직 구현
     confirmEmail(email, verificationCode)
       .then(res => {
+        console.log(res);
         if (res.success) {
           Alert.alert("Success", "인증이 완료되었습니다.");
           // 인증 완료 처리
@@ -86,11 +84,11 @@ const Confirm: React.FC = () => {
       </View>
       <View style={styles.inputContainer}>
         <Text>인증 번호</Text>
-        <TextInput
-          ref={verificationCodeInputRef}
+        <Input
+          inputRef={verificationCodeInputRef}
           value={verificationCode}
           onChangeText={setVerificationCode}
-          placeholder="인증 번호 6자리를 입력해 주세요."
+          placeholder="인증번호 6자리를 입력해주세요. ㅅㅂ 입력이 되야 뭘 하지"
           keyboardType="numeric"
           style={styles.input}
         />

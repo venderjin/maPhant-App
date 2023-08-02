@@ -1,14 +1,10 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
+  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
-  Image,
-  Button,
-  ScrollView,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 

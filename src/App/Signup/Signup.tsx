@@ -1,5 +1,5 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { Field, Formik } from "formik";
+import { Field,Formik } from "formik";
 import React from "react";
 // import { SearchBar } from "@rneui/themed";
 import { ScrollView } from "react-native";
@@ -12,7 +12,6 @@ import {
   validateNickname,
   validatePassword,
 } from "../../Api/member/signUp";
-import { Container, Spacer, TextButton } from "../../components/common";
 import CustomInput from "../../components/Member/CustomInput";
 import Search from "../../components/Member/Search";
 
@@ -26,6 +25,7 @@ interface ISignupForm {
   studentNumber: string;
   university: string;
 }
+import { Container, Spacer, TextButton } from "../../components/common";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()

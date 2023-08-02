@@ -1,23 +1,39 @@
-import React, { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
-
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import React from "react";
 import {
+  Keyboard,
   StyleSheet,
-  View,
   Text,
   TouchableOpacity,
-  ScrollView,
   TouchableWithoutFeedback,
-  Keyboard,
+  View,
 } from "react-native";
-import SearchBar from "../../components/Input/searchbar";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import SearchBar from "../../components/Input/searchbar";
+import { BoardType } from "../../types/Board";
+import { NavigationProps } from "../../types/Navigation";
+
 const BoardList = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<NavigationProps>>();
+
+  const BoardNavigateBtn: React.FC<{ boardType: BoardType }> = ({ boardType }) => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("DetailList", { boardType: boardType });
+        }}
+      >
+        <View style={styles.boardList}>
+          <Feather name="message-square" size={24} color="black" />
+          <Text>{boardType}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   const changePage = () => {
     navigation.navigate("List" as never);
@@ -34,7 +50,7 @@ const BoardList = () => {
       <TouchableWithoutFeedback onPress={handle}>
         <View style={{ flex: 1, backgroundColor: "white" }}>
           <View style={styles.container}>
-            <View style={styles.topic}>
+            <View style={{ ...styles.topic }}>
               <View style={styles.topicInner}>
                 <View>
                   <Text> 오늘의 열띈 주제는? </Text>
@@ -51,22 +67,8 @@ const BoardList = () => {
 
             <View style={styles.board}>
               <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("TotalBoard" as never);
-                  }}
-                >
-                  <View style={styles.boardList}>
-                    <Feather name="message-square" size={24} color="black" />
-                    <Text>전체 게시판</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={changePage}>
-                  <View style={styles.boardList}>
-                    <Feather name="message-square" size={24} color="black" />
-                    <Text>지식 게시판</Text>
-                  </View>
-                </TouchableOpacity>
+                <BoardNavigateBtn boardType="자유 게시판" />
+                <BoardNavigateBtn boardType="지식 게시판" />
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate("QnABoard" as never);
@@ -79,24 +81,9 @@ const BoardList = () => {
                 </TouchableOpacity>
               </View>
               <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity onPress={changePage}>
-                  <View style={styles.boardList}>
-                    <Feather name="message-square" size={24} color="black" />
-                    <Text>취업 / 진로</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={changePage}>
-                  <View style={styles.boardList}>
-                    <Feather name="message-square" size={24} color="black" />
-                    <Text>홍보 게시판</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={changePage}>
-                  <View style={styles.boardList}>
-                    <Feather name="message-square" size={24} color="black" />
-                    <Text>취미 게시판</Text>
-                  </View>
-                </TouchableOpacity>
+                <BoardNavigateBtn boardType="취업 / 진로 게시판" />
+                <BoardNavigateBtn boardType="취미 게시판" />
+                <BoardNavigateBtn boardType="홍보 게시판" />
               </View>
             </View>
             <View style={styles.hotStudy}>
@@ -183,3 +170,4 @@ const styles = StyleSheet.create({
   },
 });
 export default BoardList;
+export type { BoardType };

@@ -3,25 +3,40 @@ type BoardPost = {
   parent_id: number;
   category_id: number;
   user_id: number;
-  type: string;
+  type_id: string;
   title: string;
   body: string;
-  cnt_recommends: number;
-  cnt_report: number;
   state: string;
-  is_anonymous: boolean;
+  is_hide: number;
+  is_complete: number;
+  is_anonymous: number;
   created_at: Date;
   modified_at: Date;
-};
-type BoardPostMockup = {
-  id: number;
-  board: string;
-  title: string;
-  content: string;
-  userName: string;
-  created: string;
-  good: number;
-  commant: number;
+  comment_cnt: number;
+  like_cnt: number;
+  report_cnt: number;
+  image_url: string;
 };
 
-export type { BoardPost, BoardPostMockup };
+type BoardArticle = {
+  boardId: number;
+  title: string;
+  createdAt: string;
+  modifiedAt: string;
+  userNickname: string;
+  commentCnt: number;
+  likeCnt: number;
+  isAnonymous: number;
+  isHide: number;
+  isLike: number | null;
+};
+
+type BoardType =
+  | "자유 게시판"
+  | "지식 게시판"
+  | "QnA 게시판"
+  | "취업 / 진로 게시판"
+  | "홍보 게시판"
+  | "취미 게시판";
+
+export type { BoardArticle, BoardPost, BoardType };

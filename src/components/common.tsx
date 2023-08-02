@@ -74,6 +74,8 @@ type InputProps = {
   editable?: boolean;
   inputMode?: InputModeOptions;
   keyboardType?: KeyboardTypeOptions;
+  ref?: LegacyRef<TextInput>;
+  multiline?: boolean;
   inputRef?: LegacyRef<TextInput>;
 } & DefaultProps;
 
@@ -260,6 +262,7 @@ const Input: React.FC<InputProps> = props => {
     paddingVertical = 8,
     borderRadius = 16,
     inputMode = "text",
+    multiline = false,
   } = props;
 
   const style_container: StyleProp<ViewStyle> = {
@@ -285,6 +288,7 @@ const Input: React.FC<InputProps> = props => {
         placeholder={placeholder}
         secureTextEntry={secureTextEntry}
         inputMode={inputMode}
+        multiline={multiline}
       />
     </View>
   );
