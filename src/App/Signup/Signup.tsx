@@ -1,10 +1,10 @@
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { Field,Formik } from "formik";
 import React from "react";
 // import { SearchBar } from "@rneui/themed";
 import { ScrollView } from "react-native";
-import { Formik, Field } from "formik";
 import * as Yup from "yup";
-import CustomInput from "../../components/Member/CustomInput";
-import Search from "../../components/Member/Search";
+
 import {
   signup,
   universityList,
@@ -12,7 +12,8 @@ import {
   validateNickname,
   validatePassword,
 } from "../../Api/member/signUp";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import CustomInput from "../../components/Member/CustomInput";
+import Search from "../../components/Member/Search";
 
 interface ISignupForm {
   email: string;
@@ -24,7 +25,7 @@ interface ISignupForm {
   studentNumber: string;
   university: string;
 }
-import { Spacer, Container, TextButton } from "../../components/common";
+import { Container, Spacer, TextButton } from "../../components/common";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -101,6 +102,7 @@ const Signup = () => {
               values.university,
             )
               .then(response => {
+                console.log(response);
                 if (response.success) {
                   //라우터 넣으면 됨
                   navigation.navigate("Confirm", values);
@@ -154,25 +156,26 @@ const Signup = () => {
                 component={Search}
                 list={universityList}
               />
+
               <Spacer size={10} />
 
               <Field placeholder="학번" name="studentNumber" component={CustomInput} />
               <Spacer size={10} />
-
               <TextButton
-                disabled={true}
-                style={{ marginTop: 30 }}
                 backgroundColor="#000"
+                fontColor="white"
                 paddingHorizontal={20}
                 paddingVertical={15}
                 borderRadius={30}
                 fontSize={18}
-                onPress={() => handleSubmit()}
-                fontColor="white"
+                onPress={() => {
+                  handleSubmit();
+                }}
               >
-                Signup
+                눌려
               </TextButton>
-              <Spacer size={30} />
+
+              <Spacer size={50} />
             </Container>
           )}
         </Formik>

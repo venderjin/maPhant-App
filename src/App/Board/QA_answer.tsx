@@ -1,19 +1,12 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Image,
   Button,
-  ScrollView,
   Keyboard,
+  StyleSheet,
+  TextInput,
   TouchableWithoutFeedback,
+  View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Icon from "react-native-vector-icons/FontAwesome";
 
 const QA_answer = () => {
   const [title, setTitle] = useState("");

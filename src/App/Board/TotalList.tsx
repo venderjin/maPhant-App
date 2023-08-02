@@ -1,11 +1,8 @@
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Pressable,ScrollView, StyleSheet, Text, View } from "react-native";
+
 import { BoardArticle } from "../../types/Board";
-import { listArticle } from "../../Api/board";
 import PostSummary from "./PostSummary";
-import { BoardType } from "../../types/Board";
-import { useRoute } from "@react-navigation/native";
-import { NavigationProps } from "../../types/Navigation";
 
 const DetailBoardList = () => {
   // const route = useRoute();

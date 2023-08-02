@@ -1,12 +1,10 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import UserStorage from "../../storage/UserStorage";
+import React, { useState } from "react";
+import { Image,StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
-import { PostAPI, GetAPI } from "../../Api/fetchAPI";
-import { UserData } from "../../Api/memberAPI";
+
 import UserAPI from "../../Api/memberAPI";
+import UserStorage from "../../storage/UserStorage";
 
 const Login: React.FC = () => {
   const navigation = useNavigation();

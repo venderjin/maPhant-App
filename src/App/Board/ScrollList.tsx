@@ -1,5 +1,6 @@
+import { StyleSheet, Text, TouchableOpacity,View } from "react-native";
+
 import { BoardPostMockup } from "../../types/Board";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 export default function ({ post }: { post: BoardPostMockup }): JSX.Element {
   switch (post.board) {

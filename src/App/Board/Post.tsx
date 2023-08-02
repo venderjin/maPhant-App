@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, Keyboard, TouchableWithoutFeedback } from "react-native";
-
 import CheckBox from "expo-checkbox";
-import { Container, ImageBox, Input, TextButton, Spacer } from "../../components/common";
+import React, {useState } from "react";
+import { Keyboard, Text, TouchableWithoutFeedback } from "react-native";
+
+import { Container, Input, Spacer,TextButton } from "../../components/common";
 
 const Write: React.FC = () => {
   const [title, setTitle] = useState("");

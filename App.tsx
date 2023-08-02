@@ -1,22 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { AppearanceProvider } from "react-native-appearance";
-import { NavigationContainer, DarkTheme, DefaultTheme } from "@react-navigation/native";
+import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { DarkTheme, DefaultTheme,NavigationContainer } from "@react-navigation/native";
+import React, { useEffect,useState } from "react";
+import { Provider,useSelector } from "react-redux";
+
+// import Signup from "./src/App/Member/Signup";
+import BoardListStack from "./src/App/Board/index";
+import Home from "./src/App/Home/Index";
 import Mail from "./src/App/Mail/Mail";
 import Mypage from "./src/App/Mypage/Mypage";
-import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import Home from "./src/App/Home/Index";
-import BoardListStack from "./src/App/Board/index";
-// import Signup from "./src/App/Member/Signup";
-import { boolean } from "yup";
-import { ThemeContext, ThemeContextType } from "./src/App/Style/ThemeContext";
-import Login from "./src/App/Login/Index";
-import { Provider, useSelector, useDispatch } from "react-redux";
-import AppLoading from "expo-app-loading";
-import reduxStore, { userSlice } from "./src/storage/reduxStore";
+import { ThemeContext } from "./src/App/Style/ThemeContext";
+import reduxStore from "./src/storage/reduxStore";
 import UserStorage from "./src/storage/UserStorage";
-import UIStore from "./src/storage/UIStore";
-import Spinner from "react-native-loading-spinner-overlay";
 
 const Tab = createBottomTabNavigator();
 

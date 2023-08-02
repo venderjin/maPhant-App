@@ -1,8 +1,8 @@
 import BoardList from "../App/Board/BoardList";
-import QnABoard from "../App/Board/QnAList";
 import DetailList from "../App/Board/List";
-import QAdetail from "../App/Board/QAdetail";
 import QA_answer from "../App/Board/QA_answer";
+import QAdetail from "../App/Board/QAdetail";
+import QnABoard from "../App/Board/QnAList";
 
 const Routes = [
   {

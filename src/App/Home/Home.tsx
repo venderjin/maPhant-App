@@ -1,25 +1,22 @@
-import React, { useState, useEffect, useContext } from "react";
+import { Theme, useNavigation, useTheme } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
+import React, { useContext,useEffect, useState } from "react";
 import {
+  Dimensions,
+  Image,
+  ImageSourcePropType,
+  SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
-  View,
-  Dimensions,
-  TouchableOpacity,
-  ScrollView,
   TextInput,
-  Image,
-  SafeAreaView,
-  ImageSourcePropType,
+  TouchableOpacity,
   useWindowDimensions,
-  useColorScheme,
-  Appearance,
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import { Theme, ThemeProvider, useNavigation, useTheme } from "@react-navigation/native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
 import { ThemeContext } from "../Style/ThemeContext";
-import DarkTheme from "@react-navigation/native/src/theming/DarkTheme";
 interface Tags {
   id: string | undefined;
   title: string | undefined;

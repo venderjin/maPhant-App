@@ -1,23 +1,21 @@
-import React, { useState, useEffect } from "react";
+import { SearchBar } from "@rneui/themed";
+import React, { useEffect,useState } from "react";
 import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Touchable,
   FlatList,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { SearchBar } from "@rneui/themed";
-import { universityList } from "../../Api/member/signUp";
 import {
-  AutocompleteDropdown,
   TAutocompleteDropdownItem,
 } from "react-native-autocomplete-dropdown";
 
+
 const Search = (props: any, { list }: { list: Promise<any> }) => {
   const [search, setSearch] = useState("");
-  const [data, setData] = useState<String[]>([]);
+  const [data, setData] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState<TAutocompleteDropdownItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<string>("");
   const handleItemClick = (itemTitle: string) => {

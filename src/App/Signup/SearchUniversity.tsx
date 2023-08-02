@@ -1,22 +1,14 @@
-import React, { useState } from "react";
-import { SearchBar } from "@rneui/themed";
+import { useRoute } from "@react-navigation/native";
+import { Field, Formik } from "formik";
+import React from "react";
 import {
   StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  KeyboardAvoidingView,
-  SafeAreaView,
-  ScrollView,
-  FlatList,
 } from "react-native";
-import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
-import Search from "../../components/Member/Search";
-import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
-import { Field, Formik } from "formik";
 import * as Yup from "yup";
+
+import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
 import { Container, TextButton } from "../../components/common";
+import Search from "../../components/Member/Search";
 
 interface ISearchForm {
   field: string;

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, ScrollView, Pressable, TouchableOpacity, Text } from "react-native";
-
-import PostSummary from "./PostSummary";
-import { BoardArticle, BoardPost, BoardType } from "../../types/Board";
-import { listArticle } from "../../Api/board";
 import { Entypo } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { Pressable, ScrollView, StyleSheet, Text,TouchableOpacity, View } from "react-native";
+
+import { listArticle } from "../../Api/board";
+import { BoardArticle, BoardType } from "../../types/Board";
+import PostSummary from "./PostSummary";
 const DetailList: React.FC = () => {
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;

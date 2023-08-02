@@ -1,11 +1,11 @@
-import React from "react";
 import { FontAwesome } from "@expo/vector-icons";
-import { View, Text, ColorValue, Pressable, ScrollView, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import UserStorage from "../../storage/UserStorage";
-import { GetAPI } from "../../Api/fetchAPI";
+import React from "react";
+import { ColorValue, Pressable, ScrollView, StyleSheet,Text, View } from "react-native";
 import { useSelector } from "react-redux";
+
 import { UserData } from "../../Api/memberAPI";
+import UserStorage from "../../storage/UserStorage";
 
 type sectionItem = {
   title?: string;

@@ -1,5 +1,5 @@
-import Home from "../App/Home/Home";
 import Alarm from "../App/Home/Alarm";
+import Home from "../App/Home/Home";
 
 const Routes = [
   {

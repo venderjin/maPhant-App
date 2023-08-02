@@ -1,18 +1,18 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import ScrollList from "./ScrollList";
 import { useEffect, useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
 import { listArticle } from "../../Api/board";
 import { BoardPostMockup } from "../../types/Board";
+import ScrollList from "./ScrollList";
 
 // const { width: SCREEN_WIDTH } = Dimensions.get("window");
 

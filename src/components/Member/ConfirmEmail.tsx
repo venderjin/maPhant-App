@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
+import React, { useEffect, useRef,useState } from "react";
+import { Alert,StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+
 import { authenticationCode, sendEmail } from "../../Api/member/signUp";
-import { Container, Input, Spacer, TextButton } from "../common";
+import { Container, Input, Spacer } from "../common";
 
 const ConfirmEmail = ({
   onEmailChange,

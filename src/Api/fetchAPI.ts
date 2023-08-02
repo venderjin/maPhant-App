@@ -1,6 +1,7 @@
-import constraints from "./constraints";
-import UserStorage from "../storage/UserStorage";
 import { sha512 } from "js-sha512";
+
+import UserStorage from "../storage/UserStorage";
+import constraints from "./constraints";
 
 type statusResponse = {
   success: boolean;

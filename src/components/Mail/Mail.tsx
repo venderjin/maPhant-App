@@ -1,17 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect,useState } from "react";
 import {
+  ScrollView,
+  StyleSheet,
+  Text,
   useWindowDimensions,
   View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { Ionicons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
-import dayjs, { Dayjs } from "dayjs";
-import duration, { Duration } from "dayjs/plugin/duration";
 
 const mailData = [
   {
