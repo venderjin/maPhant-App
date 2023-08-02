@@ -51,5 +51,29 @@ function boardEdit(id: number, title: string, body: string, isHide: 0 | 1) {
 function boardDelete() {
   return DeleteAPI(`/board/10`);
 }
+function getArticle(board_id: String) {
+  return PostAPI(`/board/${board_id}`);
+}
 
-export { listArticle, boardPost, boardEdit, boardDelete };
+function insertLikePost(board_id: String) {
+  return GetAPI(`/board/like/${board_id}`);
+}
+
+function deleteLikeBoard(board_id: String) {
+  return DeleteAPI(`/board/like/${board_id}`);
+}
+
+function searchArticle() {
+  return GetAPI(`/board/search`);
+}
+
+export {
+  listArticle,
+  boardPost,
+  boardEdit,
+  boardDelete,
+  getArticle,
+  insertLikePost,
+  deleteLikeBoard,
+  searchArticle,
+};
