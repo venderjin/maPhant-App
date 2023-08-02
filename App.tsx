@@ -4,10 +4,12 @@ import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/
 import React, { useEffect, useState } from "react";
 import { Provider, useSelector } from "react-redux";
 
-// import { ThemeContext } from "styled-components";
+// import Signup from "./src/App/Member/Signup";
 import BoardListStack from "./src/App/Board/index";
 import Home from "./src/App/Home/Index";
-import Mail from "./src/App/Mail/Mail";
+import Login from "./src/App/Login/Index";
+import Mail from "./src/App/Mail/Index";
+// import Mypage from "./src/components/member/Mypage";
 import Mypage from "./src/App/Mypage/Mypage";
 import { ThemeContext } from "./src/App/Style/ThemeContext";
 import reduxStore from "./src/storage/reduxStore";
@@ -23,8 +25,7 @@ const AppWrapper = () => (
 
 const App = () => {
   const [isDark, setIsDark] = useState<boolean>(false);
-  console.log(DarkTheme);
-  // const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  // console.log(DarkTheme);
 
   useEffect(() => {
     UserStorage.getUserToken().then(res => {
@@ -51,7 +52,7 @@ const App = () => {
     return (
       <ThemeContext.Provider value={[isDark, setIsDark]}>
         <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
-          <Home />
+          <Login />
         </NavigationContainer>
       </ThemeContext.Provider>
     );
