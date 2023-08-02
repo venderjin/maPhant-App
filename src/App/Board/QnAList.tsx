@@ -1,28 +1,25 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import { listArticle } from "../../Api/board";
-import { BoardPostMockup } from "../../types/Board";
+import { BoardArticle, BoardType } from "../../types/Board";
 import ScrollList from "./ScrollList";
-
 // const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const QnABoard: React.FC = () => {
   const navigation = useNavigation();
-  const [boardData, setboardData] = useState<BoardPostMockup[]>([]);
+  const params = useRoute().params as { boardType: BoardType };
+  const boardType = params?.boardType;
+  const [boardData, setboardData] = useState<BoardArticle[]>([]);
+
   useEffect(() => {
-    listArticle("all", 1).then((data: BoardPostMockup[]) => {
-      setboardData(data);
-    });
+    listArticle(boardType)
+      .then(data => {
+        if (data.data) setboardData(data.data as BoardArticle[]);
+      })
+      .catch(err => console.log(err));
   }, []);
   return (
     <View style={styles.container}>
@@ -43,8 +40,8 @@ const QnABoard: React.FC = () => {
         </View>
         <ScrollView horizontal>
           {boardData.map(board => (
-            <View key={board.id} style={styles.content}>
-              <ScrollList post={board} />
+            <View key={board.boardId} style={styles.content}>
+              <ScrollList post={board} boardType={boardType} />
             </View>
           ))}
         </ScrollView>
@@ -61,8 +58,8 @@ const QnABoard: React.FC = () => {
         </View>
         <ScrollView horizontal>
           {boardData.map(board => (
-            <View key={board.id} style={styles.content}>
-              <ScrollList post={board} />
+            <View key={board.boardId} style={styles.content}>
+              <ScrollList post={board} boardType={boardType} />
             </View>
           ))}
         </ScrollView>

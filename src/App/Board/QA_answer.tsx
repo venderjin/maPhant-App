@@ -9,8 +9,8 @@ import {
 } from "react-native";
 
 const QA_answer = () => {
-  const [title, setTitle] = useState("");
-  const [context, setContext] = useState("");
+  const [title] = useState("");
+  const [context] = useState("");
   return (
     <View style={styles.container}>
       <View
@@ -22,15 +22,9 @@ const QA_answer = () => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ flex: 1 }}>
             <View>
-              <TextInput
-                style={styles.title}
-                placeholder="title"
-                value={title}
-              ></TextInput>
+              <TextInput style={styles.title} placeholder="title" value={title}></TextInput>
             </View>
-            <View
-              style={{ width: "100%", height: 2, backgroundColor: "#f2f2f2" }}
-            />
+            <View style={{ width: "100%", height: 2, backgroundColor: "#f2f2f2" }} />
             {/* <View style={{ height: 100 }}>
               <Text>공백입니다</Text>
             </View> */}
