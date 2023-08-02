@@ -77,7 +77,7 @@ const Login: React.FC = () => {
         backgroundColor="transparent"
         paddingVertical={16}
         onPress={() => {
-          navigation.navigate("Signup" as never);
+          navigation.navigate("TermsSet" as never);
         }}
       >
         Don't have any account? Sign up
