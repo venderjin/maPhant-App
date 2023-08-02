@@ -6,12 +6,11 @@ import { AntDesign } from "@expo/vector-icons";
 import dayjs, { Dayjs } from "dayjs";
 import duration, { Duration } from "dayjs/plugin/duration";
 import { useNavigation } from "@react-navigation/native";
-import { Container } from "../../components/common";
 
 const mailData = [
   {
     id: 1,
-    sender_id_nick: "R",
+    sender_id_nick: "A",
     content: "헤헤",
     is_read: true,
     sendDate: "어제",
@@ -108,11 +107,12 @@ const mailData = [
 //     return "";
 //   }
 // }
+
 const Mail: React.FC = () => {
   const navigation = useNavigation();
   const [is_read, setIsread] = useState();
   return (
-    <Container style={{ flex: 1 }}>
+    <View style={styles.container}>
       <StatusBar style="auto" />
       <View style={styles.header}>
         <Text style={styles.mailText}>쪽지함</Text>
@@ -121,11 +121,7 @@ const Mail: React.FC = () => {
         <View style={styles.sender}>
           <View>
             {mailData.map(mail => (
-<<<<<<< HEAD
-              <TouchableOpacity>
-=======
               <TouchableOpacity onPress={() => navigation.navigate("Chatroom" as never)}>
->>>>>>> 81f256bf9f1845ee5931fd532bbd27c7e9d78533
                 <View
                   key={mail.id}
                   style={[styles.mail, mail.is_read ? styles.mail_true : styles.mail]}
@@ -141,7 +137,7 @@ const Mail: React.FC = () => {
           </View>
         </View>
       </ScrollView>
-    </Container>
+    </View>
   );
 };
 
