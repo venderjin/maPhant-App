@@ -2,16 +2,21 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View, ScrollView, Pressable, TouchableOpacity, Text } from "react-native";
 
 import PostSummary from "./PostSummary";
-import { BoardPost, BoardPostMockup } from "../../types/Board";
+import { BoardArticle, BoardPost, BoardType } from "../../types/Board";
 import { listArticle } from "../../Api/board";
-
 import { Entypo } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
 const DetailList: React.FC = () => {
-  const [boardData, setboardData] = useState<BoardPostMockup[]>([]);
+  const params = useRoute().params as { boardType: BoardType };
+  const boardType = params?.boardType;
+  const [boardData, setboardData] = useState<BoardArticle[]>([]);
+
   useEffect(() => {
-    listArticle("all", 1).then((data: BoardPostMockup[]) => {
-      setboardData(data);
-    });
+    listArticle(boardType)
+      .then(data => {
+        if (data.data) setboardData(data.data as BoardArticle[]);
+      })
+      .catch(err => console.log(err));
   }, []);
   const createBoard = () => {
     console.log("글쓰기 화면으로 바뀌어야함");
@@ -20,9 +25,9 @@ const DetailList: React.FC = () => {
     <View style={styles.container}>
       <ScrollView>
         {boardData.map(board => (
-          <View key={board.id} style={styles.body}>
+          <View key={board.boardId} style={styles.body}>
             <Pressable onPress={() => console.log(board.title)}>
-              <PostSummary post={board} />
+              <PostSummary post={board} boardType={boardType} />
             </Pressable>
           </View>
         ))}
