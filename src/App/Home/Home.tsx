@@ -1,6 +1,6 @@
 import { Theme, useNavigation, useTheme } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import React, { useContext,useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -160,7 +160,7 @@ const Home: React.FC = () => {
   function mapTag() {
     return tags.map((tag, index) => createTagView(tag, index));
   }
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProps>();
   // HotTags *
 
   return (

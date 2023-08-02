@@ -1,7 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { ColorValue, Pressable, ScrollView, StyleSheet,Text, View } from "react-native";
+import { ColorValue, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { UserData } from "../../Api/memberAPI";
@@ -75,7 +75,7 @@ const sections: sectionItem[] = [
 
 function Section({ item }: { item: sectionItem }) {
   const last_idx = item.contents.length - 1;
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProps>();
 
   return (
     <View style={styles.view}>

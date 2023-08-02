@@ -15,7 +15,7 @@ interface ISearchForm {
 
 const SearchUniversity: React.FC = () => {
   const route = useRoute();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProps>();
   const validationSchema = Yup.object().shape({
     field: Yup.string().required("계열 입력해 주세요."),
     major: Yup.string().required("전공 입력해 주세요."),

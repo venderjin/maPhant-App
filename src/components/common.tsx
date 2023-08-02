@@ -1,6 +1,6 @@
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
-import {  LegacyRef, useEffect, useState } from "react";
+import { LegacyRef, useEffect, useState } from "react";
 import {
   ColorValue,
   Dimensions,
@@ -11,6 +11,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   KeyboardTypeOptions,
+  ScrollView,
   StyleProp,
   Text,
   TextInput,
@@ -80,6 +81,7 @@ type InputProps = {
 } & DefaultProps;
 
 const Container: React.FC<ContainerProps> = props => {
+  const theme = useTheme();
   //props 기본값
   const {
     style = {},
@@ -92,6 +94,7 @@ const Container: React.FC<ContainerProps> = props => {
     isForceKeyboardAvoiding = false,
     borderRadius,
   } = props;
+  const isRootContainer = isFullScreen || isFullWindow;
 
   // 커스텀으로 값 가져옴
   const headerHeight = useHeaderHeight();
@@ -124,9 +127,8 @@ const Container: React.FC<ContainerProps> = props => {
   }, []);
 
   const style_computed: StyleProp<ViewStyle> = {
-    // backgroundColor: theme.colors.background,
-    backgroundColor: "white",
-    paddingHorizontal,
+    backgroundColor: isRootContainer ? theme.colors.background : "transparent",
+    paddingHorizontal: isRootContainer && paddingHorizontal === undefined ? 16 : paddingHorizontal,
     paddingVertical,
     minHeight: isFullScreen || isFullWindow ? height : undefined,
     height: isForceKeyboardAvoiding ? height : undefined,
@@ -137,13 +139,20 @@ const Container: React.FC<ContainerProps> = props => {
     ...(style as object),
   };
 
-  if (isFullScreen || isFullWindow) {
+  if (isRootContainer) {
     return (
       <KeyboardAvoidingView>
         <View style={style_computed}>{children}</View>
       </KeyboardAvoidingView>
     );
   }
+  // if children is ScrollView, set minHeight
+  if (children && (children as React.ReactElement).type === ScrollView) {
+    (children as React.ReactElement).props.style = {
+      minHeight: height,
+    };
+  }
+
   return <View style={style_computed}>{children}</View>;
 };
 

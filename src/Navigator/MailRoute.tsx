@@ -1,6 +1,8 @@
 import Chatroom from "../App/Mail/Chatroom";
 import Mail from "../App/Mail/Mail";
-const Routes = [
+import { RouteType } from "../types/Navigation";
+
+const Routes: RouteType[] = [
   {
     name: "Mail",
     component: Mail,
@@ -10,5 +12,10 @@ const Routes = [
     component: Chatroom,
   },
 ];
+
+export type NavigationProp = {
+  Mail: undefined;
+  Chatroom: undefined;
+};
 
 export default Routes;
