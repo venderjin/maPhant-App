@@ -110,7 +110,6 @@ const mailData = [
 // }
 const Mail: React.FC = () => {
   const navigation = useNavigation();
-  const [is_read, setIsread] = useState();
   return (
     <Container style={{ flex: 1 }}>
       <StatusBar style="auto" />
