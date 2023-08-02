@@ -3,9 +3,10 @@ import { FontAwesome } from "@expo/vector-icons";
 import { View, Text, ColorValue, Pressable, ScrollView, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import UserStorage from "../../storage/UserStorage";
-import { GetAPI } from "../../Api/fetchAPI";
+import { GetAPI, PostAPI } from "../../Api/fetchAPI";
 import { useSelector } from "react-redux";
 import { UserData } from "../../Api/memberAPI";
+import EditProfile from "./EditProfile";
 
 type sectionItem = {
   title?: string;
@@ -30,7 +31,9 @@ const sections: sectionItem[] = [
     contents: [
       {
         title: "회원정보 수정",
-        // description: "다른 기기를 추가하거나 삭제합니다.",
+        onclick: () => {
+          console.log(UserStorage.userProfileSelector);
+        },
         href: "1",
       },
       {
