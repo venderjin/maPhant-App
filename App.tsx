@@ -3,6 +3,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Provider, useSelector } from "react-redux";
+
+// import { ThemeContext } from "styled-components";
 import BoardListStack from "./src/App/Board/index";
 import Home from "./src/App/Home/Index";
 import Mail from "./src/App/Mail/Mail";
@@ -22,7 +24,7 @@ const AppWrapper = () => (
 const App = () => {
   const [isDark, setIsDark] = useState<boolean>(false);
   console.log(DarkTheme);
-  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  // const [isLoadingComplete, setIsLoadingComplete] = useState(false);
 
   useEffect(() => {
     UserStorage.getUserToken().then(res => {
