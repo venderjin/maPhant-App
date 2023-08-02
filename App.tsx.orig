@@ -1,16 +1,25 @@
-import React, { useState, useEffect } from "react";
+<<<<<<< HEAD
+import React, { useState } from "react";
 import { AppearanceProvider } from "react-native-appearance";
 import { NavigationContainer, DarkTheme, DefaultTheme } from "@react-navigation/native";
+=======
+import React, { useEffect, useState } from "react";
+
+import { NavigationContainer } from "@react-navigation/native";
+>>>>>>> origin/dev
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Mail from "./src/App/Mail/Mail";
 import Mypage from "./src/App/Mypage/Mypage";
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Home from "./src/App/Home/Index";
 import BoardListStack from "./src/App/Board/index";
-// import SignupRoutes from "./src/Navigator/SignupRoutes";
+<<<<<<< HEAD
+import SignupRoutes from "./src/Navigator/SignupRoutes";
 // import Signup from "./src/App/Member/Signup";
+import Login from "./src/App/Login/Index";
 import { boolean } from "yup";
 import { ThemeContext, ThemeContextType } from "./src/App/Style/ThemeContext";
+=======
 import Login from "./src/App/Login/Index";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import AppLoading from "expo-app-loading";
@@ -18,18 +27,16 @@ import reduxStore, { userSlice } from "./src/storage/reduxStore";
 import UserStorage from "./src/storage/UserStorage";
 import UIStore from "./src/storage/UIStore";
 import Spinner from "react-native-loading-spinner-overlay";
+>>>>>>> origin/dev
 
 const Tab = createBottomTabNavigator();
 
-const AppWrapper = () => (
-  <Provider store={reduxStore}>
-    <Mail />
-  </Provider>
-);
-
 const App = () => {
+<<<<<<< HEAD
+  let isLogged = false;
   const [isDark, setIsDark] = useState<boolean>(false);
   console.log(DarkTheme);
+=======
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
 
   useEffect(() => {
@@ -53,6 +60,7 @@ const App = () => {
 
   const isLogged = useSelector(UserStorage.isUserLoggedInSelector);
 
+>>>>>>> origin/dev
   if (isLogged == false) {
     return (
       <ThemeContext.Provider value={[isDark, setIsDark]}>
@@ -63,7 +71,12 @@ const App = () => {
     );
   }
   return (
+<<<<<<< HEAD
     <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
+=======
+    // Stx
+    <NavigationContainer>
+>>>>>>> origin/dev
       <Tab.Navigator>
         <Tab.Screen
           name="홈"

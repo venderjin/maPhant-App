@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
@@ -119,16 +119,18 @@ function Mail() {
         <View style={styles.sender}>
           <View>
             {mailData.map(mail => (
-              <View
-                key={mail.id}
-                style={[styles.mail, mail.is_read ? styles.mail_true : styles.mail]}
-              >
-                <View style={styles.space}>
-                  <Text style={styles.nick}>{mail.sender_id_nick}</Text>
-                  <Text style={styles.date}>{mail.sendDate}</Text>
+              <TouchableOpacity>
+                <View
+                  key={mail.id}
+                  style={[styles.mail, mail.is_read ? styles.mail_true : styles.mail]}
+                >
+                  <View style={styles.space}>
+                    <Text style={styles.nick}>{mail.sender_id_nick}</Text>
+                    <Text style={styles.date}>{mail.sendDate}</Text>
+                  </View>
+                  <Text style={styles.content}>{mail.content}</Text>
                 </View>
-                <Text style={styles.content}>{mail.content}</Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
         </View>
