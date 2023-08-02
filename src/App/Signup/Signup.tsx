@@ -26,7 +26,6 @@ interface ISignupForm {
   university: string;
 }
 import { Spacer, Container, TextButton } from "../../components/common";
-import DropDownPicker from "react-native-dropdown-picker";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -103,6 +102,7 @@ const Signup = () => {
               values.university,
             )
               .then(response => {
+                console.log(response);
                 if (response.success) {
                   //라우터 넣으면 됨
                   navigation.navigate("Confirm", values);
@@ -156,25 +156,26 @@ const Signup = () => {
                 component={Search}
                 list={universityList}
               />
+
               <Spacer size={10} />
 
               <Field placeholder="학번" name="studentNumber" component={CustomInput} />
               <Spacer size={10} />
-
               <TextButton
-                disabled={true}
-                style={{ marginTop: 30 }}
                 backgroundColor="#000"
+                fontColor="white"
                 paddingHorizontal={20}
                 paddingVertical={15}
                 borderRadius={30}
                 fontSize={18}
-                onPress={() => handleSubmit()}
-                fontColor="white"
+                onPress={() => {
+                  handleSubmit();
+                }}
               >
-                Signup
+                눌려
               </TextButton>
-              <Spacer size={30} />
+
+              <Spacer size={50} />
             </Container>
           )}
         </Formik>
