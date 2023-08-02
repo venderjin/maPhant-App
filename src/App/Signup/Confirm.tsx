@@ -1,32 +1,33 @@
 import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
-import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Alert, StyleSheet, Text, TextInput } from "react-native";
+
 import { confirmEmail } from "../../Api/member/signUp";
+import { Container, Input, TextButton } from "../../components/common";
+interface ISignupForm {
+  email: string;
+}
 const Confirm: React.FC = () => {
   const [email, setEmail] = useState("");
-  const [certificationEmail, setCertificationEmail] = useState(false);
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
   const [verificationCode, setVerificationCode] = useState("");
-  const [emailMessage, setEmailMessage] = useState("");
   const verificationCodeInputRef = useRef<TextInput>(null);
   const [showNextButton, setShowNextButton] = useState(false);
   const route = useRoute();
   // const navigation = useNavigation()
-  const navigation = useNavigation<NavigationProp<{}>>();
+  const navigation = useNavigation<NavigationProp<{ SearchUniversity: ISignupForm }>>();
+
   useEffect(() => {
     console.log(route.params);
     setEmail(route.params.email);
   }, []);
 
-  const startTimer = () => {
-    setMinutes(10);
-    setSeconds(0);
-  };
-
-  const checkCode = () => {
+  const checkCode = async (values: ISignupForm) => {
+    values.email = email;
+    console.log("다음버튼 클릭");
     if (showNextButton) {
-      navigation.navigate("SearchUniversity");
+      navigation.navigate("SearchUniversity", values);
     }
   };
   const verifyCode = () => {

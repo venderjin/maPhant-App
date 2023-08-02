@@ -1,29 +1,64 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Mail from "./src/App/Mail/Mail";
+import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { Provider, useSelector } from "react-redux";
+
+// import Signup from "./src/App/Member/Signup";
+import BoardListStack from "./src/App/Board/index";
+import Home from "./src/App/Home/Index";
+import Login from "./src/App/Login/Index";
+import Mail from "./src/App/Mail/Index";
 // import Mypage from "./src/components/member/Mypage";
 import Mypage from "./src/App/Mypage/Mypage";
-import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { createStackNavigator } from "@react-navigation/stack";
-import Home from "./src/App/Home/Index";
-import BoardListStack from "./src/App/Board/index";
-import Login from "./src/App/Login/Index";
-import TermsSet from "./src/App/Signup/TermsSet";
-const Stack = createStackNavigator();
+import { ThemeContext } from "./src/App/Style/ThemeContext";
+import reduxStore from "./src/storage/reduxStore";
+import UserStorage from "./src/storage/UserStorage";
+
 const Tab = createBottomTabNavigator();
-// 스위치 ,, react native
+
+const AppWrapper = () => (
+  <Provider store={reduxStore}>
+    <App />
+  </Provider>
+);
+
 const App = () => {
-  let isLogged = false;
+  const [isDark, setIsDark] = useState<boolean>(false);
+  console.log(DarkTheme);
+
+  useEffect(() => {
+    UserStorage.getUserToken().then(res => {
+      let token = null;
+      let privKey = null;
+
+      token = res ? res.token : null;
+      privKey = res ? res.privKey : null;
+
+      if (token != null && privKey != null) {
+        UserStorage.setUserToken(token, privKey);
+        UserStorage.getUserProfile().then(res => {
+          if (res) {
+            UserStorage.setUserProfile(res);
+          }
+        });
+      }
+    });
+  }, []);
+
+  const isLogged = useSelector(UserStorage.isUserLoggedInSelector);
+
   if (isLogged == false) {
     return (
-      <NavigationContainer>
-        <Login />
-      </NavigationContainer>
+      <ThemeContext.Provider value={[isDark, setIsDark]}>
+        <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
+          <Login />
+        </NavigationContainer>
+      </ThemeContext.Provider>
     );
   }
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
       <Tab.Navigator>
         <Tab.Screen
           name="홈"
@@ -63,4 +98,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default AppWrapper;
