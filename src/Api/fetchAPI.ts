@@ -7,7 +7,7 @@ import constraints from "./constraints";
 type Method = "GET" | "POST" | "PUT" | "DELETE";
 type statusResponse = {
   success: boolean;
-  message?: string;
+  errors?: string;
 };
 type dataResponse = {
   data?: object;
@@ -76,12 +76,12 @@ function fetchAPI<T extends statusResponse>(
         return res.json();
       })
       .then(json => {
-        console.log(json);
+        console.log(url_complete, json);
         const resp = json as T;
 
         if (json.status !== true && resp.success === false) {
-          console.error(method, url_complete, body, resp.message ?? json.error);
-          return Promise.reject(resp.message ?? json.error);
+          console.error(method, url_complete, body, resp.errors ?? json.message);
+          return Promise.reject(resp.errors ?? json.message);
         }
 
         return Promise.resolve(resp);
