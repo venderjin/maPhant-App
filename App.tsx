@@ -1,20 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Mail from "./src/App/Mail/Mail";
-// import Mypage from "./src/components/member/Mypage";
 import Mypage from "./src/App/Mypage/Mypage";
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./src/App/Home/Index";
 import BoardListStack from "./src/App/Board/index";
 import Login from "./src/App/Login/Index";
-import TermsSet from "./src/App/Signup/TermsSet";
-const Stack = createStackNavigator();
+import { Provider, useSelector, useDispatch } from "react-redux";
+import AppLoading from "expo-app-loading";
+import reduxStore, { userSlice } from "./src/storage/reduxStore";
+import UserStorage from "./src/storage/UserStorage";
+import UIStore from "./src/storage/UIStore";
+import Spinner from "react-native-loading-spinner-overlay";
+
 const Tab = createBottomTabNavigator();
 // 스위치 ,, react native
 const App = () => {
-  let isLogged = false;
+  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+
+  useEffect(() => {
+    UserStorage.getUserToken().then(res => {
+      let token = null;
+      let privKey = null;
+
+      token = res ? res.token : null;
+      privKey = res ? res.privKey : null;
+
+      if (token != null && privKey != null) {
+        UserStorage.setUserToken(token, privKey);
+        UserStorage.getUserProfile().then(res => {
+          if (res) {
+            UserStorage.setUserProfile(res);
+          }
+        });
+      }
+    });
+  }, []);
+
+  const isLogged = useSelector(UserStorage.isUserLoggedInSelector);
+
   if (isLogged == false) {
     return (
       <NavigationContainer>
@@ -23,6 +48,7 @@ const App = () => {
     );
   }
   return (
+    // Stx
     <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen
@@ -63,4 +89,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default AppWrapper;

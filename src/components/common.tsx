@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";

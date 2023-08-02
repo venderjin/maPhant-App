@@ -1,24 +1,46 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
 import Toast from "react-native-root-toast";
 
-import { Container, ImageBox, Input, TextButton, Spacer } from "../../components/common";
-// import UserAPI from "../../Api/memberAPI";
+import UserAPI from "../../Api/memberAPI";
+import { Container, ImageBox, Input, Spacer, TextButton } from "../../components/common";
+import UserStorage from "../../storage/UserStorage";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigation = useNavigation();
-  const handleLogin = () => {
-    if (email.length < 5 || password.length < 4) {
-      Toast.show("이메일과 비밀번호를 확인해주세요", { duration: Toast.durations.SHORT });
+
+  const loginHandler = () => {
+    if (!email.match(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/)) {
+      Toast.show("이메일 형식을 확인해주세요", { duration: Toast.durations.SHORT });
+      return;
+    } else if (password.length < 4) {
+      Toast.show("비밀번호는 4자리 이상 입니다", { duration: Toast.durations.SHORT });
       return;
     }
-  };
 
+    UserAPI.login(email, password)
+      .then(res => {
+        if (res.message == "Not found") {
+          Toast.show("존재하지 않는 이메일 입니다", { duration: Toast.durations.SHORT });
+          return;
+        } else if (res.message == "Invalid password") {
+          Toast.show("비밀번호가 틀렸습니다", { duration: Toast.durations.SHORT });
+          return;
+        } else {
+          console.log(res);
+          UserStorage.setUserToken(res["pubKey"], res["privKey"]);
+
+          return UserAPI.getProfile();
+        }
+      })
+      .then(res => {
+        if (res === undefined) return;
+        UserStorage.setUserProfile(res.data);
+      });
+  };
   return (
     <Container isFullScreen={true}>
       <Spacer size={100} />
@@ -48,7 +70,7 @@ const Login: React.FC = () => {
           secureTextEntry={true}
         ></Input>
         <Spacer size={50} />
-        <TextButton onPress={handleLogin}>로그인</TextButton>
+        <TextButton onPress={loginHandler}>로그인</TextButton>
       </Container>
       <Spacer size={30} />
       <TextButton
