@@ -13,6 +13,7 @@ import {
 
 import CheckBox from "expo-checkbox";
 import { useNavigation } from "@react-navigation/native";
+import { TextButton, Container } from "../../components/common";
 
 const TermsSet: React.FC = () => {
   const [checkList, setCheckList] = useState<string[]>([]);
@@ -58,21 +59,36 @@ const TermsSet: React.FC = () => {
   }, [checkList]);
 
   return (
-    <View style={styles.container}>
-      <View style={{ ...styles.terms, marginBottom: 15 }}>
-        <CheckBox value={checkList.length === 4} onValueChange={checkAll}></CheckBox>
-        <Text style={styles.text}>이용약관 전체동의</Text>
-      </View>
-      <View style={styles.total}>
-        <View style={styles.termsContainer}>
+    <Container
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+        justifyContent: "center",
+        paddingHorizontal: 40,
+        paddingTop: 30,
+      }}
+    >
+      <TouchableOpacity
+        onPress={() => {
+          checkAll(checkList.length != 4);
+        }}
+      >
+        <Container style={{ flexDirection: "row", marginBottom: 15 }}>
+          <CheckBox value={checkList.length === 4} onValueChange={checkAll}></CheckBox>
+          <Text style={{ marginLeft: 10 }}>이용약관 전체동의</Text>
+        </Container>
+      </TouchableOpacity>
+
+      <Container style={{ borderWidth: 1, borderColor: "#6666" }}>
+        <Container paddingHorizontal={2}>
           <TouchableOpacity onPress={() => toggleExpansion("terms")}>
-            <View style={styles.terms}>
+            <Container style={{ flexDirection: "row" }}>
               <CheckBox
                 value={checkList.includes("terms")}
                 onValueChange={isChecked => check("terms", isChecked)}
               ></CheckBox>
-              <Text style={styles.text}>[필수] 개인정보 수집 및 이용 동의</Text>
-            </View>
+              <Text style={{ marginLeft: 10 }}>[필수] 개인정보 수집 및 이용 동의</Text>
+            </Container>
           </TouchableOpacity>
           {expandedItems.includes("terms") && (
             <Text>
@@ -85,16 +101,16 @@ const TermsSet: React.FC = () => {
               &lt;과끼리&gt; 사용이 불가능할 수도 있음을 알려드립니다.
             </Text>
           )}
-        </View>
-        <View style={styles.termsContainer}>
+        </Container>
+        <Container paddingHorizontal={2}>
           <TouchableOpacity onPress={() => toggleExpansion("another")}>
-            <View style={styles.terms}>
+            <Container style={{ flexDirection: "row" }}>
               <CheckBox
                 value={checkList.includes("another")}
                 onValueChange={isChecked => check("another", isChecked)}
               ></CheckBox>
-              <Text style={styles.text}>[필수] 과끼리 이용약관</Text>
-            </View>
+              <Text style={{ marginLeft: 10 }}>[필수] 과끼리 이용약관</Text>
+            </Container>
           </TouchableOpacity>
           {expandedItems.includes("another") && (
             <Text>
@@ -104,17 +120,18 @@ const TermsSet: React.FC = () => {
               주시기 바랍니다.
             </Text>
           )}
-        </View>
-        <View style={styles.termsContainer}>
+        </Container>
+        <Container paddingHorizontal={2}>
           <TouchableOpacity onPress={() => toggleExpansion("community")}>
-            <View style={styles.terms}>
+            <Container style={{ flexDirection: "row" }}>
               <CheckBox
                 value={checkList.includes("community")}
                 onValueChange={isChecked => check("community", isChecked)}
-              ></CheckBox>
-              <Text style={styles.text}>[필수] 커뮤니티 이용수칙 확인</Text>
-            </View>
+              />
+              <Text style={{ marginLeft: 10 }}>[필수] 커뮤니티 이용수칙 확인</Text>
+            </Container>
           </TouchableOpacity>
+
           {expandedItems.includes("community") && (
             <Text>
               개인정보 보호법에 따라 과끼리에 회원가입을 신청하시는 분께 수집하는 개인정보의 항목,
@@ -123,56 +140,29 @@ const TermsSet: React.FC = () => {
               주시기 바랍니다.
             </Text>
           )}
-        </View>
-      </View>
-      <TouchableOpacity
-        style={[styles.button, buttonColor ? null : styles.disabledButton]}
+        </Container>
+      </Container>
+      <TextButton
+        style={{
+          backgroundColor: "#000",
+          paddingVertical: 15,
+          paddingHorizontal: 20,
+          borderRadius: 30,
+          marginTop: 40,
+          opacity: buttonColor ? 1 : 0.5,
+        }}
+        textAlign={"center"}
+        fontColor={"white"}
+        fontSize={14}
         disabled={!buttonColor}
         onPress={() => {
           navigation.navigate("Signup" as never);
         }}
       >
-        <Text style={styles.next}> 다음</Text>
-      </TouchableOpacity>
-    </View>
+        다음
+      </TextButton>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    paddingHorizontal: 40,
-    paddingTop: 30,
-  },
-  next: {
-    color: "white",
-    textAlign: "center",
-  },
-  button: {
-    backgroundColor: "#000",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    marginTop: 40,
-  },
-  disabledButton: {
-    opacity: 0.5,
-  },
-  termsContainer: {
-    margin: 15,
-  },
-  total: {
-    borderWidth: 1,
-    borderColor: "#6666",
-  },
-  text: {
-    marginLeft: 10,
-  },
-  terms: {
-    flexDirection: "row",
-  },
-});
 
 export default TermsSet;

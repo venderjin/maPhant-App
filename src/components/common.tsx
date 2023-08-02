@@ -1,6 +1,6 @@
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { ForwardedRef, LegacyRef, useEffect, useState } from "react";
 import {
   ColorValue,
   Dimensions,
@@ -10,6 +10,7 @@ import {
   InputModeOptions,
   Keyboard,
   KeyboardAvoidingView,
+  KeyboardTypeOptions,
   StyleProp,
   Text,
   TextInput,
@@ -40,14 +41,19 @@ type DefaultProps = {
 type ButtonProps = {
   widthFull?: boolean; // width를 직접 설정하고 싶으면 style을 사용할 것
   onPress: () => void;
-} & EmptyProps;
+} & DefaultProps;
 // font..., 등 이름의 색상과 숫자 타입 props를 가지며 ButtonProps와 ChildrenProps 상속함
 type TextButtonProps = {
   fontSize?: number;
   fontColor?: ColorValue;
   backgroundColor?: ColorValue;
+  activeOpacity?: number;
+  disabled?: boolean;
+  textAlign?: string;
+  opacity?: number;
 } & ButtonProps &
   ChildrenProps;
+
 // children 이름의 ReactNode 또는 ReactNode[] 타입 props
 type ChildrenProps = {
   children: React.ReactNode | React.ReactNode[];
@@ -65,15 +71,18 @@ type InputProps = {
   onChangeText?: (text: string) => void;
   value?: string;
   secureTextEntry?: boolean;
+  editable?: boolean;
   inputMode?: InputModeOptions;
+  keyboardType?: KeyboardTypeOptions;
+  inputRef?: LegacyRef<TextInput>;
 } & DefaultProps;
 
 const Container: React.FC<ContainerProps> = props => {
-  // props 기본값
+  //props 기본값
   const {
     style = {},
     children,
-    paddingHorizontal = 16,
+    paddingHorizontal,
     paddingVertical = 8,
     isFullScreen = false,
     isFullWindow = false,
@@ -81,6 +90,7 @@ const Container: React.FC<ContainerProps> = props => {
     isForceKeyboardAvoiding = false,
     borderRadius,
   } = props;
+
   // 커스텀으로 값 가져옴
   const headerHeight = useHeaderHeight();
   const theme = useTheme();
@@ -113,7 +123,8 @@ const Container: React.FC<ContainerProps> = props => {
   }, []);
 
   const style_computed: StyleProp<ViewStyle> = {
-    backgroundColor: theme.colors.background,
+    // backgroundColor: theme.colors.background,
+    backgroundColor: "white",
     paddingHorizontal,
     paddingVertical,
     minHeight: isFullScreen || isFullWindow ? height : undefined,
@@ -158,7 +169,7 @@ const ImageBox: React.FC<ImageBoxProps> = props => {
   };
 
   if (width && !height) {
-    const img = Image.resolveAssetSource(source); // 이미지 소스 가져오기
+    const img = Image.resolveAssetSource(source);
     style_image.height = (width / img.width) * img.height;
   } else if (!width && height) {
     const img = Image.resolveAssetSource(source);
@@ -171,6 +182,7 @@ const ImageBox: React.FC<ImageBoxProps> = props => {
     </View>
   );
 };
+
 // size prop에 따라 높이를 가진 빈 view 렌더링
 const Spacer: React.FC<SpacerProps> = props => {
   const { size = 8, style = {} } = props;
@@ -188,17 +200,21 @@ const TextButton: React.FC<TextButtonProps> = props => {
   const {
     style = {},
     children,
-    backgroundColor = "#5299EB", //theme.colors.primary,
+    backgroundColor = theme.colors.primary,
     fontSize = 16,
     fontColor,
     widthFull = false,
     paddingHorizontal = 20,
     paddingVertical = 15,
     borderRadius = 100,
+    activeOpacity,
     onPress,
+    disabled = false,
+    opacity,
   } = props;
 
   const style_container: StyleProp<ViewStyle> = {
+    opacity,
     paddingHorizontal,
     paddingVertical,
     backgroundColor,
@@ -219,7 +235,12 @@ const TextButton: React.FC<TextButtonProps> = props => {
   }
 
   return (
-    <TouchableOpacity style={style_container} onPress={onPress}>
+    <TouchableOpacity
+      style={style_container}
+      onPress={onPress}
+      activeOpacity={activeOpacity}
+      disabled={disabled}
+    >
       <Text style={style_text}>{children}</Text>
     </TouchableOpacity>
   );
@@ -231,7 +252,10 @@ const Input: React.FC<InputProps> = props => {
     placeholder = "",
     onChangeText,
     value,
+    keyboardType,
+    inputRef,
     secureTextEntry = false,
+    editable = true,
     paddingHorizontal = 16,
     paddingVertical = 8,
     borderRadius = 16,
@@ -252,8 +276,11 @@ const Input: React.FC<InputProps> = props => {
   return (
     <View style={style_container}>
       <TextInput
+        ref={inputRef}
         style={style_text}
         value={value}
+        editable={editable}
+        keyboardType={keyboardType}
         onChangeText={onChangeText}
         placeholder={placeholder}
         secureTextEntry={secureTextEntry}
