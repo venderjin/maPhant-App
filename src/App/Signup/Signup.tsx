@@ -1,12 +1,21 @@
-import React, { useState, useEffect } from "react";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { Field, Formik } from "formik";
+import React from "react";
 // import { SearchBar } from "@rneui/themed";
-import { StyleSheet, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView } from "react-native";
-import { Formik, Field } from "formik";
+import { ScrollView } from "react-native";
 import * as Yup from "yup";
+
+import {
+  signup,
+  universityList,
+  validateEmail,
+  validateNickname,
+  validatePassword,
+} from "../../Api/member/signUp";
+import { Container, Spacer, TextButton } from "../../components/common";
 import CustomInput from "../../components/Member/CustomInput";
 import Search from "../../components/Member/Search";
-import { signup, universityList, validateEmail, validateNickname } from "../../Api/member/signUp";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+
 interface ISignupForm {
   email: string;
   password: string;
@@ -17,8 +26,6 @@ interface ISignupForm {
   studentNumber: string;
   university: string;
 }
-import { Spacer, Container, TextButton } from "../../components/common";
-import DropDownPicker from "react-native-dropdown-picker";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -26,7 +33,7 @@ const validationSchema = Yup.object().shape({
       /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/,
       "학교 이메일 형식으로 입력해주세요(.ac.kr 또는 .edu)",
     )
-    .required("이메일은 필수 항목입니다.")
+    .required("학교 이메일 형식으로 입력해주세요(.ac.kr 또는 .edu)")
     .test(async (value, testContext) => {
       let result = await validateEmail(value);
       if (result.success) return true;
@@ -38,7 +45,13 @@ const validationSchema = Yup.object().shape({
     .matches(/\d/, "비밀번호에는 숫자가 포함되어야 합니다.")
     .matches(/[!@#$%^&*()\-_"=+{}; :,<.>]/, "비밀번호에는 특수문자가 포함되어야 합니다.")
     .required("필수 정보입니다.")
-    .min(8, ({ min }) => `비밀번호는 최소 ${min}자 이상이어야 합니다.`),
+    .min(8, ({ min }) => `비밀번호는 최소 ${min}자 이상이어야 합니다.`)
+    .required("영문 대, 소문자, 숫자, 특수문자 1개 이상 으로 구성된 8자 이상으로 입력해주세요.")
+    .test(async (value, testContext) => {
+      let result = await validatePassword(value);
+      if (result.success) return true;
+      return testContext.createError({ message: result.errors });
+    }),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password")], "비밀번호가 일치하지 않습니다.")
     .required("필수 정보입니다."),
@@ -89,6 +102,7 @@ const Signup = () => {
               values.university,
             )
               .then(response => {
+                console.log(response);
                 if (response.success) {
                   //라우터 넣으면 됨
                   navigation.navigate("Confirm", values);
@@ -99,7 +113,7 @@ const Signup = () => {
               });
           }}
         >
-          {({ handleSubmit, isValid, values }) => (
+          {({ handleSubmit }) => (
             <Container
               style={{
                 flex: 1,
@@ -142,25 +156,26 @@ const Signup = () => {
                 component={Search}
                 list={universityList}
               />
+
               <Spacer size={10} />
 
               <Field placeholder="학번" name="studentNumber" component={CustomInput} />
               <Spacer size={10} />
-
               <TextButton
-                disabled={true}
-                style={{ marginTop: 30 }}
                 backgroundColor="#000"
+                fontColor="white"
                 paddingHorizontal={20}
                 paddingVertical={15}
                 borderRadius={30}
                 fontSize={18}
-                onPress={() => handleSubmit()}
-                fontColor="white"
+                onPress={() => {
+                  handleSubmit();
+                }}
               >
-                Signup
+                눌려
               </TextButton>
-              <Spacer size={30} />
+
+              <Spacer size={50} />
             </Container>
           )}
         </Formik>
