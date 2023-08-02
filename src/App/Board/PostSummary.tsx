@@ -1,48 +1,77 @@
 import React from "react";
-import { BoardPostMockup } from "../../types/Board";
+import { BoardArticle, BoardType } from "../../types/Board";
 import { StyleSheet, View, Text } from "react-native";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 
-export default function ({ post }: { post: BoardPostMockup }): JSX.Element {
-  switch (post.board) {
+export default function ({
+  post,
+  boardType,
+}: {
+  post: BoardArticle;
+  boardType: BoardType;
+}): JSX.Element {
+  switch (boardType) {
     default:
       return PostSummary(post);
   }
 }
 
-function PostSummary(post: BoardPostMockup): JSX.Element {
+function PostSummary(post: BoardArticle): JSX.Element {
   return (
     <>
       <View style={styles.head}>
         <Text style={styles.title}>{post.title}</Text>
-        <Text style={styles.userName}>{post.userName}</Text>
+        <Text style={styles.userName}>{post.userNickname}</Text>
       </View>
-      <View>
+      {/* <View>
         <Text style={styles.content} numberOfLines={1}>
-          {post.content}
+          {post.body}
         </Text>
-      </View>
+      </View> */}
       <View style={styles.head}>
-        {post.good > 0 ? (
+        {post.likeCnt > 0 ? (
           <>
             <Feather name="thumbs-up" size={13} color="tomato" />
-            <Text style={styles.good}>&#9; {post.good}</Text>
+            <Text style={styles.good}>&#9; {post.likeCnt}</Text>
           </>
-        ) : post.commant == 0 ? (
+        ) : post.commentCnt == 0 ? (
           <View style={{ flex: 1 }}></View>
         ) : null}
-        {post.commant > 0 ? (
+        {post.commentCnt > 0 ? (
           <>
             <FontAwesome name="comment-o" size={13} color="blue" />
-            <Text style={styles.commant}>&#9; {post.commant}</Text>
+            <Text style={styles.comment}>&#9; {post.commentCnt}</Text>
           </>
         ) : null}
         <Text style={{ justifyContent: "flex-end", fontSize: 10 }}>
-          {post.created}
+          {dateToString(post.createdAt)}
         </Text>
       </View>
     </>
   );
+}
+
+function dateToString(date: string): string {
+  const start = new Date(date);
+  const end = new Date();
+
+  const diff = end.getTime() - start.getTime();
+  const diffDate = new Date(diff);
+
+  const year = diffDate.getFullYear() - 1970;
+  const month = diffDate.getMonth();
+  const day = diffDate.getDate() - 1;
+  const hour = diffDate.getHours();
+  const minute = diffDate.getMinutes();
+  const second = diffDate.getSeconds();
+
+  if (year > 0) return `${year}년 전`;
+  if (month > 0) return `${month}달 전`;
+  if (day > 0) return `${day}일 전`;
+  if (hour > 0) return `${hour}시간 전`;
+  if (minute > 0) return `${minute}분 전`;
+  if (second > 0) return `${second}초 전`;
+  return "방금 전";
 }
 
 const styles = StyleSheet.create({
@@ -84,7 +113,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     justifyContent: "flex-start",
   },
-  commant: {
+  comment: {
     flex: 9,
     fontSize: 10,
   },

@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import ScrollList from "./ScrollList";
@@ -41,10 +49,12 @@ const QnABoard: React.FC = () => {
           ))}
         </ScrollView>
       </View>
-
+      <View>
+        <TextInput placeholder="aiwebfjiabdnjk"></TextInput>
+      </View>
       <View style={styles.total}>
         <View style={styles.hHead}>
-          <Text style={styles.hFont}> 답변 기다리는 게시글</Text>
+          <Text style={styles.hFont}> 최신 게시글</Text>
           <TouchableOpacity>
             <Text style={styles.detail}>더보기</Text>
           </TouchableOpacity>
@@ -86,7 +96,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: "flex-start",
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "skyblue",
     justifyContent: "space-between",
     minWidth: 200,
     minHeight: 90,
