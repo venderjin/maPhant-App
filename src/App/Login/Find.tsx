@@ -30,15 +30,13 @@ const Find: React.FC = () => {
     <Formik
       initialValues={{ password: "", confirmPassword: "" }}
       onSubmit={async values => {
-        await newPassword(email, values.password, values.confirmPassword)
-          .then(result => {
-            if (result.success) {
-              alert("비밀번호가 변경되었습니다.");
-              //라우터 넣으면 됨
-            }
-            // console.log(result);
-          })
-          .catch(error => {});
+        await newPassword(email, values.password, values.confirmPassword).then(result => {
+          if (result.success) {
+            alert("비밀번호가 변경되었습니다.");
+            //라우터 넣으면 됨
+          }
+          // console.log(result);
+        });
       }}
       validationSchema={validationSchema}
     >
