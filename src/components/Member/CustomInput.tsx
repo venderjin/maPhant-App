@@ -2,7 +2,22 @@ import React, { useState } from "react";
 import { Text, TextInput, View } from "react-native";
 import { StyleSheet } from "react-native";
 
-const CustomInput = (props: any) => {
+interface CustomInputProps {
+  field: {
+    name: string;
+    onBlur: (name: string) => void;
+    value: string; // value의 타입은 구체적으로 지정해야 합니다.
+    // 다른 필요한 필드 프로퍼티들을 추가할 수 있습니다.
+  };
+  form: {
+    errors: Record<string, string>; // errors 객체의 타입은 구체적으로 지정해야 합니다.
+    touched: Record<string, boolean>; // touched 객체의 타입은 구체적으로 지정해야 합니다.
+    setFieldValue: (name: string, value: string) => void; // setFieldValue의 타입은 구체적으로 지정해야 합니다.
+    setFieldTouched: (name: string) => void; // setFieldTouched의 타입은 구체적으로 지정해야 합니다.
+    // 다른 필요한 form 프로퍼티들을 추가할 수 있습니다.
+  };
+}
+const CustomInput = (props: CustomInputProps) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleInputChange = (value: string, setter: any) => {

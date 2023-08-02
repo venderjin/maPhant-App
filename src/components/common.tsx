@@ -95,7 +95,6 @@ const Container: React.FC<ContainerProps> = props => {
 
   // 커스텀으로 값 가져옴
   const headerHeight = useHeaderHeight();
-  const theme = useTheme();
   // 컨테이너 높이 결정 함수
   const adjustedHeight = () => {
     if (isFullScreen) return Dimensions.get("screen").height;
@@ -104,7 +103,7 @@ const Container: React.FC<ContainerProps> = props => {
   };
   // 높이와 키보드 높이를 상태로 관리
   const [height, setHeight] = useState<number | string>(adjustedHeight());
-  const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
+  const [, setKeyboardHeight] = useState<number>(0);
 
   // 컴포넌트 마운트될 때, 높이와 키보드 높이 설정 이벤트 리스너 추가
   useEffect(() => {
