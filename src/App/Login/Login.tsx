@@ -42,13 +42,14 @@ const Login: React.FC = () => {
       });
   };
   return (
-    <Container isFullScreen={true}>
-      <Spacer size={100} />
+    <Container isFullScreen={true} style={{ flex: 1, justifyContent: "center" }}>
+      <Spacer />
       <ImageBox
-        source={require("../../../assets/favicon.png")}
+        source={require("../../../assets/logo_ko.png")}
         isCenter={true}
-        width={100}
+        width={300}
       ></ImageBox>
+
       <Spacer size={100} />
       <Container style={{ width: "100%" }} isItemCenter={true} paddingHorizontal={0}>
         <Input
