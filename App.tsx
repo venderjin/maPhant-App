@@ -1,10 +1,8 @@
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { DarkTheme, DefaultTheme,NavigationContainer } from "@react-navigation/native";
-import React, { useEffect,useState } from "react";
-import { Provider,useSelector } from "react-redux";
-
-// import Signup from "./src/App/Member/Signup";
+import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { Provider, useSelector } from "react-redux";
 import BoardListStack from "./src/App/Board/index";
 import Home from "./src/App/Home/Index";
 import Mail from "./src/App/Mail/Mail";

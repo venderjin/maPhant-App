@@ -6,7 +6,7 @@ const Stack = createStackNavigator();
 
 // eslint-disable-next-line react/display-name
 export default () => (
-  <Stack.Navigator initialRouteName="SearchUniversity">
+  <Stack.Navigator initialRouteName="Login ">
     <Stack.Screen name="Login" component={SigninRoutes[0].component} />
     <Stack.Screen name="Find" component={SigninRoutes[1].component} />
     <Stack.Screen name="TermsSet" component={SigninRoutes[2].component} />

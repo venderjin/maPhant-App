@@ -1,9 +1,7 @@
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Field, Formik } from "formik";
 import React from "react";
-import {
-  StyleSheet,
-} from "react-native";
+import { StyleSheet } from "react-native";
 import * as Yup from "yup";
 
 import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
@@ -17,6 +15,7 @@ interface ISearchForm {
 
 const SearchUniversity: React.FC = () => {
   const route = useRoute();
+  const navigation = useNavigation();
   const validationSchema = Yup.object().shape({
     field: Yup.string().required("계열 입력해 주세요."),
     major: Yup.string().required("전공 입력해 주세요."),
@@ -33,18 +32,15 @@ const SearchUniversity: React.FC = () => {
       initialValues={SearchForm}
       validationSchema={validationSchema}
       onSubmit={async values => {
-        await categorymajor(route.params.email, values.field, values.major)
-          .then(response => {
-            if (response.success) {
-              // navigation.navigate("Login", values)
-            }
-          })
-          .catch(error => {
-            alert();
-          });
+        console.log(route.params.email);
+        await categorymajor(route.params.email, values.field, values.major).then(response => {
+          if (response.success) {
+            navigation.navigate("Login");
+          }
+        });
       }}
     >
-      {({ handleSubmit, isValid, values }) => (
+      {({ handleSubmit }) => (
         <Container style={styles.container}>
           <Container style={styles.FlistContainer}>
             <Field

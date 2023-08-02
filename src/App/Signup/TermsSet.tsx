@@ -1,12 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import CheckBox from "expo-checkbox";
 import React, { useEffect, useState } from "react";
-import {
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 
-import { Container,TextButton } from "../../components/common";
+import { Container, TextButton } from "../../components/common";
 
 const TermsSet: React.FC = () => {
   const [checkList, setCheckList] = useState<string[]>([]);

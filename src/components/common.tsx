@@ -1,6 +1,6 @@
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useTheme } from "@react-navigation/native";
-import { LegacyRef, useEffect, useState } from "react";
+import {  LegacyRef, useEffect, useState } from "react";
 import {
   ColorValue,
   Dimensions,

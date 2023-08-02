@@ -1,35 +1,33 @@
 import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect, useRef,useState } from "react";
-import { Alert,StyleSheet, Text, TextInput } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Alert, StyleSheet, Text, TextInput } from "react-native";
 
 import { confirmEmail } from "../../Api/member/signUp";
 import { Container, Input, TextButton } from "../../components/common";
+interface ISignupForm {
+  email: string;
+}
 const Confirm: React.FC = () => {
   const [email, setEmail] = useState("");
-  const [certificationEmail, setCertificationEmail] = useState(false);
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
   const [verificationCode, setVerificationCode] = useState("");
-  const [emailMessage, setEmailMessage] = useState("");
   const verificationCodeInputRef = useRef<TextInput>(null);
   const [showNextButton, setShowNextButton] = useState(false);
   const route = useRoute();
   // const navigation = useNavigation()
-  const navigation = useNavigation<NavigationProp<{}>>();
+  const navigation = useNavigation<NavigationProp<{ SearchUniversity: ISignupForm }>>();
+
   useEffect(() => {
     console.log(route.params);
     setEmail(route.params.email);
   }, []);
 
-  const startTimer = () => {
-    setMinutes(10);
-    setSeconds(0);
-  };
-
-  const checkCode = () => {
+  const checkCode = async (values: ISignupForm) => {
+    values.email = email;
     console.log("다음버튼 클릭");
     if (showNextButton) {
-      navigation.navigate("SearchUniversity");
+      navigation.navigate("SearchUniversity", values);
     }
   };
   const verifyCode = () => {
@@ -37,11 +35,10 @@ const Confirm: React.FC = () => {
       Alert.alert("Error", "인증 번호를 입력해주세요.");
       return;
     }
-    console.log(email, verificationCode);
+
     // API를 호출하여 인증 번호 검증 로직 구현
     confirmEmail(email, verificationCode)
       .then(res => {
-        console.log(res);
         if (res.success) {
           Alert.alert("Success", "인증이 완료되었습니다.");
           // 인증 완료 처리
@@ -91,10 +88,10 @@ const Confirm: React.FC = () => {
       <Container style={{ marginBottom: 20 }}>
         <Text>인증 번호</Text>
         <Input
-          inputRef={verificationCodeInputRef}
+          ref={verificationCodeInputRef}
           value={verificationCode}
           onChangeText={setVerificationCode}
-          placeholder="인증번호 6자리를 입력해주세요. ㅅㅂ 입력이 되야 뭘 하지"
+          placeholder="인증번호 6자리를 입력해주세요."
           keyboardType="numeric"
           style={styles.input}
         />
