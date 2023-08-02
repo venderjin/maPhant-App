@@ -32,6 +32,5 @@ module.exports = {
     "unused-imports/no-unused-imports-ts": ["error"],
     "@typescript-eslint/ban-ts-comment": "off",
     "react/react-in-jsx-scope": "off",
-    "react/prop-types": "off",
   },
 };
