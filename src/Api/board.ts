@@ -15,4 +15,22 @@ const listArticle = (
     pageSize: pageSize,
   });
 
-export { listArticle };
+// return GetAPI(`/board/${board_id}?page=${page}`);
+
+function getArticle(board_id: String) {
+  return PostAPI(`/board/${board_id}`);
+}
+
+function insertLikePost(board_id: String) {
+  return GetAPI(`/board/like/${board_id}`);
+}
+
+function deleteLikeBoard(board_id: String) {
+  return DeleteAPI(`/board/like/${board_id}`);
+}
+
+function searchArticle() {
+  return GetAPI(`/board/search`);
+}
+
+export { listArticle, getArticle, insertLikePost, deleteLikeBoard, searchArticle };
