@@ -21,13 +21,13 @@ const Search = (props, { list }: { list: Promise<searchList[]> }) => {
   } = props;
 
   useEffect(() => {
-    props.list().then(res => {
+    props.list().then((res: any) => {
       setData(res.data);
-      const formattedData = res.data.map((item: string, index: number) => ({
-        id: index.toString(),
-        title: item,
-      }));
-      setFilteredData(formattedData);
+      // const formattedData = res.data.map((item: any, index: any) => ({
+      //   id: index.toString(),
+      //   title: item
+      // }));
+      // setFilteredData(formattedData);
       return res.data;
     });
   }, [search, list]);
