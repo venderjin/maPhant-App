@@ -92,18 +92,18 @@ function majorList() {
 }
 
 function sendEmail(email: string) {
-  return PostAPI(`user/changepw/sendemail`, { email: email });
+  return PostAPI(`/user/changepw/sendemail`, { email: email });
 }
 
 function authenticationCode(email: string, authCode: string) {
-  return PostAPI(`user/changepw/authenticationcode`, {
+  return PostAPI(`/user/changepw/authenticationcode`, {
     email,
     authCode,
   });
 }
 
 function newPassword(email: string, password: string, passwordChk: string) {
-  return PostAPI(`user/changepw/newpassword`, {
+  return PostAPI(`/user/changepw/newpassword`, {
     email,
     password,
     passwordChk,
@@ -111,14 +111,14 @@ function newPassword(email: string, password: string, passwordChk: string) {
 }
 
 function categorymajor(email: string, category: string, major: string) {
-  return PostAPI(`user/selection/categorymajor`, {
+  return PostAPI(`/user/selection/categorymajor`, {
     email,
     category,
     major,
   });
 }
 function confirmEmail(email: string, authCode: string) {
-  return PostAPI(`email/confirmEmail`, {
+  return PostAPI(`/email/confirmEmail`, {
     email,
     authCode,
   });
