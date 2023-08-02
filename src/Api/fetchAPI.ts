@@ -28,7 +28,7 @@ function fetchAPI<T extends statusResponse>(method: Method, url: string, body?: 
       options.body = JSON.stringify(body);
     }
 
-    return fetch(`${constraints.SERVER_URL}${url}`, options).then(res => res.json());
+    return fetch(`${constraints.SERVER_URL}${url}`, options).then(res => res.json() as Promise<T>);
   });
 }
 
