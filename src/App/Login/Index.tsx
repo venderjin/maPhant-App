@@ -1,8 +1,10 @@
 import { createStackNavigator } from "@react-navigation/stack";
+
 import SigninRoutes from "../../Navigator/SigninRoutes";
 
 const Stack = createStackNavigator();
 
+// eslint-disable-next-line react/display-name
 export default () => (
   <Stack.Navigator initialRouteName="Login ">
     <Stack.Screen name="Login" component={SigninRoutes[0].component} />
