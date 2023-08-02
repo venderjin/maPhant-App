@@ -1,5 +1,5 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { Field,Formik } from "formik";
+import { Field, Formik } from "formik";
 import React from "react";
 // import { SearchBar } from "@rneui/themed";
 import { ScrollView } from "react-native";
@@ -106,6 +106,9 @@ const Signup = () => {
                 if (response.success) {
                   //라우터 넣으면 됨
                   navigation.navigate("Confirm", values);
+                } else {
+                  console.log(response.errors);
+                  alert(response.errors);
                 }
               })
               .catch(error => {
@@ -145,9 +148,6 @@ const Signup = () => {
               <Spacer size={10} />
 
               <Field placeholder="이름" name="name" component={CustomInput} />
-              <Spacer size={10} />
-
-              <Field placeholder="전화번호" name="phoneNumber" component={CustomInput} />
               <Spacer size={10} />
 
               <Field
