@@ -5,6 +5,7 @@ import SearchUniversity from "../App/Signup/SearchUniversity";
 import Signup from "../App/Signup/Signup";
 import TermsSet from "../App/Signup/TermsSet";
 import { RouteType } from "../types/Navigation";
+import { ISignupForm } from "../types/SignUp";
 
 const SignupRoutes: RouteType[] = [
   {
@@ -36,17 +37,14 @@ const SignupRoutes: RouteType[] = [
   },
 ];
 
-type ConfirmRoute = {
-  email: string;
-};
 type SignInNavigationProp = {
   Login: undefined;
   find: undefined;
   TermsSet: undefined;
   Signup: undefined;
-  SearchUniversity: undefined;
-  Confirm: ConfirmRoute;
+  SearchUniversity: ISignupForm;
+  Confirm: ISignupForm;
 };
 
-export type { ConfirmRoute, SignInNavigationProp };
+export type { SignInNavigationProp, ISignupForm as SignUpFormParams };
 export default SignupRoutes;

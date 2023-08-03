@@ -18,7 +18,7 @@ function fetchAPI<T extends statusResponse>(
   url: string,
   body?: object,
   showLoadingOverlay?: boolean,
-) {
+): Promise<T> {
   if (showLoadingOverlay) UIStore.showLoadingOverlay();
 
   return UserStorage.getUserToken().then(token => {

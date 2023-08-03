@@ -69,7 +69,7 @@ const Home: React.FC = () => {
     setCurrentinfoPage(infoPage);
   };
 
-  const createInfoView = (info: ImageSourcePropType[], index: number) => {
+  const createInfoView = (info: ImageSourcePropType[]) => {
     return info.map((image: ImageSourcePropType, index: number) => (
       <View
         key={index}

@@ -27,22 +27,19 @@ const Login: React.FC = () => {
     UIStore.showLoadingOverlay();
     UserAPI.login(email, password)
       .then(res => {
-        if (res.message == "Not found") {
-          Toast.show("존재하지 않는 이메일 입니다", { duration: Toast.durations.SHORT });
-          return;
-        }
-        if (res.message == "Invalid password") {
-          Toast.show("비밀번호가 틀렸습니다", { duration: Toast.durations.SHORT });
-          return;
-        }
-
         UserStorage.setUserToken(res["pubKey"], res["privKey"]);
 
         return UserAPI.getProfile();
       })
-      .then(res => {
-        if (res === undefined) return;
-        UserStorage.setUserProfile(res.data);
+      .catch(message => {
+        if (message == "Not found") {
+          Toast.show("존재하지 않는 이메일 입니다", { duration: Toast.durations.SHORT });
+          return;
+        }
+        if (message == "Invalid password") {
+          Toast.show("비밀번호가 틀렸습니다", { duration: Toast.durations.SHORT });
+          return;
+        }
       })
       .finally(() => {
         UIStore.hideLoadingOverlay();
@@ -62,7 +59,7 @@ const Login: React.FC = () => {
         <View>
           <Spacer size={100} />
           <ImageBox
-            source={require("../../../assets/favicon.png")}
+            source={require("../../../assets/logo_ko.png")}
             isCenter={true}
             width={100}
           ></ImageBox>
