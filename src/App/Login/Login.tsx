@@ -29,7 +29,9 @@ const Login: React.FC = () => {
       .then(res => {
         UserStorage.setUserToken(res["pubKey"], res["privKey"]);
 
-        return UserAPI.getProfile();
+        return UserAPI.getProfile().then(res => {
+          UserStorage.setUserProfile(res.data);
+        });
       })
       .catch(message => {
         if (message == "Not found") {
