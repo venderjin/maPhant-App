@@ -1,5 +1,6 @@
 import Chatroom from "../App/Mail/Chatroom";
 import Mail from "../App/Mail/Mail";
+import SearchUser from "../App/Mail/SearchUser";
 import { RouteType } from "../types/Navigation";
 
 const Routes: RouteType[] = [
@@ -10,6 +11,10 @@ const Routes: RouteType[] = [
   {
     name: "Chatroom",
     component: Chatroom,
+  },
+  {
+    name: "SearchUser",
+    component: SearchUser,
   },
 ];
 
