@@ -1,12 +1,17 @@
 import { combineReducers, configureStore, createSlice } from "@reduxjs/toolkit";
 
+import { UserData } from "../Api/memberAPI";
+
+type userStateType = {
+  token: string | null | undefined;
+  privKey: string | null | undefined;
+  profile: UserData | null | undefined;
+};
+
+const userState: userStateType = { token: undefined, privKey: undefined, profile: undefined };
 const userSlice = createSlice({
   name: "user",
-  initialState: {
-    token: null,
-    privKey: null,
-    profile: null,
-  },
+  initialState: userState,
   reducers: {
     setToken: (state, action) => {
       return {

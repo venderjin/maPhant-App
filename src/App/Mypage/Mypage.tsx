@@ -1,12 +1,10 @@
 import { FontAwesome } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { ColorValue, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { UserData } from "../../Api/memberAPI";
 import UserStorage from "../../storage/UserStorage";
-import { NavigationProps } from "../../Navigator/Routes";
 
 type sectionItem = {
   title?: string;
@@ -172,7 +170,7 @@ const MyView = () => {
   );
 };
 
-export default function () {
+export default function MyPage() {
   return (
     <ScrollView style={styles.container}>
       <MyView />

@@ -9,14 +9,22 @@ type UserTokenData = {
 };
 
 class UserStorage {
-  static async getUserToken(): Promise<UserTokenData | undefined> {
+  static async loadUserDataOnStartUp(): Promise<void> {
+    const token = await this.getUserToken();
+    const profile = await this.getUserProfile();
+
+    reduxStore.dispatch(userSlice.actions.setToken(token));
+    reduxStore.dispatch(userSlice.actions.setProfile(profile));
+  }
+
+  static async getUserToken(): Promise<UserTokenData | null> {
     const token = await Storage.read<string>(storageKey.USER_TOKEN);
     const privKey = await Storage.read<string>(storageKey.USER_PRIVKEY);
 
     if (token && privKey) {
       return { token, privKey };
     }
-    return Promise.resolve(undefined);
+    return null;
   }
   static async getUserProfile(): Promise<UserData | null> {
     return await Storage.read<UserData>(storageKey.USER_PROFILE);
@@ -44,6 +52,8 @@ class UserStorage {
       Promise.resolve(token !== null),
     );
   }
+
+  static isUserDataLoadingSelector = (state: RootState) => state.user.token === undefined;
   static isUserLoggedInSelector = (state: RootState) => state.user.token !== null;
   static userProfileSelector = (state: RootState) => state.user.profile;
 }

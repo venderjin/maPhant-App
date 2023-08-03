@@ -1,5 +1,5 @@
 import { NavigationContainer, useTheme } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect } from "react";
 import Spinner from "react-native-loading-spinner-overlay";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -14,11 +14,16 @@ import UserStorage from "./src/storage/UserStorage";
 const App = () => {
   const isLogged = useSelector(UserStorage.isUserLoggedInSelector);
   const showLoadingOverlay = useSelector(UIStore.isLoadingUIVisibleSelector);
+  const isUserDataLoading = useSelector(UserStorage.isUserDataLoadingSelector);
+
+  useEffect(() => {
+    UserStorage.loadUserDataOnStartUp();
+  }, [isUserDataLoading]);
 
   return (
     <>
       <Spinner visible={showLoadingOverlay} textContent={"Loading..."} />
-      {isLogged ? <MainScreen /> : <Login />}
+      {isLogged || isUserDataLoading ? <MainScreen /> : <Login />}
     </>
   );
 };
