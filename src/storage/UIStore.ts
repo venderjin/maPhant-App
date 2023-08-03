@@ -8,7 +8,7 @@ class UIStore {
     reduxStore.dispatch(LoadingUIStore.actions.hideLoading());
   }
 
-  static isLoadingUIVisible = (state: RootState) => state.LoadingUI > 0;
+  static isLoadingUIVisibleSelector = (state: RootState) => state.LoadingUI > 0;
 }
 
 export default UIStore;

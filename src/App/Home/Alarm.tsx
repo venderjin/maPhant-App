@@ -1,9 +1,7 @@
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
-import { Feather, FontAwesome } from "@expo/vector-icons";
-import { useState } from "react";
-import Theme from "../Style/Theme";
-import loadDefaultStyles from "../Style/styles/Alarmcss";
 import { useTheme } from "@react-navigation/native";
+import { Pressable,ScrollView, Text, View } from "react-native";
+
+import loadDefaultStyles from "../Style/styles/Alarmcss";
 
 const boardData = [
   {

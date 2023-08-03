@@ -1,23 +1,29 @@
-import React, { useEffect, useState } from "react";
+import { NavigationContainer, useTheme } from "@react-navigation/native";
+import React, { useEffect } from "react";
+import Spinner from "react-native-loading-spinner-overlay";
+import { RootSiblingParent } from "react-native-root-siblings";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Provider, useSelector } from "react-redux";
 
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Mail from "./src/App/Mail/Mail";
-import Mypage from "./src/App/Mypage/Mypage";
-import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import Home from "./src/App/Home/Index";
-import BoardListStack from "./src/App/Board/index";
+import MainScreen from "./src/App/Index";
 import Login from "./src/App/Login/Index";
-import { Provider, useSelector, useDispatch } from "react-redux";
-import AppLoading from "expo-app-loading";
-import reduxStore, { userSlice } from "./src/storage/reduxStore";
+import reduxStore from "./src/storage/reduxStore";
+import UIStore from "./src/storage/UIStore";
 import UserStorage from "./src/storage/UserStorage";
 import UIStore from "./src/storage/UIStore";
 import Spinner from "react-native-loading-spinner-overlay";
 
 const Tab = createBottomTabNavigator();
 
+const AppWrapper = () => (
+  <Provider store={reduxStore}>
+    <App />
+  </Provider>
+);
+
 const App = () => {
+  const [isDark, setIsDark] = useState<boolean>(false);
+  console.log(DarkTheme);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
 
   useEffect(() => {
@@ -40,19 +46,26 @@ const App = () => {
   }, []);
 
   const isLogged = useSelector(UserStorage.isUserLoggedInSelector);
+  const showLoadingOverlay = useSelector(UIStore.isLoadingUIVisibleSelector);
+  const isUserDataLoading = useSelector(UserStorage.isUserDataLoadingSelector);
 
-  if (isLogged == false) {
-    return (
-      <ThemeContext.Provider value={[isDark, setIsDark]}>
-        <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
-          <Home />
-        </NavigationContainer>
-      </ThemeContext.Provider>
-    );
-  }
+  useEffect(() => {
+    UserStorage.loadUserDataOnStartUp();
+  }, [isUserDataLoading]);
+
   return (
-    // Stx
-    <NavigationContainer>
+    <>
+      <Spinner visible={showLoadingOverlay} textContent={"Loading..."} />
+      {isLogged || isUserDataLoading ? <MainScreen /> : <Login />}
+    </>
+  );
+};
+
+const AppWrapper = () => {
+  const theme = useTheme();
+
+  return (
+    <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
       <Tab.Navigator>
         <Tab.Screen
           name="홈"

@@ -1,11 +1,9 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { Ionicons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
-import dayjs, { Dayjs } from "dayjs";
-import duration, { Duration } from "dayjs/plugin/duration";
 import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
+import React from "react";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import { Container } from "../../components/common";
 
 const mailData = [
   {
@@ -109,7 +107,7 @@ const mailData = [
 // }
 
 const Mail: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProps>();
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />

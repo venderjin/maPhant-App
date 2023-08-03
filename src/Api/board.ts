@@ -1,113 +1,79 @@
-import { BoardPost, BoardPostMockup } from "../types/Board";
+import { dataResponse,DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
-function listArticle(
-  board_id: String,
-  page: Number = 1
-): Promise<BoardPostMockup[]> {
-  const boardData = [
-    {
-      id: 1,
-      board: "자유 게시판",
-      title: "HI",
-      content: "안녕하세요",
-      userName: "김민수",
-      created: "20분 전",
-      good: 0,
-      commant: 0,
-    },
-    {
-      id: 2,
-      board: "지식 게시판",
-      title: "Hello",
-      content: "안녕하세요",
-      userName: "anjgkwl",
-      created: "30분 전",
-      good: 2,
-      commant: 2,
-    },
-    {
-      id: 3,
-      board: "Q&A 게시판",
-      title: "How are you?",
-      content: "안녕하세요",
-      userName: "dkanrjsk",
-      created: "1시간 전",
-      good: 8,
-      commant: 5,
-    },
-    {
-      id: 4,
-      board: "",
-      title: "I'm fine, thank you.",
-      content: "안녕하세요 ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
-      userName: "dkanrjsk",
-      created: "3시간 전",
-      good: 0,
-      commant: 5,
-    },
-    {
-      id: 5,
-      board: "자유 게시판",
-      title: "And you?",
-      content: "안녕하세요",
-      userName: "dkanrjsk",
-      created: "2023-06-30",
-      good: 8,
-      commant: 0,
-    },
-    {
-      id: 6,
-      board: "자유 게시판",
-      title: "Good bye.",
-      content: "안녕하세요",
-      userName: "dkssud",
-      created: "2023-06-30",
-      good: 7,
-      commant: 5,
-    },
-    {
-      id: 8,
-      board: "자유 게시판",
-      title: "See you tomorrow.",
-      content: "안녕하세요",
-      userName: "dkanrjsk",
-      created: "2023-06-30",
-      good: 8,
-      commant: 5,
-    },
-    {
-      id: 9,
-      board: "자유 게시판",
-      title: "See you tomorrow.",
-      content: "안녕하세요",
-      userName: "dkanrjsk",
-      created: "2023-06-30",
-      good: 8,
-      commant: 5,
-    },
-    {
-      id: 10,
-      board: "자유 게시판",
-      title: "See you tomorrow.",
-      content: "안녕하세요",
-      userName: "dkanrjsk",
-      created: "2023-06-30",
-      good: 8,
-      commant: 5,
-    },
-    {
-      id: 11,
-      board: "자유 게시판",
-      title: "See you tomorrow.",
-      content: "안녕하세요",
-      userName: "dkanrjsk",
-      created: "2023-06-30",
-      good: 8,
-      commant: 5,
-    },
-  ];
+const listArticle = (
+  boardType: string,
+  sortCriterion: string = "likeCnt",
+  page: number = 1,
+  pageSize: number = 10,
+  category: string = "",
+): Promise<dataResponse> =>
+  PostAPI<dataResponse>(`/board/main`, {
+    category: category,
+    boardType: boardType,
+    sortCriterion: sortCriterion,
+    page: page,
+    pageSize: pageSize,
+  });
 
-  return Promise.resolve(boardData);
+function boardPost(
+  parentId: null | number,
+  categoryId: number,
+  userId: number,
+  typeId: number,
+  title: string,
+  body: string,
+  isHide: 0 | 1,
+  isComplete: 0 | 1,
+  isAnonymous: 0 | 1,
+) {
+  return PostAPI(`/board/create`, {
+    parentId,
+    categoryId,
+    userId,
+    typeId,
+    title,
+    body,
+    isHide,
+    isComplete,
+    isAnonymous,
+  });
 }
 
-export { listArticle };
+function boardEdit(id: number, title: string, body: string, isHide: 0 | 1) {
+  return PutAPI(`/board/update`, {
+    id,
+    title,
+    body,
+    isHide,
+  });
+}
+
+function boardDelete() {
+  return DeleteAPI(`/board/10`);
+}
+function getArticle(board_id: string) {
+  return PostAPI(`/board/${board_id}`);
+}
+
+function insertLikePost(board_id: string) {
+  return GetAPI(`/board/like/${board_id}`);
+}
+
+function deleteLikeBoard(board_id: string) {
+  return DeleteAPI(`/board/like/${board_id}`);
+}
+
+function searchArticle() {
+  return GetAPI(`/board/search`);
+}
+
+export {
+  boardDelete,
+  boardEdit,
+  boardPost,
+  deleteLikeBoard,
+  getArticle,
+  insertLikePost,
+  listArticle,
+  searchArticle,
+};

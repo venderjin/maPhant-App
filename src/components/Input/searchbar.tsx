@@ -1,17 +1,11 @@
 import { useState } from "react";
 import {
+  Dimensions,
   StyleSheet,
-  View,
-  Text,
   TextInput,
   TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  NativeModules,
-  Dimensions,
+  View,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Ionicons";
 
 const searchbar = () => {

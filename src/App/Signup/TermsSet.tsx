@@ -1,25 +1,16 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  KeyboardAvoidingView,
-  SafeAreaView,
-  ScrollView,
-  FlatList,
-} from "react-native";
-
-import CheckBox from "expo-checkbox";
 import { useNavigation } from "@react-navigation/native";
-import { TextButton, Container } from "../../components/common";
+import CheckBox from "expo-checkbox";
+import React, { useEffect, useState } from "react";
+import { Text, TouchableOpacity } from "react-native";
+
+import { Container, TextButton } from "../../components/common";
+import { NavigationProps } from "../../Navigator/Routes";
 
 const TermsSet: React.FC = () => {
   const [checkList, setCheckList] = useState<string[]>([]);
   const [buttonColor, setButtonColor] = useState<boolean>(false);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProps>();
 
   const checkAll = (isChecked: boolean) => {
     if (isChecked) {
