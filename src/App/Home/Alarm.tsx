@@ -1,6 +1,7 @@
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
-import { Feather, FontAwesome } from "@expo/vector-icons";
-import { useState } from "react";
+import { useTheme } from "@react-navigation/native";
+import { Pressable,ScrollView, Text, View } from "react-native";
+
+import loadDefaultStyles from "../Style/styles/Alarmcss";
 
 const boardData = [
   {
@@ -87,6 +88,9 @@ const Alarm: React.FC = () => {
   // const handlePress = () => {
   //   setShow(true);
   // };
+  const theme = useTheme();
+  const styles = loadDefaultStyles(theme);
+
   return (
     <ScrollView style={styles.container}>
       {boardData.map(board => (
@@ -105,12 +109,16 @@ const Alarm: React.FC = () => {
                   <Text style={styles.title}>{board.title}</Text>
                 </View>
                 <View>
-                  <Text style={styles.comment}>
+                  <Text style={{ ...styles.comment, color: theme.colors.text }}>
                     {board.comment}&#9;&#40;&#9;{board.add}&#9;&#41;
                   </Text>
                 </View>
                 <View style={styles.head}>
-                  <Text style={{ justifyContent: "flex-end", fontSize: 10 }}>{board.created}</Text>
+                  <Text
+                    style={{ justifyContent: "flex-end", fontSize: 10, color: theme.colors.text }}
+                  >
+                    {board.created}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -120,72 +128,4 @@ const Alarm: React.FC = () => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    borderTopWidth: 1,
-    borderTopColor: "#D8E1EC",
-  },
-  body: {
-    borderBottomColor: "#D0D0D0",
-    borderBottomWidth: 1,
-    paddingVertical: 10,
-    backgroundColor: "#D8E1EC",
-  },
-  showbody: {
-    borderBottomColor: "#D0D0D0",
-    borderBottomWidth: 1,
-    paddingVertical: 10,
-  },
-  head: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  body2: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  content: {
-    flex: 1,
-    justifyContent: "flex-start",
-  },
-  title: {
-    fontSize: 20,
-    justifyContent: "flex-start",
-    fontWeight: "bold",
-  },
-  board: {
-    fontSize: 15,
-    color: "gray",
-    justifyContent: "flex-start",
-  },
-  userName: {
-    fontSize: 10,
-    color: "gray",
-  },
-  comment: {
-    fontSize: 15,
-    marginVertical: 5,
-  },
-  bottom: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  good: {
-    flex: 1,
-    fontSize: 10,
-    justifyContent: "flex-start",
-  },
-  command: {
-    flex: 9,
-    fontSize: 10,
-  },
-});
-
 export default Alarm;

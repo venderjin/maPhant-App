@@ -1,7 +1,10 @@
-import React from "react";
 import { FontAwesome } from "@expo/vector-icons";
-import { View, Text, ColorValue, Pressable, ScrollView, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import { ColorValue, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
+
+import { UserData } from "../../Api/memberAPI";
+import UserStorage from "../../storage/UserStorage";
 
 type sectionItem = {
   title?: string;
@@ -13,6 +16,7 @@ type sectionItem = {
     title: string;
     // description: string;
     href: string;
+    onclick?: () => void;
   }[];
 };
 
@@ -31,6 +35,9 @@ const sections: sectionItem[] = [
       {
         title: "로그아웃",
         // description: "장치를 로그아웃하여 새 계정으로 전환합니다.",
+        onclick: () => {
+          UserStorage.removeUserData();
+        },
         href: "2",
       },
     ],
@@ -67,7 +74,7 @@ const sections: sectionItem[] = [
 
 function Section({ item }: { item: sectionItem }) {
   const last_idx = item.contents.length - 1;
-  const navigation = useNavigation();
+  // const navigation = useNavigation<NavigationProps>();
 
   return (
     <View style={styles.view}>
@@ -81,6 +88,7 @@ function Section({ item }: { item: sectionItem }) {
         >
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             <FontAwesome
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               name={item.icon as any}
               size={18}
               style={{ marginTop: 3 }}
@@ -97,8 +105,8 @@ function Section({ item }: { item: sectionItem }) {
         }}
       >
         {item.contents.map((content, index) => (
-          <>
-            <Pressable key={content.href}>
+          <View key={index}>
+            <Pressable onPress={content.onclick}>
               <View
                 style={{
                   alignContent: "space-between",
@@ -140,7 +148,7 @@ function Section({ item }: { item: sectionItem }) {
                 }}
               />
             )}
-          </>
+          </View>
         ))}
       </View>
     </View>
@@ -148,25 +156,26 @@ function Section({ item }: { item: sectionItem }) {
 }
 
 const MyView = () => {
-  const navigation = useNavigation();
+  const profile = useSelector(UserStorage.userProfileSelector)! as UserData;
+
   return (
     <View style={styles.view}>
-      <Text style={styles.nickName}>Nick Name</Text>
+      <Text style={styles.nickName}>{profile.nickname}</Text>
       <View style={styles.info}>
-        <Text>실명 / </Text>
-        <Text>학교 - </Text>
-        <Text>학과</Text>
+        <Text>{profile.name} / </Text>
+        <Text>{profile.role} - </Text>
+        <Text>{profile.majorId}</Text>
       </View>
     </View>
   );
 };
 
-export default function () {
+export default function MyPage() {
   return (
     <ScrollView style={styles.container}>
       <MyView />
-      {sections.map(section => (
-        <Section item={section} />
+      {sections.map((section, index) => (
+        <Section key={index.toString()} item={section} />
       ))}
     </ScrollView>
   );
