@@ -16,7 +16,7 @@ const QnABoard: React.FC = () => {
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
 
   useEffect(() => {
-    listArticle(boardType)
+    listArticle(1, 10, "likeCnt")
       .then(data => {
         if (data.data) setboardData(data.data as BoardArticle[]);
       })
@@ -53,7 +53,11 @@ const QnABoard: React.FC = () => {
       <View style={styles.total}>
         <View style={styles.hHead}>
           <Text style={styles.hFont}> 최신 게시글</Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("DetailList" as never);
+            }}
+          >
             <Text style={styles.detail}>더보기</Text>
           </TouchableOpacity>
         </View>

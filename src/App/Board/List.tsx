@@ -1,7 +1,7 @@
 import { Entypo } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text,TouchableOpacity, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { listArticle } from "../../Api/board";
 import { BoardArticle, BoardType } from "../../types/Board";

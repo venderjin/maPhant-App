@@ -44,7 +44,7 @@ const BoardList = () => {
     return (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("DetailList", { boardType: boardType });
+          navigation.navigate("QnABoard", { boardType: boardType });
         }}
       >
         <View style={styles.boardList} key={boardType.id}>
