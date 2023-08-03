@@ -18,6 +18,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
+import { NavigationProps } from "../../Navigator/Routes";
 import { ThemeContext } from "../Style/ThemeContext";
 interface Tags {
   id: string | undefined;
@@ -253,7 +254,7 @@ const Home: React.FC = () => {
             <View style={[styles.infoPage, { backgroundColor: "green" }]}>
               
             </View> */}
-            {createInfoView(info, currentinfoPage)}
+            {createInfoView(info)}
           </ScrollView>
 
           <View style={styles.infoDotBox}>
