@@ -4,15 +4,22 @@ import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { listArticle } from "../../Api/board";
+import { Container } from "../../components/common";
 import { BoardArticle, BoardType } from "../../types/Board";
 import PostSummary from "./PostSummary";
+
 const DetailList: React.FC = () => {
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
+  // const [sort, setSort] = useState<SortType[]>([]);
+
+  // sortCriterion().then(data => {
+  //   setSort(data.data as SortType);
+  // }).catch(err => console.log(err));
 
   useEffect(() => {
-    listArticle(boardType)
+    listArticle(boardType.id, 1, 1, 1)
       .then(data => {
         if (data.data) setboardData(data.data as BoardArticle[]);
       })
@@ -22,7 +29,7 @@ const DetailList: React.FC = () => {
     console.log("글쓰기 화면으로 바뀌어야함");
   };
   return (
-    <View style={styles.container}>
+    <Container>
       <ScrollView>
         {boardData.map(board => (
           <View key={board.boardId} style={styles.body}>
@@ -39,7 +46,7 @@ const DetailList: React.FC = () => {
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Container>
   );
 };
 

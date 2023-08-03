@@ -4,26 +4,33 @@ import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import { listArticle } from "../../Api/board";
+import { Container } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import { BoardArticle, BoardType } from "../../types/Board";
 import ScrollList from "./ScrollList";
-// const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const QnABoard: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
+  // const [sort, setSort] = useState<SortType>();
+
+  // sortCriterion()
+  //   .then(data => {
+  //     setSort(data.data as SortType);
+  //   })
+  //   .catch(err => console.log(err));
 
   useEffect(() => {
-    listArticle(1, 10, "likeCnt")
+    listArticle(boardType.id, 1, 1, 1)
       .then(data => {
         if (data.data) setboardData(data.data as BoardArticle[]);
       })
       .catch(err => console.log(err));
   }, []);
   return (
-    <View style={styles.container}>
+    <Container>
       <View style={styles.total}>
         <View style={styles.hHead}>
           <Text style={styles.hFont}>
@@ -69,7 +76,7 @@ const QnABoard: React.FC = () => {
           ))}
         </ScrollView>
       </View>
-    </View>
+    </Container>
   );
 };
 

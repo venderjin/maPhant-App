@@ -34,10 +34,9 @@ const BoardList = () => {
   useEffect(() => {
     listBoardType()
       .then(data => {
-        console.log(data);
         setboardTypeData(data.data as BoardType[]);
       })
-      .catch(err => console.log(err));
+      .catch(err => alert(err));
   }, []);
 
   const BoardNavigateBtn: React.FC<{ boardType: BoardType }> = ({ boardType }) => {
