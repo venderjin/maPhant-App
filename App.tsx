@@ -1,16 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { AppearanceProvider } from "react-native-appearance";
-import { NavigationContainer, DarkTheme, DefaultTheme } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+
+import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Mail from "./src/App/Mail/Mail";
 import Mypage from "./src/App/Mypage/Mypage";
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Home from "./src/App/Home/Index";
 import BoardListStack from "./src/App/Board/index";
-// import SignupRoutes from "./src/Navigator/SignupRoutes";
-// import Signup from "./src/App/Member/Signup";
-import { boolean } from "yup";
-import { ThemeContext, ThemeContextType } from "./src/App/Style/ThemeContext";
 import Login from "./src/App/Login/Index";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import AppLoading from "expo-app-loading";
@@ -21,15 +17,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 
 const Tab = createBottomTabNavigator();
 
-const AppWrapper = () => (
-  <Provider store={reduxStore}>
-    <Mail />
-  </Provider>
-);
-
 const App = () => {
-  const [isDark, setIsDark] = useState<boolean>(false);
-  console.log(DarkTheme);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
 
   useEffect(() => {
@@ -63,7 +51,8 @@ const App = () => {
     );
   }
   return (
-    <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
+    // Stx
+    <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen
           name="홈"
