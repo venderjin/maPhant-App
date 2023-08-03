@@ -1,10 +1,12 @@
 import { Theme, useNavigation, useTheme } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import React, { useContext,useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
   ImageSourcePropType,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -45,7 +47,7 @@ const Home: React.FC = () => {
 
   // * Search
   const [text, setText] = useState<string>();
-  const [styles, setStyleSheet] = useState<any>(createStyle(SCREEN_WIDTH, SCREEN_HEIGHT, theme));
+  const [styles, setStyleSheet] = useState(createStyle(SCREEN_WIDTH, SCREEN_HEIGHT, theme));
 
   const clearTextHandler = () => {
     console.log("Search Text Delete Done");
@@ -57,18 +59,19 @@ const Home: React.FC = () => {
   const [currentinfoPage, setCurrentinfoPage] = useState(0);
   const infoPageCount = 3; // 페이지 수
 
-  const [info, setInfo] = useState<ImageSourcePropType[]>([
+  const [info /*, setInfo*/] = useState<ImageSourcePropType[]>([
     require("../../../assets/image1.png"),
     require("../../../assets/image2.png"),
     require("../../../assets/image3.png"),
   ]); // 들어갈 컨텐츠
 
-  const handleScroll = (event: any) => {
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = event.nativeEvent.contentOffset.x;
     const infoPage = Math.round((offsetX / SCREEN_WIDTH) * 0.9);
     setCurrentinfoPage(infoPage);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const createInfoView = (info: ImageSourcePropType[], index: number) => {
     return info.map((image: ImageSourcePropType, index: number) => (
       <View
@@ -92,7 +95,7 @@ const Home: React.FC = () => {
 
   // Info *
   // * HotTags
-  const [tags, setTags] = useState<Tags[]>([
+  const [tags /*, setTags*/] = useState<Tags[]>([
     //useState를 이용해 상태 변경
     { id: "1", title: "#오정민" }, //초기값 설정
     { id: "2", title: "#앗뜨거 앗뜨" },

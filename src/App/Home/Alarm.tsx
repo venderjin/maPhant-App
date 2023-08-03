@@ -1,5 +1,5 @@
 import { useTheme } from "@react-navigation/native";
-import { Pressable,ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 import loadDefaultStyles from "../Style/styles/Alarmcss";
 
@@ -102,7 +102,7 @@ const Alarm: React.FC = () => {
             style={board.show ? styles.showbody : styles.body}
           >
             <View style={styles.body2}>
-              {/* <FontAwesome name={board.icon} size={24} color="grey" style={{ marginRight: 10 }} /> */}
+              {/*  <FontAwesome name={board.icon} size={24} color="grey" style={{ marginRight: 10 }} /> */}
               <View style={styles.content}>
                 <Text style={styles.board}>{board.board}</Text>
                 <View style={styles.head}>
