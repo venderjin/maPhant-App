@@ -8,7 +8,7 @@ const ProfileModify: React.FC = () => {
     <Container isFullScreen={true} paddingHorizontal={0}>
       <ScrollView style={styles.container}>
         <View>
-          <Text>회원정보 수정하기!!!!!!!!!</Text>
+          <Text>회원정보 수정하기!!!!!</Text>
         </View>
       </ScrollView>
     </Container>
