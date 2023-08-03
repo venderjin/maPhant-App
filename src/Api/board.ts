@@ -67,17 +67,12 @@ function sortCriterion() {
   return GetAPI(`/board/sortCriterion`);
 }
 
-function getBoardType() {
-  return GetAPI(`/board/boardType`);
-}
-
 export {
   boardDelete,
   boardEdit,
   boardPost,
   deleteLikeBoard,
   getArticle,
-  getBoardType,
   insertLikePost,
   listArticle,
   listBoardType,
