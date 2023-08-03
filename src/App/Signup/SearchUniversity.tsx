@@ -1,133 +1,89 @@
-import React, { useState } from "react";
-import { SearchBar } from "@rneui/themed";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  KeyboardAvoidingView,
-  SafeAreaView,
-  ScrollView,
-  FlatList,
-} from "react-native";
-import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Field, Formik } from "formik";
+import React from "react";
+import { StyleSheet } from "react-native";
+import * as Yup from "yup";
 
-type Item = {
-  id: number;
-  name: string;
-};
+import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
+import { Container, TextButton } from "../../components/common";
+import Search from "../../components/Member/Search";
+import { NavigationProps } from "../../Navigator/Routes";
+import { SignUpFormParams } from "../../Navigator/SigninRoutes";
+import UIStore from "../../storage/UIStore";
+
+interface ISearchForm {
+  field: string;
+  major: string;
+}
 
 const SearchUniversity: React.FC = () => {
-  const [field, setField] = useState("");
-  const [major, setMajor] = useState("");
-  const [searchfield, setSearchField] = useState("");
-  const [searchmajor, setSearchMajor] = useState("");
-  const [filteredData, setFilteredData] = useState<Item[]>([]);
+  const route = useRoute();
+  const params = route.params as SignUpFormParams;
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProps>();
+  const validationSchema = Yup.object().shape({
+    field: Yup.string().required("계열 입력해 주세요."),
+    major: Yup.string().required("전공 입력해 주세요."),
+  });
 
-  const data1: Item[] = [
-    { id: 1, name: "Apple" },
-    { id: 2, name: "Banana" },
-    { id: 3, name: "Orange" },
-    { id: 4, name: "Pineapple" },
-    { id: 5, name: "Mango" },
-    { id: 6, name: "Strawberry" },
-    { id: 7, name: "Lemon" },
-  ];
-  const data2: Item[] = [
-    { id: 1, name: "Apple" },
-    { id: 2, name: "Banana" },
-    { id: 3, name: "Orange" },
-    { id: 4, name: "Pineapple" },
-    { id: 5, name: "Mango" },
-    { id: 6, name: "Strawberry" },
-    { id: 7, name: "Lemon" },
-  ];
-
-  const updateSearch1 = (text: string) => {
-    setSearchField(text);
-
-    // 검색어를 이용하여 데이터를 필터링
-    const filteredItems1 = data1.filter(item =>
-      item.name.toLowerCase().includes(text.toLowerCase()),
-    );
-
-    setFilteredData(filteredItems1);
-    setField(text);
-  };
-
-  const updateSearch2 = (text: string) => {
-    setSearchMajor(text);
-
-    // 검색어를 이용하여 데이터를 필터링
-    const filteredItems2 = data2.filter(item =>
-      item.name.toLowerCase().includes(text.toLowerCase()),
-    );
-
-    setFilteredData(filteredItems2);
-    setMajor(text);
+  const SearchForm: ISearchForm = {
+    field: "",
+    major: "",
   };
 
   return (
-    <View style={styles.container}>
-      <View>
-        <SearchBar
-          placeholder="Search Field..."
-          onChangeText={updateSearch1}
-          value={searchfield}
-          containerStyle={styles.searchBarContainer}
-          inputContainerStyle={styles.searchBarInputContainer}
-        />
-
-        <FlatList
-          data={filteredData}
-          keyExtractor={item => item.id.toString()}
-          renderItem={({ item }) =>
-            field == "" ? (
-              <></>
-            ) : (
-              <View style={styles.itemContainer}>
-                <Text style={styles.itemText}>{item.name}</Text>
-              </View>
-            )
-          }
-        />
-      </View>
-      <View>
-        <SearchBar
-          placeholder="Search Major..."
-          onChangeText={updateSearch2}
-          value={searchmajor}
-          containerStyle={styles.searchBarContainer}
-          inputContainerStyle={styles.searchBarInputContainer}
-        />
-
-        <FlatList
-          data={filteredData}
-          keyExtractor={item => item.id.toString()}
-          renderItem={({ item }) =>
-            major == "" ? (
-              <></>
-            ) : (
-              <View style={styles.itemContainer}>
-                <Text style={styles.itemText}>{item.name}</Text>
-              </View>
-            )
-          }
-        />
-      </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          navigation.navigate("Confirm" as never);
-        }}
-      >
-        <Text style={styles.finish}> Finish</Text>
-      </TouchableOpacity>
-    </View>
+    <Formik
+      initialValues={SearchForm}
+      validationSchema={validationSchema}
+      onSubmit={async values => {
+        UIStore.showLoadingOverlay();
+        await categorymajor(params.email, values.field, values.major)
+          .then(response => {
+            if (response.success) {
+              alert("회원가입이 완료되었습니다.");
+              navigation.navigate("Login");
+            }
+          })
+          .catch(error => {
+            alert(`학과 등록에 실패하였습니다.: ${error}`);
+          })
+          .finally(() => UIStore.hideLoadingOverlay());
+      }}
+    >
+      {({ handleSubmit }) => (
+        <Container style={styles.container}>
+          <Container style={styles.FlistContainer}>
+            <Field
+              placeholder="계열 입력해 주세요."
+              name="field"
+              list={fieldList}
+              component={Search}
+            />
+          </Container>
+          <Container style={styles.MlistContainer}>
+            <Field
+              placeholder="전공 입력해 주세요."
+              name="major"
+              list={majorList}
+              component={Search}
+            />
+          </Container>
+          <TextButton
+            style={{
+              backgroundColor: "#000",
+              paddingVertical: 15,
+              paddingHorizontal: 20,
+              borderRadius: 30,
+              marginTop: 40,
+            }}
+            fontColor={"white"}
+            onPress={handleSubmit}
+          >
+            Finish
+          </TextButton>
+        </Container>
+      )}
+    </Formik>
   );
 };
 
@@ -139,16 +95,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     paddingTop: 80,
   },
-  finish: {
-    color: "white",
-    textAlign: "center",
+  FlistContainer: {
+    flex: 1,
+    marginBottom: 20,
   },
-  button: {
-    backgroundColor: "#000",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    marginTop: 40,
+  MlistContainer: {
+    flex: 1,
+    marginTop: 20,
   },
   searchBarContainer: {
     backgroundColor: "transparent",

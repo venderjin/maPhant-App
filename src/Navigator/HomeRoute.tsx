@@ -1,7 +1,8 @@
-import Home from "../App/Home/Home";
 import Alarm from "../App/Home/Alarm";
+import Home from "../App/Home/Home";
+import { RouteType } from "../types/Navigation";
 
-const Routes = [
+const Routes: RouteType[] = [
   {
     name: "home",
     component: Home,
@@ -11,5 +12,10 @@ const Routes = [
     component: Alarm,
   },
 ];
+
+export type NavigationProp = {
+  home: undefined;
+  alarm: undefined;
+};
 
 export default Routes;
