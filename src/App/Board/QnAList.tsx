@@ -1,20 +1,26 @@
-import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import ScrollList from "./ScrollList";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { listArticle } from "../../Api/board";
-import { BoardPostMockup } from "../../types/Board";
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
+import { listArticle } from "../../Api/board";
+import { NavigationProps } from "../../Navigator/Routes";
+import { BoardArticle, BoardType } from "../../types/Board";
+import ScrollList from "./ScrollList";
 // const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const QnABoard: React.FC = () => {
-  const navigation = useNavigation();
-  const [boardData, setboardData] = useState<BoardPostMockup[]>([]);
+  const navigation = useNavigation<NavigationProps>();
+  const params = useRoute().params as { boardType: BoardType };
+  const boardType = params?.boardType;
+  const [boardData, setboardData] = useState<BoardArticle[]>([]);
+
   useEffect(() => {
-    listArticle("all", 1).then((data: BoardPostMockup[]) => {
-      setboardData(data);
-    });
+    listArticle(boardType)
+      .then(data => {
+        if (data.data) setboardData(data.data as BoardArticle[]);
+      })
+      .catch(err => console.log(err));
   }, []);
   return (
     <View style={styles.container}>
@@ -35,24 +41,26 @@ const QnABoard: React.FC = () => {
         </View>
         <ScrollView horizontal>
           {boardData.map(board => (
-            <View key={board.id} style={styles.content}>
-              <ScrollList post={board} />
+            <View key={board.boardId} style={styles.content}>
+              <ScrollList post={board} boardType={boardType} />
             </View>
           ))}
         </ScrollView>
       </View>
-
+      <View>
+        <TextInput placeholder="aiwebfjiabdnjk"></TextInput>
+      </View>
       <View style={styles.total}>
         <View style={styles.hHead}>
-          <Text style={styles.hFont}> 답변 기다리는 게시글</Text>
+          <Text style={styles.hFont}> 최신 게시글</Text>
           <TouchableOpacity>
             <Text style={styles.detail}>더보기</Text>
           </TouchableOpacity>
         </View>
         <ScrollView horizontal>
           {boardData.map(board => (
-            <View key={board.id} style={styles.content}>
-              <ScrollList post={board} />
+            <View key={board.boardId} style={styles.content}>
+              <ScrollList post={board} boardType={boardType} />
             </View>
           ))}
         </ScrollView>
@@ -86,7 +94,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: "flex-start",
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "skyblue",
     justifyContent: "space-between",
     minWidth: 200,
     minHeight: 90,

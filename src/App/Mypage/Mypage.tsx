@@ -1,11 +1,11 @@
-import React from "react";
 import { FontAwesome } from "@expo/vector-icons";
-import { View, Text, ColorValue, Pressable, ScrollView, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import UserStorage from "../../storage/UserStorage";
-import { GetAPI } from "../../Api/fetchAPI";
+import React from "react";
+import { ColorValue, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
+
 import { UserData } from "../../Api/memberAPI";
+import UserStorage from "../../storage/UserStorage";
 
 type sectionItem = {
   title?: string;
@@ -21,61 +21,8 @@ type sectionItem = {
   }[];
 };
 
-const sections: sectionItem[] = [
-  {
-    title: "계정 설정",
-    icon: "user",
-    color: "#5299EB",
-
-    contents: [
-      {
-        title: "회원정보 수정",
-        // description: "다른 기기를 추가하거나 삭제합니다.",
-        href: "1",
-      },
-      {
-        title: "로그아웃",
-        // description: "장치를 로그아웃하여 새 계정으로 전환합니다.",
-        onclick: () => {
-          UserStorage.removeUserData();
-        },
-        href: "2",
-      },
-    ],
-  },
-  {
-    title: "게시판 설정",
-    icon: "pencil",
-    color: "#5299EB",
-
-    contents: [
-      {
-        title: "내가 쓴 글",
-        // description: "알람을 받지 않을 시간을 설정합니다.",
-        href: "3",
-      },
-      {
-        title: "내가 쓴 댓글",
-        // description: "알림음을 설정합니다.",
-        href: "4",
-      },
-    ],
-  },
-  {
-    isNoHeader: true,
-    contents: [
-      {
-        title: "회원탈퇴",
-        // description: "공지사항 및 새소식을 확인합니다.",
-        href: "5",
-      },
-    ],
-  },
-];
-
 function Section({ item }: { item: sectionItem }) {
   const last_idx = item.contents.length - 1;
-  const navigation = useNavigation();
 
   return (
     <View style={styles.view}>
@@ -89,6 +36,7 @@ function Section({ item }: { item: sectionItem }) {
         >
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             <FontAwesome
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               name={item.icon as any}
               size={18}
               style={{ marginTop: 3 }}
@@ -105,8 +53,8 @@ function Section({ item }: { item: sectionItem }) {
         }}
       >
         {item.contents.map((content, index) => (
-          <View>
-            <Pressable key={content.href} onPress={content.onclick}>
+          <View key={index}>
+            <Pressable onPress={content.onclick}>
               <View
                 style={{
                   alignContent: "space-between",
@@ -170,7 +118,63 @@ const MyView = () => {
   );
 };
 
-export default function () {
+export default function MyPage() {
+  const sections: sectionItem[] = [
+    {
+      title: "계정 설정",
+      icon: "user",
+      color: "#5299EB",
+
+      contents: [
+        {
+          title: "회원정보 수정",
+          onclick: () => {
+            navigation.navigate("PasswordCheck");
+          },
+          // description: "다른 기기를 추가하거나 삭제합니다.",
+          href: "1",
+        },
+        {
+          title: "로그아웃",
+          // description: "장치를 로그아웃하여 새 계정으로 전환합니다.",
+          onclick: () => {
+            UserStorage.removeUserData();
+          },
+          href: "2",
+        },
+      ],
+    },
+    {
+      title: "게시판 설정",
+      icon: "pencil",
+      color: "#5299EB",
+
+      contents: [
+        {
+          title: "내가 쓴 글",
+          // description: "알람을 받지 않을 시간을 설정합니다.",
+          href: "3",
+        },
+        {
+          title: "내가 쓴 댓글",
+          // description: "알림음을 설정합니다.",
+          href: "4",
+        },
+      ],
+    },
+    {
+      isNoHeader: true,
+      contents: [
+        {
+          title: "회원탈퇴",
+          // description: "공지사항 및 새소식을 확인합니다.",
+          href: "5",
+        },
+      ],
+    },
+  ];
+  const navigation = useNavigation<NavigationProps>();
+
   return (
     <ScrollView style={styles.container}>
       <MyView />
