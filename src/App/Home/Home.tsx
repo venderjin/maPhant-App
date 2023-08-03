@@ -71,8 +71,7 @@ const Home: React.FC = () => {
     setCurrentinfoPage(infoPage);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const createInfoView = (info: ImageSourcePropType[], index: number) => {
+  const createInfoView = (info: ImageSourcePropType[]) => {
     return info.map((image: ImageSourcePropType, index: number) => (
       <View
         key={index}
@@ -163,7 +162,7 @@ const Home: React.FC = () => {
   function mapTag() {
     return tags.map((tag, index) => createTagView(tag, index));
   }
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProps>();
   // HotTags *
 
   return (

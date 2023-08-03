@@ -1,38 +1,18 @@
+import { ISignupForm } from "../../types/SignUp";
 import constraints from "../constraints";
 import { PostAPI } from "../fetchAPI";
 
-function signup(
-  email: string,
-  password: string,
-  passwordChk: string,
-  nickname: string,
-  name: string,
-  phoneNo: string,
-  sNo: string,
-  university: string,
-) {
-  return fetch(`${constraints.SERVER_URL}/user/signup`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: email,
-      password: password,
-      passwordCheck: passwordChk,
-      nickname: nickname,
-      name: name,
-      phNum: phoneNo,
-      sno: sNo,
-      univName: university,
-    }),
-  })
-    .then(response => response.json())
-    .catch(error => {
-      // 기타 오류 처리 (네트워크 요청 오류, 서버 응답 파싱 오류 등)
-      console.error("오류 발생:", error);
-      throw new Error("요청 처리 중 오류가 발생하였습니다.");
-    });
+function signup(form: ISignupForm) {
+  return PostAPI(`/user/signup`, {
+    email: form.email,
+    password: form.password,
+    passwordCheck: form.confirmPassword,
+    nickname: form.nickname,
+    name: form.name,
+    phNum: form.phoneNumber,
+    sno: form.studentNumber,
+    univName: form.university,
+  });
 }
 
 function validateEmail(email: string) {
@@ -92,18 +72,18 @@ function majorList() {
 }
 
 function sendEmail(email: string) {
-  return PostAPI(`user/changepw/sendemail`, { email: email });
+  return PostAPI(`/user/changepw/sendemail`, { email: email });
 }
 
 function authenticationCode(email: string, authCode: string) {
-  return PostAPI(`user/changepw/authenticationcode`, {
+  return PostAPI(`/user/changepw/authenticationcode`, {
     email,
     authCode,
   });
 }
 
 function newPassword(email: string, password: string, passwordChk: string) {
-  return PostAPI(`user/changepw/newpassword`, {
+  return PostAPI(`/user/changepw/newpassword`, {
     email,
     password,
     passwordChk,
@@ -111,14 +91,14 @@ function newPassword(email: string, password: string, passwordChk: string) {
 }
 
 function categorymajor(email: string, category: string, major: string) {
-  return PostAPI(`user/selection/categorymajor`, {
+  return PostAPI(`/user/selection/categorymajor`, {
     email,
     category,
     major,
   });
 }
 function confirmEmail(email: string, authCode: string) {
-  return PostAPI(`email/confirmEmail`, {
+  return PostAPI(`/email/confirmEmail`, {
     email,
     authCode,
   });

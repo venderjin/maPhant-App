@@ -11,6 +11,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   KeyboardTypeOptions,
+  ScrollView,
   StyleProp,
   Text,
   TextInput,
@@ -80,6 +81,7 @@ type InputProps = {
 } & DefaultProps;
 
 const Container: React.FC<ContainerProps> = props => {
+  const theme = useTheme();
   //props 기본값
   const {
     style = {},
@@ -92,10 +94,10 @@ const Container: React.FC<ContainerProps> = props => {
     isForceKeyboardAvoiding = false,
     borderRadius,
   } = props;
+  const isRootContainer = isFullScreen || isFullWindow;
 
   // 커스텀으로 값 가져옴
   const headerHeight = useHeaderHeight();
-  const theme = useTheme();
   // 컨테이너 높이 결정 함수
   const adjustedHeight = () => {
     if (isFullScreen) return Dimensions.get("screen").height;
@@ -104,7 +106,7 @@ const Container: React.FC<ContainerProps> = props => {
   };
   // 높이와 키보드 높이를 상태로 관리
   const [height, setHeight] = useState<number | string>(adjustedHeight());
-  const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
+  const [, setKeyboardHeight] = useState<number>(0);
 
   // 컴포넌트 마운트될 때, 높이와 키보드 높이 설정 이벤트 리스너 추가
   useEffect(() => {
@@ -125,9 +127,8 @@ const Container: React.FC<ContainerProps> = props => {
   }, []);
 
   const style_computed: StyleProp<ViewStyle> = {
-    // backgroundColor: theme.colors.background,
-    backgroundColor: "white",
-    paddingHorizontal,
+    backgroundColor: isRootContainer ? theme.colors.background : "transparent",
+    paddingHorizontal: isRootContainer && paddingHorizontal === undefined ? 16 : paddingHorizontal,
     paddingVertical,
     minHeight: isFullScreen || isFullWindow ? height : undefined,
     height: isForceKeyboardAvoiding ? height : undefined,
@@ -138,13 +139,20 @@ const Container: React.FC<ContainerProps> = props => {
     ...(style as object),
   };
 
-  if (isFullScreen || isFullWindow) {
+  if (isRootContainer) {
     return (
       <KeyboardAvoidingView>
         <View style={style_computed}>{children}</View>
       </KeyboardAvoidingView>
     );
   }
+  // if children is ScrollView, set minHeight
+  if (children && (children as React.ReactElement).type === ScrollView) {
+    (children as React.ReactElement).props.style = {
+      minHeight: height,
+    };
+  }
+
   return <View style={style_computed}>{children}</View>;
 };
 
@@ -198,11 +206,10 @@ const Spacer: React.FC<SpacerProps> = props => {
 };
 
 const TextButton: React.FC<TextButtonProps> = props => {
-  const theme = useTheme();
   const {
     style = {},
     children,
-    backgroundColor = theme.colors.primary,
+    backgroundColor = "#5299EB",
     fontSize = 16,
     fontColor,
     widthFull = false,

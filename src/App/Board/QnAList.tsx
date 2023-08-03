@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import { listArticle } from "../../Api/board";
+import { NavigationProps } from "../../Navigator/Routes";
 import { BoardArticle, BoardType } from "../../types/Board";
 import ScrollList from "./ScrollList";
 // const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const QnABoard: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProps>();
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);

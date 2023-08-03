@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import {
   Keyboard,
@@ -14,11 +14,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import SearchBar from "../../components/Input/searchbar";
+import { NavigationProps } from "../../Navigator/Routes";
 import { BoardType } from "../../types/Board";
-import { NavigationProps } from "../../types/Navigation";
 
 const BoardList = () => {
-  const navigation = useNavigation<NavigationProp<NavigationProps>>();
+  const navigation = useNavigation<NavigationProps>();
 
   const BoardNavigateBtn: React.FC<{ boardType: BoardType }> = ({ boardType }) => {
     return (

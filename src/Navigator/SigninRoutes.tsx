@@ -4,10 +4,16 @@ import Confirm from "../App/Signup/Confirm";
 import SearchUniversity from "../App/Signup/SearchUniversity";
 import Signup from "../App/Signup/Signup";
 import TermsSet from "../App/Signup/TermsSet";
-const SignupRoutes = [
+import { RouteType } from "../types/Navigation";
+import { ISignupForm } from "../types/SignUp";
+
+const SignupRoutes: RouteType[] = [
   {
     name: "Login",
     component: Login,
+    options: {
+      headerShown: false,
+    },
   },
   {
     name: "find",
@@ -31,4 +37,14 @@ const SignupRoutes = [
   },
 ];
 
+type SignInNavigationProp = {
+  Login: undefined;
+  find: undefined;
+  TermsSet: undefined;
+  Signup: undefined;
+  SearchUniversity: ISignupForm;
+  Confirm: ISignupForm;
+};
+
+export type { SignInNavigationProp, ISignupForm as SignUpFormParams };
 export default SignupRoutes;
