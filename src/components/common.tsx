@@ -206,11 +206,10 @@ const Spacer: React.FC<SpacerProps> = props => {
 };
 
 const TextButton: React.FC<TextButtonProps> = props => {
-  const theme = useTheme();
   const {
     style = {},
     children,
-    backgroundColor = theme.colors.primary,
+    backgroundColor = "#5299EB",
     fontSize = 16,
     fontColor,
     widthFull = false,

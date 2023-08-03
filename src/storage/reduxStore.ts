@@ -14,6 +14,13 @@ const userSlice = createSlice({
   initialState: userState,
   reducers: {
     setToken: (state, action) => {
+      if (action.payload === null)
+        return {
+          token: null,
+          privKey: null,
+          profile: state.profile,
+        };
+
       return {
         token: action.payload.token,
         privKey: action.payload.privKey,
