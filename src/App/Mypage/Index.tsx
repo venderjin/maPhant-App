@@ -12,7 +12,8 @@ export default function MypageIndex() {
         component={Routes[0].component}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="ProfileModify" component={Routes[1].component} />
+      <Stack.Screen name="PasswordCheck" component={Routes[1].component} />
+      <Stack.Screen name="ProfileModify" component={Routes[2].component} />
     </Stack.Navigator>
   );
 }

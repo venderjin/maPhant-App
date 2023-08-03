@@ -1,4 +1,5 @@
 import Mypage from "../App/Mypage/Mypage";
+import PasswordCheck from "../App/Mypage/PasswordCheck";
 import ProfileModify from "../App/Mypage/ProfileModify";
 import { RouteType } from "../types/Navigation";
 
@@ -8,6 +9,10 @@ const Routes: RouteType[] = [
     component: Mypage,
   },
   {
+    name: "PasswordCheck",
+    component: PasswordCheck,
+  },
+  {
     name: "ProfileModify",
     component: ProfileModify,
   },
@@ -15,6 +20,7 @@ const Routes: RouteType[] = [
 
 export type NavigationProp = {
   Mypage: undefined;
+  PasswordCheck: undefined;
   ProfileModify: undefined;
 };
 

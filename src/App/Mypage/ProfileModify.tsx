@@ -1,13 +1,17 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
-const ProfileModify = () => {
+import { Container } from "../../components/common";
+
+const ProfileModify: React.FC = () => {
   return (
-    <ScrollView style={styles.container}>
-      <View>
-        <Text>회원정보 수정페이지</Text>
-      </View>
-    </ScrollView>
+    <Container isFullScreen={true} paddingHorizontal={0}>
+      <ScrollView style={styles.container}>
+        <View>
+          <Text>회원정보 수정 </Text>
+        </View>
+      </ScrollView>
+    </Container>
   );
 };
 
