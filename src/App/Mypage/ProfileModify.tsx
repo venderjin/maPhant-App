@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ColorValue, Pressable, ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 const ProfileModify = () => {
   return (

@@ -199,7 +199,7 @@ const Home: React.FC = () => {
                 marginRight: "5%",
               }}
               onPress={() => {
-                navigation.navigate("alarm" as never);
+                navigation.navigate("alarm", 10);
               }}
             />
           </TouchableOpacity>
