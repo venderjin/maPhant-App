@@ -1,10 +1,10 @@
 import CheckBox from "expo-checkbox";
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { Keyboard, Text, TouchableWithoutFeedback } from "react-native";
 
-import { Container, Input, Spacer,TextButton } from "../../components/common";
+import { Container, Input, Spacer, TextButton } from "../../components/common";
 
-const Write: React.FC = () => {
+const Post: React.FC = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [checkList, setCheckList] = useState<string[]>([]);
@@ -17,7 +17,8 @@ const Write: React.FC = () => {
     }
   };
 
-  const complete = () => {};
+  const complete = async () => {};
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Container isFullScreen={true}>
@@ -59,4 +60,4 @@ const Write: React.FC = () => {
   );
 };
 
-export default Write;
+export default Post;
