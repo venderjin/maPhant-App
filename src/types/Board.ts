@@ -45,6 +45,9 @@ type BoardType = {
 //   | "홍보 게시판"
 //   | "익명 게시판";
 
-// type SortType = "created_at" | "like_cnt";
+type SortType = {
+  id: number;
+  name: string;
+};
 
-export type { BoardArticle, BoardPost, BoardType };
+export type { BoardArticle, BoardPost, BoardType, SortType };
