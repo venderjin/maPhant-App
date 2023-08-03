@@ -7,6 +7,9 @@ import * as Yup from "yup";
 import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
 import { Container, TextButton } from "../../components/common";
 import Search from "../../components/Member/Search";
+import { NavigationProps } from "../../Navigator/Routes";
+import { SignUpFormParams } from "../../Navigator/SigninRoutes";
+import UIStore from "../../storage/UIStore";
 
 interface ISearchForm {
   field: string;
@@ -15,6 +18,8 @@ interface ISearchForm {
 
 const SearchUniversity: React.FC = () => {
   const route = useRoute();
+  const params = route.params as SignUpFormParams;
+
   const navigation = useNavigation<NavigationProps>();
   const validationSchema = Yup.object().shape({
     field: Yup.string().required("계열 입력해 주세요."),
@@ -25,19 +30,24 @@ const SearchUniversity: React.FC = () => {
     field: "",
     major: "",
   };
-  // const navigation = useNavigation<NavigationProp<{ Login: ISearchForm }>>();
 
   return (
     <Formik
       initialValues={SearchForm}
       validationSchema={validationSchema}
       onSubmit={async values => {
-        console.log(route.params.email);
-        await categorymajor(route.params.email, values.field, values.major).then(response => {
-          if (response.success) {
-            navigation.navigate("Login");
-          }
-        });
+        UIStore.showLoadingOverlay();
+        await categorymajor(params.email, values.field, values.major)
+          .then(response => {
+            if (response.success) {
+              alert("회원가입이 완료되었습니다.");
+              navigation.navigate("Login");
+            }
+          })
+          .catch(error => {
+            alert(`학과 등록에 실패하였습니다.: ${error}`);
+          })
+          .finally(() => UIStore.hideLoadingOverlay());
       }}
     >
       {({ handleSubmit }) => (

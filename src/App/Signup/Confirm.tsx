@@ -4,11 +4,8 @@ import { Alert, StyleSheet, Text, TextInput } from "react-native";
 
 import { confirmEmail } from "../../Api/member/signUp";
 import { Container, Input, TextButton } from "../../components/common";
-import { ConfirmRoute } from "../../Navigator/SigninRoutes";
+import { SignUpFormParams } from "../../Navigator/SigninRoutes";
 
-interface ISignupForm {
-  email: string;
-}
 const Confirm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [minutes, setMinutes] = useState(10);
@@ -17,21 +14,17 @@ const Confirm: React.FC = () => {
   const verificationCodeInputRef = useRef<TextInput>(null);
   const [showNextButton, setShowNextButton] = useState(false);
   const route = useRoute();
+  const params = route.params as SignUpFormParams;
 
-  const navigation = useNavigation<NavigationProp<{ SearchUniversity: ISignupForm }>>();
+  const navigation = useNavigation<NavigationProp<{ SearchUniversity: SignUpFormParams }>>();
 
   useEffect(() => {
-    const params = route.params as ConfirmRoute;
-
     if (params && params.email) setEmail(params.email);
   }, [route]);
 
-  const checkCode = (values: ISignupForm) => {
-    values.email = email;
-    console.log(values);
-    console.log("다음버튼 클릭");
+  const checkCode = () => {
     if (showNextButton) {
-      navigation.navigate("SearchUniversity", values);
+      navigation.navigate("SearchUniversity", params);
     }
   };
   const verifyCode = () => {
@@ -147,7 +140,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     width: 300,
-    height: 30,
+    height: 40,
     padding: 8,
     borderColor: "#999",
     marginLeft: 10,
