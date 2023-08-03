@@ -4,6 +4,7 @@ import MailRoutes from "../../Navigator/MailRoute";
 
 const Stack = createStackNavigator();
 
+// eslint-disable-next-line react/display-name
 export default () => (
   <Stack.Navigator initialRouteName="Mail">
     <Stack.Screen
