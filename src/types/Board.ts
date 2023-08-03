@@ -31,12 +31,20 @@ type BoardArticle = {
   isLike: number | null;
 };
 
-type BoardType =
-  | "자유 게시판"
-  | "지식 게시판"
-  | "QnA 게시판"
-  | "취업 / 진로 게시판"
-  | "홍보 게시판"
-  | "취미 게시판";
+type BoardType = {
+  id: number;
+  name: string;
+  postCnt: number;
+};
+// type BoardType =
+//   | "자유 게시판"
+//   | "지식 게시판"
+//   | "QnA 게시판"
+//   | "취업 / 진로 게시판"
+//   | "취미 게시판"
+//   | "홍보 게시판"
+//   | "익명 게시판";
+
+// type SortType = "created_at" | "like_cnt";
 
 export type { BoardArticle, BoardPost, BoardType };
