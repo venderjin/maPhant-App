@@ -1,3 +1,4 @@
+import { useRoute } from "@react-navigation/native";
 import CheckBox from "expo-checkbox";
 import React, { useEffect, useState } from "react";
 import { Keyboard, Text, TouchableWithoutFeedback } from "react-native";
@@ -6,14 +7,17 @@ import { boardPost } from "../../Api/board";
 import { BoardType } from "../../App/Board/BoardList";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
 
-interface WriteProps {
-  boardType: BoardType;
-}
+// interface WriteProps {
+//   boardType: BoardType;
+// }
 
-const Post: React.FC<WriteProps> = ({ boardType }) => {
+const Post: React.FC = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [checkList, setCheckList] = useState<string[]>([]);
+
+  const params = useRoute().params as { boardType: BoardType };
+  const boardType = params?.boardType;
 
   useEffect(() => {
     // 받아온 게시판 타입(boardType)을 이용하여 필요한 작업 수행
