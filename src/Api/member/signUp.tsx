@@ -1,6 +1,6 @@
 import { ISignupForm } from "../../types/SignUp";
 import constraints from "../constraints";
-import { PostAPI } from "../fetchAPI";
+import { GetAPI, PostAPI } from "../fetchAPI";
 
 function signup(form: ISignupForm) {
   return PostAPI(`/user/signup`, {
@@ -16,59 +16,26 @@ function signup(form: ISignupForm) {
 }
 
 function validateEmail(email: string) {
-  return fetch(`${constraints.SERVER_URL}/user/validation/email`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email }),
-  }).then(response => response.json());
+  return PostAPI(`/user/validation/email`, { email });
 }
 function validatePassword(password: string) {
-  return fetch(`${constraints.SERVER_URL}/user/validation/password`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ password }),
-  }).then(response => response.json());
+  return PostAPI(`/user/validation/password`, { password });
 }
 
 function validateNickname(nickname: string) {
-  return fetch(`${constraints.SERVER_URL}/user/validation/nickname`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ nickname }),
-  }).then(response => response.json());
+  return PostAPI(`/user/validation/nickname`, { nickname });
 }
 
 function universityList() {
-  return fetch(`${constraints.SERVER_URL}/user/universitylist`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }).then(response => response.json());
+  return GetAPI(`/user/universitylist`);
 }
 
 function fieldList() {
-  return fetch(`${constraints.SERVER_URL}/user/categorylist`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }).then(response => response.json());
+  return GetAPI(`/user/categorylist`);
 }
 
 function majorList() {
-  return fetch(`${constraints.SERVER_URL}/user/majorlist`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }).then(response => response.json());
+  return GetAPI(`/user/majorlist`);
 }
 
 function sendEmail(email: string) {
