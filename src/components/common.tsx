@@ -293,6 +293,7 @@ const Input: React.FC<InputProps> = props => {
         keyboardType={keyboardType}
         onChangeText={onChangeText}
         placeholder={placeholder}
+        placeholderTextColor="#999"
         secureTextEntry={secureTextEntry}
         inputMode={inputMode}
         multiline={multiline}

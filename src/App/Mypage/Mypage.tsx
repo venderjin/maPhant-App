@@ -112,7 +112,7 @@ const MyView = () => {
       <View style={styles.info}>
         <Text>{profile.name} / </Text>
         <Text>{profile.role} - </Text>
-        <Text>{profile.majorId}</Text>
+        <Text>{profile.category.map(val => val.majorName).join("-")}</Text>
       </View>
     </View>
   );

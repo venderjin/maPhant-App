@@ -4,15 +4,19 @@ type RespLogin = {
   pubKey: string;
   privKey: string;
 } & statusResponse;
+type UserCategory = {
+  categoryId: number;
+  categoryName: string;
+  majorId: number;
+  majorName: string;
+};
 type UserData = {
   id: number;
   email: string;
-  password: string;
   name: string;
   nickname: string;
   role: string;
-  categoryId: number;
-  majorId: number;
+  category: UserCategory[];
 };
 type UserDataResp = {
   data: UserData;
