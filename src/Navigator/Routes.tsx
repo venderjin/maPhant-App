@@ -5,7 +5,7 @@ import BoardRoute, { NavigationProp as BoardProps } from "./BoardRoute";
 import HomeRoute, { NavigationProp as HomeProps } from "./HomeRoute";
 import MailRoutes, { NavigationProp as MailProps } from "./MailRoute";
 import MypageRoutes, { NavigationProp as MypageProps } from "./MypageRoute";
-import SigninRoutes, { SignInNavigationParams } from "./SigninRoutes";
+import SigninRoutes, { SignInNavigationProp } from "./SigninRoutes";
 // ... import all other pages
 
 const Routes: RouteType[] = [
@@ -17,7 +17,7 @@ const Routes: RouteType[] = [
 ];
 
 export type NavigationProps = NavigationProp<
-  HomeProps & BoardProps & SignInNavigationParams & MailProps & MypageProps
+  HomeProps & BoardProps & SignInNavigationProp & MailProps & MypageProps
 >;
 
 export default Routes;
