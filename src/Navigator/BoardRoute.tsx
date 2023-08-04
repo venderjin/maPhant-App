@@ -28,7 +28,7 @@ const Routes: RouteType[] = [
     component: QA_answer,
   },
   {
-    name: "post",
+    name: "Post",
     component: Post,
   },
 ];

@@ -14,7 +14,6 @@ const DetailList: React.FC = () => {
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
   const navigation = useNavigation<NavigationProp<NavigationProps>>();
-
   // const [sort, setSort] = useState<SortType[]>([]);
 
   // sortCriterion().then(data => {
@@ -29,7 +28,7 @@ const DetailList: React.FC = () => {
   //     .catch(err => console.log(err));
   // }, []);
   const createBoard = () => {
-    navigation.navigate("post" as never);
+    navigation.navigate("Post", { boardType: boardType });
 
     console.log("글쓰기 화면으로 바뀌어야함");
   };
