@@ -47,13 +47,13 @@ const userSlice = createSlice({
     },
   },
 });
-const defaultUserCategoryState: UserCategory | undefined = undefined;
+
 const userCategorySlice = createSlice({
   name: "userCategory",
-  initialState: defaultUserCategoryState,
+  initialState: null as UserCategory | null,
   reducers: {
     setUserCategory: (state, action) => {
-      return action.payload;
+      return action.payload as UserCategory;
     },
   },
 });
@@ -69,6 +69,7 @@ const LoadingUISlice = createSlice({
 const rootReducer = combineReducers({
   user: userSlice.reducer,
   LoadingUI: LoadingUISlice.reducer,
+  userCategory: userCategorySlice.reducer,
 });
 export type RootState = ReturnType<typeof rootReducer>;
 
