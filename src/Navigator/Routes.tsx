@@ -1,22 +1,23 @@
-import HomeRoute from "./HomeRoute";
-import BoardRoute from "./BoardRoute";
-import SignupRoutes from "./SignupRoutes";
-import SigninRoutes from "./SigninRoutes";
+import { NavigationProp } from "@react-navigation/native";
+
+import { RouteType } from "../types/Navigation";
+import BoardRoute, { NavigationProp as BoardProps } from "./BoardRoute";
+import HomeRoute, { NavigationProp as HomeProps } from "./HomeRoute";
+import MailRoutes, { NavigationProp as MailProps } from "./MailRoute";
+import SigninRoutes, { SignInNavigationParams } from "./SigninRoutes";
+import MypageRoutes, { NavigationProp as MypageProps } from "./MypageRoute";
 // ... import all other pages
 
-const Routes = [
+const Routes: RouteType[] = [
   ...HomeRoute,
   ...BoardRoute,
   ...SigninRoutes,
-  ...SignupRoutes,
-  // {
-  //   name: "login",
-  //   component: Login,
-  // },
-  // {
-  //   name: "alarm",
-  //   component: Alarm,
-  // },
+  ...MailRoutes,
+  ...MypageRoutes,
 ];
+
+export type NavigationProps = NavigationProp<
+  HomeProps & BoardProps & SignInNavigationParams & MailProps & MypageProps
+>;
 
 export default Routes;

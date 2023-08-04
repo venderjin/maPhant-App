@@ -1,32 +1,30 @@
 import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
-import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Alert, StyleSheet, Text, TextInput } from "react-native";
+
 import { confirmEmail } from "../../Api/member/signUp";
+import { Container, Input, TextButton } from "../../components/common";
+import { SignUpFormParams } from "../../Navigator/SigninRoutes";
+
 const Confirm: React.FC = () => {
   const [email, setEmail] = useState("");
-  const [certificationEmail, setCertificationEmail] = useState(false);
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
   const [verificationCode, setVerificationCode] = useState("");
-  const [emailMessage, setEmailMessage] = useState("");
   const verificationCodeInputRef = useRef<TextInput>(null);
   const [showNextButton, setShowNextButton] = useState(false);
   const route = useRoute();
-  // const navigation = useNavigation()
-  const navigation = useNavigation<NavigationProp<{}>>();
-  useEffect(() => {
-    console.log(route.params);
-    setEmail(route.params.email);
-  }, []);
+  const params = route.params as SignUpFormParams;
 
-  const startTimer = () => {
-    setMinutes(10);
-    setSeconds(0);
-  };
+  const navigation = useNavigation<NavigationProp<{ SearchUniversity: SignUpFormParams }>>();
+
+  useEffect(() => {
+    if (params && params.email) setEmail(params.email);
+  }, [route]);
 
   const checkCode = () => {
     if (showNextButton) {
-      navigation.navigate("SearchUniversity");
+      navigation.navigate("SearchUniversity", params);
     }
   };
   const verifyCode = () => {
@@ -67,89 +65,86 @@ const Confirm: React.FC = () => {
   }, [minutes, seconds]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.timerContainer}>
-        <Text style={styles.timerText}>
+    <Container style={{ flex: 1, backgroundColor: "#fff", paddingHorizontal: 40, paddingTop: 80 }}>
+      <Container style={{ alignItems: "flex-end", marginRight: 10 }}>
+        <Text style={{ color: "#0055FF", fontSize: 12 }}>
           {`${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`}
         </Text>
-      </View>
-      <View style={styles.inputContainer}>
+      </Container>
+      <Container style={{ marginBottom: 20 }}>
         <Text>이메일</Text>
-        <TextInput
+        <Input
           value={email}
           placeholder="이메일을 입력해주세요."
           keyboardType="email-address"
-          style={styles.input}
           editable={false}
+          style={styles.input}
         />
-      </View>
-      <View style={styles.inputContainer}>
+      </Container>
+
+      <Container style={{ marginBottom: 20 }}>
         <Text>인증 번호</Text>
-        <TextInput
+        <Input
           ref={verificationCodeInputRef}
           value={verificationCode}
           onChangeText={setVerificationCode}
-          placeholder="인증 번호 6자리를 입력해 주세요."
+          placeholder="인증번호 6자리를 입력해주세요."
           keyboardType="numeric"
           style={styles.input}
         />
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
+      </Container>
+      <Container
+        style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 20 }}
+      >
+        <TextButton
           activeOpacity={0.7}
           onPress={verifyCode}
+          fontSize={12}
+          fontColor={"#0055FF"}
           style={[
             styles.button,
             {
+              backgroundColor: verificationCode === "" ? "#999" : "$0055FF",
               borderColor: verificationCode === "" ? "#999" : "#0055FF",
-              backgroundColor: verificationCode === "" ? "#999" : "#F0F0F0",
-              width: 80, // 버튼 길이 조정
+              width: 80,
             },
           ]}
         >
-          <Text style={styles.buttonText}>확인</Text>
-        </TouchableOpacity>
-      </View>
+          확인
+        </TextButton>
+      </Container>
+
       {showNextButton && (
-        <TouchableOpacity
+        <TextButton
           activeOpacity={0.7}
-          onPress={
-            // 다음 버튼 클릭 시 수행할 동작 추가하면 될 듯
-            checkCode
-          }
-          style={[styles.button, { backgroundColor: "#5299EB", marginTop: 20 }]}
+          onPress={checkCode}
+          fontSize={12}
+          fontColor={"#FFFFFF"}
+          style={[
+            styles.button,
+            {
+              backgroundColor: "5299EB",
+              marginTop: 20,
+            },
+          ]}
         >
-          <Text style={[styles.buttonText, { color: "#FFFFFF" }]}>다음</Text>
-        </TouchableOpacity>
+          다음
+        </TextButton>
       )}
-    </View>
+    </Container>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingHorizontal: 40,
-    paddingTop: 80,
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
   input: {
     borderWidth: 1,
     borderRadius: 4,
     width: 300,
-    height: 30,
+    height: 40,
     padding: 8,
     borderColor: "#999",
     marginLeft: 10,
     marginTop: 10,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
   },
   button: {
     borderWidth: 1,
@@ -157,18 +152,6 @@ const styles = StyleSheet.create({
     height: 30,
     alignItems: "center",
     justifyContent: "center",
-  },
-  buttonText: {
-    fontSize: 12,
-    color: "#0055FF",
-  },
-  timerContainer: {
-    alignItems: "flex-end",
-    marginRight: 10,
-  },
-  timerText: {
-    fontSize: 12,
-    color: "#0055FF",
   },
 });
 

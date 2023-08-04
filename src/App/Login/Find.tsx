@@ -1,10 +1,12 @@
 import { Field, Formik } from "formik";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import CustomInput from "../../components/Member/CustomInput";
-import * as Yup from "yup";
-import { newPassword } from "../../Api/member/signUp";
-import ConfirmEmail from "../../components/Member/ConfirmEmail";
 import { useState } from "react";
+import { ScrollView, StyleSheet, Text } from "react-native";
+import * as Yup from "yup";
+
+import { newPassword } from "../../Api/member/signUp";
+import { Container, Spacer, TextButton } from "../../components/common";
+import ConfirmEmail from "../../components/Member/ConfirmEmail";
+import CustomInput from "../../components/Member/CustomInput";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -19,7 +21,7 @@ const validationSchema = Yup.object().shape({
     .required("필수 정보입니다."),
 });
 
-const Find: React.FC  = () => {
+const Find: React.FC = () => {
   const [email, setEmail] = useState("");
   const [authcode, setAuthcode] = useState("");
 
@@ -28,21 +30,24 @@ const Find: React.FC  = () => {
     <Formik
       initialValues={{ password: "", confirmPassword: "" }}
       onSubmit={async values => {
-        await newPassword(email, values.password, values.confirmPassword)
-          .then(result => {
-            if (result.success) {
-              alert("비밀번호가 변경되었습니다.");
-              //라우터 넣으면 됨
-            }
-            console.log(result);
-          })
-          .catch(error => {});
+        await newPassword(email, values.password, values.confirmPassword).then(result => {
+          if (result.success) {
+            alert("비밀번호가 변경되었습니다.");
+            //라우터 넣으면 됨
+          }
+          // console.log(result);
+        });
       }}
       validationSchema={validationSchema}
     >
       {({ handleSubmit }) => (
-        <View style={styles.container}>
-          <View style={styles.box}>
+        <Container
+          isForceKeyboardAvoiding={true}
+          paddingHorizontal={40}
+          paddingVertical={80}
+          style={{ backgroundColor: "white" }}
+        >
+          <ScrollView keyboardShouldPersistTaps="handled">
             <Text style={styles.pwFont}>비밀번호 찾기</Text>
             <ConfirmEmail
               onEmailChange={setEmail}
@@ -50,57 +55,27 @@ const Find: React.FC  = () => {
               email={email}
               authcode={authcode}
             />
-            <View>
-              <Field
-                placeholder="비밀번호"
-                name="password"
-                component={CustomInput}
-                secureTextEntry
-              />
-              <Field
-                placeholder="비밀번호 확인"
-                name="confirmPassword"
-                component={CustomInput}
-                secureTextEntry
-              />
-            </View>
-            <View>
-              <TouchableOpacity style={styles.button} onPress={() => handleSubmit()}>
-                <Text style={styles.find}> 확인</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+            <Field placeholder="비밀번호" name="password" component={CustomInput} secureTextEntry />
+            <Spacer size={10} />
+            <Field
+              placeholder="비밀번호 확인"
+              name="confirmPassword"
+              component={CustomInput}
+              secureTextEntry
+            />
+            <Spacer size={20} />
+            <TextButton onPress={handleSubmit}>비밀번호 변경하기</TextButton>
+          </ScrollView>
+        </Container>
       )}
     </Formik>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    paddingHorizontal: 40,
-    paddingVertical: 80,
-  },
-  box: {
-    flex: 1,
-  },
   pwFont: {
     fontSize: 20,
     fontWeight: "bold",
-  },
-  find: {
-    color: "white",
-    textAlign: "center",
-  },
-  button: {
-    backgroundColor: "#000",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    marginTop: 40,
   },
 });
 

@@ -1,23 +1,32 @@
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
-import { useEffect, useState } from "react";
-import { BoardPostMockup } from "../../types/Board";
-import { listArticle } from "../../Api/board";
+import { useRoute } from "@react-navigation/native";
+import { useState } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+
+import { BoardArticle, BoardType } from "../../types/Board";
 import PostSummary from "./PostSummary";
 
 const DetailBoardList = () => {
-  const [boardData, setboardData] = useState<BoardPostMockup[]>([]);
-  useEffect(() => {
-    listArticle("all", 1).then((data: BoardPostMockup[]) => {
-      setboardData(data);
-    });
-  }, []);
+  // const route = useRoute();
+  // const params = route.params as NavigationProps["DetailList"];
+  // console.log(params?.boardType);
+  // const boardType = params?.boardType;
+
+  const params = useRoute().params as { boardType: BoardType };
+  const boardType = params?.boardType;
+
+  const [boardData] = useState<BoardArticle[]>([]);
+  // // useEffect(() => {
+  //   listArticle(params?.boardType).then((data: BoardArticle[]) => {
+  //     setboardData(data);
+  //   });
+  // }, []);
   return (
     <ScrollView style={styles.container}>
       {boardData.map(board => (
-        <View key={board.id} style={styles.body}>
+        <View key={board.boardId} style={styles.body}>
           <Pressable onPress={() => console.log(board.title)}>
-            <Text style={styles.board}>{board.board}</Text>
-            <PostSummary post={board} />
+            <Text style={styles.board}>{boardType}</Text>
+            <PostSummary post={board} boardType={boardType} />
           </Pressable>
         </View>
       ))}

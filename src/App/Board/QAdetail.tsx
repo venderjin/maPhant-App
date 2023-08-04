@@ -1,15 +1,5 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Image,
-  Button,
-  ScrollView,
-} from "react-native";
+import React from "react";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const data = [
@@ -26,7 +16,7 @@ const data = [
   { id: 3, name: "지망이", date: " 2023.03,12" },
 ];
 
-const QAdetail = ({ navigation }: any) => {
+const QAdetail = () => {
   return (
     <View style={styles.container}>
       <View style={styles.nameBox}>
@@ -37,13 +27,13 @@ const QAdetail = ({ navigation }: any) => {
           </TouchableOpacity>
         </View>
         <View>
-          <Text style={styles.departname}>software</Text>
+          <Text>software</Text>
         </View>
       </View>
       <View style={styles.qainfoBox}>
         <View>
           <View style={styles.qaheader}>
-            <View style={styles.qauserBox}>
+            <View>
               <View>
                 <Text style={styles.nickname}>jingjing</Text>
               </View>
@@ -115,8 +105,7 @@ const QAdetail = ({ navigation }: any) => {
                 </View>
               </View>
               <TouchableOpacity
-                style={styles.touchdetail}
-                onPress={() => navigation.navigate("QA_answer")}
+              // onPress={() => navigation.navigate("QA_answer")}
               >
                 <View style={styles.answercontext}>
                   <Text style={styles.qatitle}>제목</Text>

@@ -1,7 +1,11 @@
-import React from "react";
 import { FontAwesome } from "@expo/vector-icons";
-import { View, Text, ColorValue, Pressable, ScrollView, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import { ColorValue, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
+
+import { UserData } from "../../Api/memberAPI";
+import UserStorage from "../../storage/UserStorage";
 
 type sectionItem = {
   title?: string;
@@ -13,61 +17,12 @@ type sectionItem = {
     title: string;
     // description: string;
     href: string;
+    onclick?: () => void;
   }[];
 };
 
-const sections: sectionItem[] = [
-  {
-    title: "계정 설정",
-    icon: "user",
-    color: "#5299EB",
-
-    contents: [
-      {
-        title: "회원정보 수정",
-        // description: "다른 기기를 추가하거나 삭제합니다.",
-        href: "1",
-      },
-      {
-        title: "로그아웃",
-        // description: "장치를 로그아웃하여 새 계정으로 전환합니다.",
-        href: "2",
-      },
-    ],
-  },
-  {
-    title: "게시판 설정",
-    icon: "pencil",
-    color: "#5299EB",
-
-    contents: [
-      {
-        title: "내가 쓴 글",
-        // description: "알람을 받지 않을 시간을 설정합니다.",
-        href: "3",
-      },
-      {
-        title: "내가 쓴 댓글",
-        // description: "알림음을 설정합니다.",
-        href: "4",
-      },
-    ],
-  },
-  {
-    isNoHeader: true,
-    contents: [
-      {
-        title: "회원탈퇴",
-        // description: "공지사항 및 새소식을 확인합니다.",
-        href: "5",
-      },
-    ],
-  },
-];
-
 function Section({ item }: { item: sectionItem }) {
   const last_idx = item.contents.length - 1;
-  const navigation = useNavigation();
 
   return (
     <View style={styles.view}>
@@ -81,6 +36,7 @@ function Section({ item }: { item: sectionItem }) {
         >
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             <FontAwesome
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               name={item.icon as any}
               size={18}
               style={{ marginTop: 3 }}
@@ -97,8 +53,8 @@ function Section({ item }: { item: sectionItem }) {
         }}
       >
         {item.contents.map((content, index) => (
-          <>
-            <Pressable key={content.href}>
+          <View key={index}>
+            <Pressable onPress={content.onclick}>
               <View
                 style={{
                   alignContent: "space-between",
@@ -140,7 +96,7 @@ function Section({ item }: { item: sectionItem }) {
                 }}
               />
             )}
-          </>
+          </View>
         ))}
       </View>
     </View>
@@ -148,25 +104,82 @@ function Section({ item }: { item: sectionItem }) {
 }
 
 const MyView = () => {
-  const navigation = useNavigation();
+  const profile = useSelector(UserStorage.userProfileSelector)! as UserData;
+
   return (
     <View style={styles.view}>
-      <Text style={styles.nickName}>Nick Name</Text>
+      <Text style={styles.nickName}>{profile.nickname}</Text>
       <View style={styles.info}>
-        <Text>실명 / </Text>
-        <Text>학교 - </Text>
-        <Text>학과</Text>
+        <Text>{profile.name} / </Text>
+        <Text>{profile.role} - </Text>
+        <Text>{profile.majorId}</Text>
       </View>
     </View>
   );
 };
 
-export default function () {
+export default function MyPage() {
+  const sections: sectionItem[] = [
+    {
+      title: "계정 설정",
+      icon: "user",
+      color: "#5299EB",
+
+      contents: [
+        {
+          title: "회원정보 수정",
+          onclick: () => {
+            navigation.navigate("ProfileModify");
+          },
+          // description: "다른 기기를 추가하거나 삭제합니다.",
+          href: "1",
+        },
+        {
+          title: "로그아웃",
+          // description: "장치를 로그아웃하여 새 계정으로 전환합니다.",
+          onclick: () => {
+            UserStorage.removeUserData();
+          },
+          href: "2",
+        },
+      ],
+    },
+    {
+      title: "게시판 설정",
+      icon: "pencil",
+      color: "#5299EB",
+
+      contents: [
+        {
+          title: "내가 쓴 글",
+          // description: "알람을 받지 않을 시간을 설정합니다.",
+          href: "3",
+        },
+        {
+          title: "내가 쓴 댓글",
+          // description: "알림음을 설정합니다.",
+          href: "4",
+        },
+      ],
+    },
+    {
+      isNoHeader: true,
+      contents: [
+        {
+          title: "회원탈퇴",
+          // description: "공지사항 및 새소식을 확인합니다.",
+          href: "5",
+        },
+      ],
+    },
+  ];
+  const navigation = useNavigation<NavigationProps>();
+
   return (
     <ScrollView style={styles.container}>
       <MyView />
-      {sections.map(section => (
-        <Section item={section} />
+      {sections.map((section, index) => (
+        <Section key={index.toString()} item={section} />
       ))}
     </ScrollView>
   );

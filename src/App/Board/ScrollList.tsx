@@ -1,23 +1,29 @@
-import { BoardPostMockup } from "../../types/Board";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function ({ post }: { post: BoardPostMockup }): JSX.Element {
-  switch (post.board) {
+import { BoardArticle, BoardType } from "../../types/Board";
+
+export default function ({
+  post,
+  boardType,
+}: {
+  post: BoardArticle;
+  boardType: BoardType;
+}): JSX.Element {
+  switch (boardType) {
     default:
       return ScrollList(post);
   }
 }
-
-function ScrollList(post: BoardPostMockup): JSX.Element {
+function ScrollList(post: BoardArticle): JSX.Element {
   return (
     <TouchableOpacity style={styles.button}>
       <View style={styles.hBody}>
         <Text style={styles.title}>{post.title} </Text>
-        <Text style={styles.comment}>{post.content}</Text>
+        {/* <Text style={styles.comment}>{post.content}</Text> */}
       </View>
       <View style={styles.bottom}>
-        <Text style={styles.userName}>{post.userName}</Text>
-        <Text style={styles.created}>{post.created}</Text>
+        <Text style={styles.userName}>{post.userNickname}</Text>
+        <Text style={styles.created}>{post.createdAt}</Text>
       </View>
     </TouchableOpacity>
   );
