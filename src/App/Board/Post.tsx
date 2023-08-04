@@ -1,13 +1,24 @@
 import CheckBox from "expo-checkbox";
-import React, {useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Keyboard, Text, TouchableWithoutFeedback } from "react-native";
 
-import { Container, Input, Spacer,TextButton } from "../../components/common";
+import { boardPost } from "../../Api/board";
+import { BoardType } from "../../App/Board/BoardList";
+import { Container, Input, Spacer, TextButton } from "../../components/common";
 
-const Write: React.FC = () => {
+interface WriteProps {
+  boardType: BoardType;
+}
+
+const Post: React.FC<WriteProps> = ({ boardType }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [checkList, setCheckList] = useState<string[]>([]);
+
+  useEffect(() => {
+    // 받아온 게시판 타입(boardType)을 이용하여 필요한 작업 수행
+    console.log("게시판 타입:", boardType);
+  }, [boardType]);
 
   const check = (name: string, isChecked: boolean) => {
     if (isChecked) {
@@ -17,7 +28,28 @@ const Write: React.FC = () => {
     }
   };
 
-  const complete = () => {};
+  const categoryId = 3;
+  const userId = 1;
+
+  const complete = async () => {
+    try {
+      const response = await boardPost(
+        null,
+        categoryId,
+        userId,
+        boardType.id,
+        title,
+        body,
+        0,
+        1,
+        1,
+      );
+      console.log("게시물 작성 성공", response);
+    } catch (error) {
+      console.error("게시물 작성 오류", error);
+    }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Container isFullScreen={true}>
@@ -59,4 +91,4 @@ const Write: React.FC = () => {
   );
 };
 
-export default Write;
+export default Post;
