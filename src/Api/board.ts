@@ -1,16 +1,17 @@
 import { dataResponse, DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
 const listArticle = (
-  boardType_id: number,
-  page: number,
-  pageSize: number,
-  sortCriterion: number,
+  boardType: number,
+  sortCriterion: number = 1,
+  page: number = 1,
+  pageSize: number = 10,
 ): Promise<dataResponse> =>
-  GetAPI<dataResponse>(
-    `/board?boardTypeId=${boardType_id}&page=${page}&pageSize=${pageSize}&sortCriterionId=${sortCriterion}`,
-  );
-
-const listBoardType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/board/boardType`);
+  GetAPI<dataResponse>(`/board`, {
+    boardTypeId: boardType,
+    sortCriterionId: sortCriterion,
+    page: page,
+    pageSize: pageSize,
+  });
 
 function boardPost(
   parentId: null | number,
@@ -64,10 +65,6 @@ function searchArticle() {
   return GetAPI(`/board/search`);
 }
 
-function sortCriterion() {
-  return GetAPI(`/board/sortCriterion`);
-}
-
 export {
   boardDelete,
   boardEdit,
@@ -76,7 +73,5 @@ export {
   getArticle,
   insertLikePost,
   listArticle,
-  listBoardType,
   searchArticle,
-  sortCriterion,
 };

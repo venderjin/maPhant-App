@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 
 import { UserData } from "../../Api/memberAPI";
 import UserStorage from "../../storage/UserStorage";
+import { NavigationProps } from "../../Navigator/Routes";
 
 type sectionItem = {
   title?: string;

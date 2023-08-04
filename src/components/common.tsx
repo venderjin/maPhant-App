@@ -189,7 +189,6 @@ const ImageBox: React.FC<ImageBoxProps> = props => {
     const img = Image.resolveAssetSource(source);
     style_image.width = (height / img.height) * img.width;
   }
-  console.log(style_image);
 
   return (
     <View style={style_container}>
