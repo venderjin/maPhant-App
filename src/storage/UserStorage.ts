@@ -1,4 +1,4 @@
-import { UserData } from "../Api/memberAPI";
+import { UserData } from "../types/User";
 import reduxStore, { RootState, userSlice } from "./reduxStore";
 import Storage from "./Storage";
 import storageKey from "./Storagekey";
