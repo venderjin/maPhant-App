@@ -1,11 +1,12 @@
 import { SearchBar } from "@rneui/themed";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TAutocompleteDropdownItem } from "react-native-autocomplete-dropdown";
 
-import { searchList } from "../../types/SearchList";
+import { dataResponse } from "../../Api/fetchAPI";
 
-const Search = (props, { list }: { list: Promise<searchList[]> }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Search = (props: any) => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState<TAutocompleteDropdownItem[]>([]);
@@ -17,21 +18,22 @@ const Search = (props, { list }: { list: Promise<searchList[]> }) => {
   const {
     field: { name, onBlur, value },
     form: { setFieldValue, setFieldTouched },
+    list,
     ...inputProps
   } = props;
 
   useEffect(() => {
-    props.list().then((res: any) => {
-      setData(res.data);
-      // const formattedData = res.data.map((item: any, index: any) => ({
-      //   id: index.toString(),
-      //   title: item
-      // }));
-      // setFilteredData(formattedData);
-      return res.data;
+    props.list().then((res: dataResponse) => {
+      setData(res.data as string[]);
     });
-  }, [search, list]);
-  const sliceResults = (items: TAutocompleteDropdownItem[]) => {
+  }, [list]);
+
+  useEffect(() => {
+    setFieldValue(name, search);
+    updateSearch(search);
+  }, [search]);
+
+  const sliceResults = useCallback((items: TAutocompleteDropdownItem[]) => {
     const slicedItems = [];
     let i = 0;
     const numColumns = 3;
@@ -40,43 +42,46 @@ const Search = (props, { list }: { list: Promise<searchList[]> }) => {
       i += numColumns;
     }
     return slicedItems;
-  };
+  }, []);
 
-  const updateSearch = (text: string) => {
-    setSearch(text);
-
-    // 검색어를 이용하여 데이터를 필터링
-    const filteredItems = data.filter(item => item.includes(text));
-    console.log(text);
-    console.log(filteredItems);
-    const formattedData = filteredItems
-      .map((item, index) => ({
-        id: index.toString(),
-        title: item.toString(),
-      }))
-      .flat();
-    setFilteredData(formattedData);
-  };
-
-  const renderItemGroup = (itemGroup: TAutocompleteDropdownItem[]) => (
-    <View style={styles.itemContainer}>
-      {itemGroup.map(item => (
-        <TouchableOpacity
-          key={item.id}
-          style={styles.itemContainer}
-          onPress={() => (item && item.title ? handleItemClick(item.title) : null)}
-        >
-          <Text style={styles.itemText}>{item.title}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
+  const updateSearch = useCallback(
+    (text: string) => {
+      // 검색어를 이용하여 데이터를 필터링
+      const filteredItems = data.filter(item => item.includes(text));
+      const formattedData = filteredItems
+        .map((item, index) => ({
+          id: index.toString(),
+          title: item.toString(),
+        }))
+        .flat();
+      setFilteredData(formattedData);
+    },
+    [data],
   );
+
+  const renderItemGroup = useCallback(
+    (itemGroup: TAutocompleteDropdownItem[]) => (
+      <View style={styles.itemContainer}>
+        {itemGroup.map(item => (
+          <TouchableOpacity
+            key={item.id}
+            style={styles.itemContainer}
+            onPress={() => (item && item.title ? handleItemClick(item.title) : null)}
+          >
+            <Text style={styles.itemText}>{item.title}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    ),
+    [],
+  );
+
   return (
     <View style={styles.container}>
       <SearchBar
         onChangeText={text => {
-          updateSearch(text);
           setFieldValue(name, text);
+          setSearch(text);
         }}
         value={value}
         onBlur={() => {
@@ -89,6 +94,7 @@ const Search = (props, { list }: { list: Promise<searchList[]> }) => {
       />
 
       <FlatList
+        keyboardShouldPersistTaps="handled"
         data={sliceResults(filteredData)}
         keyExtractor={(item, index) => index.toString()}
         horizontal
