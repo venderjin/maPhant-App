@@ -147,7 +147,7 @@ const TermsSet: React.FC = () => {
         fontSize={14}
         disabled={!buttonColor}
         onPress={() => {
-          navigation.navigate("Signup" as never);
+          navigation.navigate("Signup");
         }}
       >
         다음

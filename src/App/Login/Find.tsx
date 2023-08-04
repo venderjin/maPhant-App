@@ -25,7 +25,6 @@ const Find: React.FC = () => {
   const [email, setEmail] = useState("");
   const [authcode, setAuthcode] = useState("");
 
-  console.log([email, authcode]);
   return (
     <Formik
       initialValues={{ password: "", confirmPassword: "" }}

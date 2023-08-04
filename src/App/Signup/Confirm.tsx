@@ -1,6 +1,6 @@
 import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect, useRef, useState } from "react";
-import { Alert, StyleSheet, Text, TextInput } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, StyleSheet, Text } from "react-native";
 
 import { confirmEmail } from "../../Api/member/signUp";
 import { Container, Input, TextButton } from "../../components/common";
@@ -11,7 +11,7 @@ const Confirm: React.FC = () => {
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
   const [verificationCode, setVerificationCode] = useState("");
-  const verificationCodeInputRef = useRef<TextInput>(null);
+  // const verificationCodeInputRef = useRef<TextInput>(null);
   const [showNextButton, setShowNextButton] = useState(false);
   const route = useRoute();
   const params = route.params as SignUpFormParams;
@@ -85,7 +85,7 @@ const Confirm: React.FC = () => {
       <Container style={{ marginBottom: 20 }}>
         <Text>인증 번호</Text>
         <Input
-          ref={verificationCodeInputRef}
+          // ref={verificationCodeInputRef}
           value={verificationCode}
           onChangeText={setVerificationCode}
           placeholder="인증번호 6자리를 입력해주세요."
