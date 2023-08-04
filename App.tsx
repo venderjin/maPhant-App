@@ -10,6 +10,7 @@ import Login from "./src/App/Login/Index";
 import reduxStore from "./src/storage/reduxStore";
 import UIStore from "./src/storage/UIStore";
 import UserStorage from "./src/storage/UserStorage";
+import { ThemeContext } from "./src/App/Style/ThemeContext";
 
 const App = () => {
   const isLogged = useSelector(UserStorage.isUserLoggedInSelector);
@@ -30,14 +31,17 @@ const App = () => {
 
 const AppWrapper = () => {
   const theme = useTheme();
+  const isDarkModeContext = React.useState(false);
 
   return (
     <SafeAreaProvider>
       <RootSiblingParent>
         <Provider store={reduxStore}>
-          <NavigationContainer theme={theme}>
-            <App />
-          </NavigationContainer>
+          <ThemeContext.Provider value={isDarkModeContext}>
+            <NavigationContainer theme={theme}>
+              <App />
+            </NavigationContainer>
+          </ThemeContext.Provider>
         </Provider>
       </RootSiblingParent>
     </SafeAreaProvider>

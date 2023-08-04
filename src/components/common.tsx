@@ -15,11 +15,13 @@ import {
   StyleProp,
   Text,
   TextInput,
+  TextProps,
   TextStyle,
   TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // 컴포넌트들에 대한 타입 정의를 함
 // 각 컴포넌트가 어떤 props를 받을 수 있는지, 해당 props들이 어떤 타입을 가져야 하는지
@@ -81,6 +83,7 @@ type InputProps = {
 } & DefaultProps;
 
 const Container: React.FC<ContainerProps> = props => {
+  const safeAreaInsets = useSafeAreaInsets();
   const theme = useTheme();
   //props 기본값
   const {
@@ -136,6 +139,7 @@ const Container: React.FC<ContainerProps> = props => {
     marginRight: isItemCenter ? "auto" : undefined,
     borderRadius,
     paddingBottom: isForceKeyboardAvoiding ? 50 : undefined,
+    paddingTop: isFullScreen ? safeAreaInsets.top : undefined,
     ...(style as object),
   };
 
@@ -185,6 +189,7 @@ const ImageBox: React.FC<ImageBoxProps> = props => {
     const img = Image.resolveAssetSource(source);
     style_image.width = (height / img.height) * img.width;
   }
+  console.log(style_image);
 
   return (
     <View style={style_container}>
@@ -293,6 +298,7 @@ const Input: React.FC<InputProps> = props => {
         keyboardType={keyboardType}
         onChangeText={onChangeText}
         placeholder={placeholder}
+        placeholderTextColor="#999"
         secureTextEntry={secureTextEntry}
         inputMode={inputMode}
         multiline={multiline}
@@ -301,4 +307,16 @@ const Input: React.FC<InputProps> = props => {
   );
 };
 
-export { Container, ImageBox, Input, Spacer, TextButton };
+type TextThemedPropsType = {
+  onDarkColor?: ColorValue;
+  onLightColor?: ColorValue;
+} & TextProps;
+
+const TextThemed: React.FC<TextThemedPropsType> = props => {
+  const theme = useTheme();
+  const textColor = (theme.dark ? props.onDarkColor : props.onLightColor) ?? theme.colors.text;
+
+  return <Text {...props} style={[props.style, { color: textColor }]} />;
+};
+
+export { Container, ImageBox, Input, Spacer, TextButton, TextThemed };
