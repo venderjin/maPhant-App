@@ -1,16 +1,27 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 
-import { Container } from "../../components/common";
+import { Container, TextButton } from "../../components/common";
 
 const ProfileModify: React.FC = () => {
   return (
-    <Container isFullScreen={true} paddingHorizontal={0}>
-      <ScrollView style={styles.container}>
-        <View>
-          <Text>회원정보 수정 페이지</Text>
-        </View>
-      </ScrollView>
+    <Container isForceKeyboardAvoiding={true} style={{ backgroundColor: "white" }}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ backgroundColor: "white" }}
+      ></ScrollView>
+      <TextButton
+        backgroundColor="#5299EB"
+        fontColor="white"
+        paddingHorizontal={20}
+        paddingVertical={15}
+        borderRadius={30}
+        fontSize={18}
+        onPress={() => {}}
+      >
+        저장하기
+      </TextButton>
+      <TextButton onPress={() => {}}>확인하기</TextButton>
     </Container>
   );
 };
