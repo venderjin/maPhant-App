@@ -1,16 +1,17 @@
 import { Entypo } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
+import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { listArticle } from "../../Api/board";
 import { BoardArticle, BoardType } from "../../types/Board";
+import { NavigationProps } from "../../types/Navigation";
 import PostSummary from "./PostSummary";
 const DetailList: React.FC = () => {
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
-
+  const navigation = useNavigation<NavigationProp<NavigationProps>>();
   useEffect(() => {
     listArticle(1)
       .then(data => {
@@ -20,13 +21,18 @@ const DetailList: React.FC = () => {
   }, []);
   const createBoard = () => {
     console.log("글쓰기 화면으로 바뀌어야함");
+    navigation.navigate("Post" as never);
   };
+  const detailContent = () => {
+    navigation.navigate("QnAdetail" as never);
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
         {boardData.map(board => (
           <View key={board.boardId} style={styles.body}>
-            <Pressable onPress={() => console.log(board.title)}>
+            <Pressable onPress={detailContent}>
               <PostSummary post={board} boardType={boardType} />
             </Pressable>
           </View>

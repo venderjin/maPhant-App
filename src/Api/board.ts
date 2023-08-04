@@ -13,6 +13,8 @@ const listArticle = (
     pageSize: pageSize,
   });
 
+const listBoardType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/board/boardType`);
+
 function boardPost(
   parentId: null | number,
   categoryId: number,
@@ -73,5 +75,6 @@ export {
   getArticle,
   insertLikePost,
   listArticle,
+  listBoardType,
   searchArticle,
 };
