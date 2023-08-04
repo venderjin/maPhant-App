@@ -1,5 +1,5 @@
 import { Entypo } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
+import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -7,25 +7,30 @@ import { listArticle } from "../../Api/board";
 import { Container } from "../../components/common";
 import { BoardArticle, BoardType } from "../../types/Board";
 import PostSummary from "./PostSummary";
+import { NavigationProps } from "../../types/Navigation";
 
 const DetailList: React.FC = () => {
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
+  const navigation = useNavigation<NavigationProp<NavigationProps>>();
+
   // const [sort, setSort] = useState<SortType[]>([]);
 
   // sortCriterion().then(data => {
   //   setSort(data.data as SortType);
   // }).catch(err => console.log(err));
 
-  useEffect(() => {
-    listArticle(boardType.id, 1, 1, 1)
-      .then(data => {
-        if (data.data) setboardData(data.data as BoardArticle[]);
-      })
-      .catch(err => console.log(err));
-  }, []);
+  // useEffect(() => {
+  //   listArticle(boardType.id, 1, 1, 1)
+  //     .then(data => {
+  //       if (data.data) setboardData(data.data as BoardArticle[]);
+  //     })
+  //     .catch(err => console.log(err));
+  // }, []);
   const createBoard = () => {
+    navigation.navigate("post" as never);
+
     console.log("글쓰기 화면으로 바뀌어야함");
   };
   return (
@@ -54,7 +59,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingHorizontal: 20,
+    paddingHorizontal: "40%",
     paddingVertical: 10,
   },
   body: {
