@@ -29,11 +29,13 @@ const tabs: {
     name: "게시판",
     icon: <FontAwesome5 name="book" size={24} color="#000" />,
     component: Board,
+    useSafeArea: false,
   },
   {
     name: "메일",
     icon: <Ionicons name="mail" size={24} color="#000" />,
     component: Mail,
+    useSafeArea: false,
   },
   {
     name: "내 정보",
