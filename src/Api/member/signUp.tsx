@@ -1,5 +1,4 @@
 import { ISignupForm } from "../../types/SignUp";
-import constraints from "../constraints";
 import { GetAPI, PostAPI } from "../fetchAPI";
 
 function signup(form: ISignupForm) {
