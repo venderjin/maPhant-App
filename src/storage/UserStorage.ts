@@ -14,7 +14,7 @@ class UserStorage {
   static async loadUserDataOnStartUp(): Promise<void> {
     const token = await this.getUserToken();
     const profile = await this.getUserProfile();
-    const category = await this.getUserCategory();
+    const category = await this.getUserCategoryCurrent();
 
     reduxStore.dispatch(userSlice.actions.setToken(token));
     reduxStore.dispatch(userSlice.actions.setProfile(profile));
@@ -33,8 +33,13 @@ class UserStorage {
   static async getUserProfile(): Promise<UserData | null> {
     return await Storage.read<UserData>(storageKey.USER_PROFILE);
   }
-  static async getUserCategory(): Promise<UserCategory | null> {
+  static async getUserCategoryCurrent(): Promise<UserCategory | null> {
     return await Storage.read<UserCategory>(storageKey.USER_CATEGORY_MAJOR);
+  }
+  static async listUserCategory(): Promise<UserCategory[]> {
+    const profile = await this.getUserProfile();
+    if (profile) return profile.category;
+    return [];
   }
   static async setUserToken(token: string, privKey: string): Promise<void> {
     await Storage.write(storageKey.USER_TOKEN, token);
@@ -45,16 +50,16 @@ class UserStorage {
   static async setUserProfile(profile: UserData): Promise<void> {
     await Storage.write(storageKey.USER_PROFILE, profile);
 
-    const savedCategory = await this.getUserCategory();
+    const savedCategory = await this.getUserCategoryCurrent();
     if (savedCategory === null || !profile.category.includes(savedCategory)) {
       if (profile.category.length === 0)
         Toast.show("회원 정보에 계열·학과 정보가 존재하지 않습니다.");
-      else await this.setUserCategory(profile.category[0]);
+      else await this.setUserCategoryCurrent(profile.category[0]);
     }
 
     reduxStore.dispatch(userSlice.actions.setProfile(profile));
   }
-  static async setUserCategory(category: UserCategory) {
+  static async setUserCategoryCurrent(category: UserCategory) {
     await Storage.write(storageKey.USER_CATEGORY_MAJOR, category);
 
     reduxStore.dispatch(userCategorySlice.actions.setUserCategory(category));

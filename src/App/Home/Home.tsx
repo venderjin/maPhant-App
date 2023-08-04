@@ -1,5 +1,19 @@
+import {
+  BottomSheetFlatList,
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
+import { Portal } from "@gorhom/portal";
 import { useNavigation } from "@react-navigation/native";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  RefObject,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Dimensions,
   ImageSourcePropType,
@@ -7,18 +21,24 @@ import {
   NativeSyntheticEvent,
   Pressable,
   ScrollView,
+  StyleProp,
   StyleSheet,
   Text,
   TextInput,
+  TextStyle,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useSelector } from "react-redux";
 
 import { Container, ImageBox, Spacer, TextThemed } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
+import UserStorage from "../../storage/UserStorage";
 import { ThemeContext } from "../Style/ThemeContext";
+import { UserCategory } from "../../types/User";
+
 interface Tags {
   id: string | undefined;
   title: string | undefined;
@@ -26,9 +46,9 @@ interface Tags {
 // type homeScreenProps = NativeStackScreenProps
 
 const Home: React.FC = () => {
-  // * Search
-  const [text, setText] = useState<string>("");
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
 
+  const [text, setText] = useState<string>("");
   const [info, setInfo] = useState<[ImageSourcePropType, () => void][]>([
     [
       require("../../../assets/image1.png"),
@@ -49,14 +69,6 @@ const Home: React.FC = () => {
       },
     ],
   ]); // 들어갈 컨텐츠
-
-  // function mapInfo() {
-  //   return info.map((info, index) => createInfoView(info, index));
-  // }
-
-  // Info *
-
-  // HotTags *
 
   return (
     //view화면
@@ -87,11 +99,6 @@ const MainHeader: React.FC = () => {
       paddingLeft: "3%",
       paddingRight: "3%",
     },
-    titleText: {
-      fontSize: 35,
-      marginLeft: "4%",
-      fontWeight: "bold",
-    },
     iconContainer: {
       flex: 1,
       flexDirection: "row",
@@ -107,7 +114,7 @@ const MainHeader: React.FC = () => {
 
   return (
     <View style={styles.titleContainer}>
-      <Text style={styles.titleText}>software</Text>
+      <HeaderCategory />
       <View style={styles.iconContainer}>
         <TouchableOpacity
           style={{
@@ -143,6 +150,82 @@ const MainHeader: React.FC = () => {
         </TouchableOpacity>
       </View>
     </View>
+  );
+};
+
+const HeaderCategory: React.FC = () => {
+  const currentCategory = useSelector(UserStorage.userCategorySelector);
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
+  const [userCategoryList, setUserCategoryList] = useState<UserCategory[]>([]);
+  const styles = StyleSheet.create({
+    titleText: {
+      fontSize: 35,
+      marginLeft: "4%",
+      fontWeight: "bold",
+    },
+  });
+
+  useEffect(() => {
+    UserStorage.listUserCategory().then(list => setUserCategoryList(list));
+  }, []);
+
+  const snapPoints = useMemo(() => ["25%", "60%"], []);
+
+  // callbacks
+  const handleSheetChange = useCallback(index => {
+    console.log("handleSheetChange", index);
+  }, []);
+  const handleSnapPress = useCallback(index => {
+    bottomSheetRef.current?.snapToIndex(index);
+  }, []);
+  const handleClosePress = useCallback(() => {
+    bottomSheetRef.current?.close();
+  }, []);
+
+  const renderItem = useCallback(({ item }: { item: UserCategory }) => {
+    const style_text: StyleProp<TextStyle> = {
+      fontSize: 16,
+      fontWeight: Object.is(item, currentCategory) ? "bold" : "normal",
+    };
+
+    return (
+      <TouchableOpacity>
+        <Text style={style_text}>
+          {item.majorName} ({item.categoryName})
+        </Text>
+      </TouchableOpacity>
+    );
+  }, []);
+
+  useEffect(() => {
+    bottomSheetRef.current?.snapToIndex(1);
+  }, []);
+
+  // render
+
+  return (
+    <Pressable
+      onPress={() => {
+        console.log("Press");
+        bottomSheetRef.current?.present();
+      }}
+    >
+      <Text style={styles.titleText}>{currentCategory?.majorName ?? "학과정보 없음"}</Text>
+      <BottomSheetModal
+        ref={bottomSheetRef}
+        snapPoints={snapPoints}
+        onChange={handleSheetChange}
+        style={{ paddingHorizontal: 16 }}
+      >
+        <Text style={{ fontSize: 20, fontWeight: "bold" }}>계열·학과를 선택해 주세요</Text>
+        <Spacer size={20} />
+        <BottomSheetFlatList
+          data={userCategoryList}
+          keyExtractor={(_, idx) => idx.toString()}
+          renderItem={renderItem}
+        />
+      </BottomSheetModal>
+    </Pressable>
   );
 };
 
