@@ -7,18 +7,32 @@ import { listArticle } from "../../Api/board";
 import { BoardArticle, BoardType } from "../../types/Board";
 import { NavigationProps } from "../../types/Navigation";
 import PostSummary from "./PostSummary";
+
 const DetailList: React.FC = () => {
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
   const navigation = useNavigation<NavigationProp<NavigationProps>>();
+  // const [sort, setSort] = useState<SortType[]>([]);
+
+  // sortCriterion().then(data => {
+  //   setSort(data.data as SortType);
+  // }).catch(err => console.log(err));
+
   useEffect(() => {
-    listArticle(1)
+    listArticle(
+      // boardType.id,
+      1,
+      1,
+      1,
+      1,
+    )
       .then(data => {
         if (data.data) setboardData(data.data as BoardArticle[]);
       })
       .catch(err => console.log(err));
   }, []);
+
   const createBoard = () => {
     console.log("글쓰기 화면으로 바뀌어야함");
     navigation.navigate("Post" as never);
