@@ -9,7 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import Board from "./Board/index";
 import Home from "./Home/Index";
-import Mail from "./Mail/Mail";
+import Mail from "./Mail/Index";
 import Mypage from "./Mypage/Index";
 
 const tabs: {
