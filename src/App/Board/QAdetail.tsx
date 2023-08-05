@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
 
+import { IconButton, TextButton } from "../../components/common";
 const data = [
   {
     id: 1,
@@ -15,21 +15,32 @@ const data = [
   },
   { id: 3, name: "지망이", date: " 2023.03,12" },
 ];
-
 const QAdetail = () => {
+  // const param = useRoute().params as { boardArticle: BoardArticle };
+  // const boardArticle = param?.boardArticle;
+  // const [post, setPost] = useState<BoardPost>({} as BoardPost);
+
+  // useEffect(() => {
+  //   getArticle(boardArticle.boardId)
+  //     .then(data => {
+  //       if (data.data) setPost(data.data as BoardPost);
+  //     })
+  //     .catch();
+  // }, []);
+
   return (
     <View style={styles.container}>
-      <View style={styles.nameBox}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={styles.headername}>Q&A게시판</Text>
-          <TouchableOpacity style={{ marginTop: 5, marginRight: 10 }}>
-            <Icon name="bell-o" size={30} />
-          </TouchableOpacity>
-        </View>
-        <View>
-          <Text>software</Text>
-        </View>
-      </View>
+      {/* <View style={styles.nameBox}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Text style={styles.headername}>Q&A게시판</Text>
+            <TouchableOpacity style={{ marginTop: 5, marginRight: 10 }}>
+              <Icon name="bell-o" size={30} />
+            </TouchableOpacity>
+          </View>
+          <View>
+            <Text>software</Text>
+          </View>
+        </View> */}
       <View style={styles.qainfoBox}>
         <View>
           <View style={styles.qaheader}>
@@ -42,12 +53,20 @@ const QAdetail = () => {
               </View>
             </View>
             <View style={styles.qaButtonBox}>
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.btext}>수정</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.btext}>삭제</Text>
-              </TouchableOpacity>
+              <TextButton
+                style={styles.button}
+                backgroundColor={"#f2f2f2"}
+                onPress={() => console.log("수정")}
+              >
+                수정
+              </TextButton>
+              <TextButton
+                style={styles.button}
+                backgroundColor={"#f2f2f2"}
+                onPress={() => console.log("삭제")}
+              >
+                삭제
+              </TextButton>
             </View>
           </View>
           <View style={styles.qacontextBox}>
@@ -61,22 +80,18 @@ const QAdetail = () => {
         </View>
 
         <View style={styles.cbutBox}>
-          <TouchableOpacity style={styles.commonbutton}>
-            <Icon name="thumbs-o-up" color="skyblue" />
-            <Text style={styles.btext}>추천</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.commonbutton}>
-            <Icon name="star-o" color="yellow" />
-            <Text style={styles.btext}>스크랩</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.commonbutton}>
-            <Icon name="exclamation-circle" color="red" />
-            <Text style={styles.btext}>신고</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.commonbutton}>
-            <Icon name="comment-o" color="purple" />
-            <Text style={styles.btext}>답변</Text>
-          </TouchableOpacity>
+          <IconButton name="thumbs-o-up" color="skyblue" onPress={() => console.log("추천")}>
+            추천
+          </IconButton>
+          <IconButton name="star-o" color="orange" onPress={() => console.log("스크랩")}>
+            스크랩
+          </IconButton>
+          <IconButton name="exclamation-circle" color="red" onPress={() => console.log("신고")}>
+            신고
+          </IconButton>
+          <IconButton name="comment-o" color="purple" onPress={() => console.log("답변")}>
+            답변
+          </IconButton>
         </View>
       </View>
       <ScrollView style={styles.scroll}>
@@ -90,18 +105,23 @@ const QAdetail = () => {
                   <Text style={styles.answerdate}>{answer.date}</Text>
                 </View>
                 <View style={styles.cbutBox}>
-                  <TouchableOpacity style={styles.commonbutton}>
-                    <Icon name="lightbulb-o" color="purple" />
-                    <Text style={styles.btext}>해결</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.commonbutton}>
-                    <Icon name="thumbs-o-up" color="skyblue" />
-                    <Text style={styles.btext}>추천</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.commonbutton}>
-                    <Icon name="exclamation-circle" color="red" />
-                    <Text style={styles.btext}>신고</Text>
-                  </TouchableOpacity>
+                  <IconButton name="lightbulb-o" color="purple" onPress={() => console.log("해결")}>
+                    해결
+                  </IconButton>
+                  <IconButton
+                    name="thumbs-o-up"
+                    color="skyblue"
+                    onPress={() => console.log("추천")}
+                  >
+                    추천
+                  </IconButton>
+                  <IconButton
+                    name="exclamation-circle"
+                    color="red"
+                    onPress={() => console.log("신고")}
+                  >
+                    신고
+                  </IconButton>
                 </View>
               </View>
               <TouchableOpacity
@@ -174,25 +194,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 9,
     paddingHorizontal: 15,
-    margin: 5,
-    backgroundColor: "#f2f2f2",
   },
 
   cbutBox: {
     flexDirection: "row",
-  },
-  commonbutton: {
-    borderRadius: 4,
-    paddingVertical: 5,
-    paddingHorizontal: 11,
-    marginHorizontal: 5,
-    backgroundColor: "#f2f2f2",
-    flexDirection: "row",
-  },
-
-  btext: {
-    marginLeft: 5,
-    fontSize: 9,
   },
   answerBox: {
     flexDirection: "row",
