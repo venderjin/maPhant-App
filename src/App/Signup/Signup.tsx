@@ -14,8 +14,8 @@ import {
   validatePassword,
 } from "../../Api/member/signUp";
 import { Container, Spacer, TextButton } from "../../components/common";
+import SearchByFilter from "../../components/Input/SearchByFilter";
 import CustomInput from "../../components/Member/CustomInput";
-import Search from "../../components/Member/Search";
 import UIStore from "../../storage/UIStore";
 import { ISignupForm } from "../../types/SignUp";
 
@@ -150,7 +150,7 @@ const Signup = () => {
               <Field
                 placeholder="학교 검색"
                 name="university"
-                component={Search}
+                component={SearchByFilter}
                 list={universityList}
               />
 

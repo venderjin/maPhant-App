@@ -20,7 +20,8 @@ const Routes: RouteType[] = [
 
 export type NavigationProp = {
   Mail: undefined;
-  Chatroom: undefined;
+  Chatroom: { target: number };
+  SearchUser: undefined;
 };
 
 export default Routes;

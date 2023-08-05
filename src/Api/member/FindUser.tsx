@@ -1,8 +1,8 @@
-import { INickname } from "../../types/SearchUser";
-import { GetAPI } from "../fetchAPI";
+import { TargetNickId } from "../../types/DM";
+import { GetAPI, statusResponse } from "../fetchAPI";
 
-function SearchNickname(form: INickname) {
-  return GetAPI(`/dm/target/search?nickname=${form}`);
+function SearchNickname(nickname: string) {
+  return GetAPI<{ data: TargetNickId[] } & statusResponse>(`/dm/target/search`, { nickname });
 }
 
 export { SearchNickname };
