@@ -20,13 +20,7 @@ const DetailList: React.FC = () => {
   // }).catch(err => console.log(err));
 
   useEffect(() => {
-    listArticle(
-      // boardType.id,
-      1,
-      1,
-      1,
-      1,
-    )
+    listArticle(boardType.id, 1, 1, 50)
       .then(data => {
         if (data.data) setboardData(data.data as BoardArticle[]);
       })
@@ -35,12 +29,13 @@ const DetailList: React.FC = () => {
 
   const createBoard = () => {
     console.log("글쓰기 화면으로 바뀌어야함");
-    navigation.navigate("Post" as never);
+    navigation.navigate("Post", { boardType: boardType });
   };
   const detailContent = () => {
+    console.log(boardData);
     navigation.navigate("QnAdetail" as never);
   };
-
+  console.log(boardType);
   return (
     <View style={styles.container}>
       <ScrollView>

@@ -1,11 +1,16 @@
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import CheckBox from "expo-checkbox";
 import React, { useEffect, useState } from "react";
-import { Keyboard, Text, TouchableWithoutFeedback } from "react-native";
+import { Text } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
 
 import { boardPost } from "../../Api/board";
 import { BoardType } from "../../App/Board/BoardList";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
+import { NavigationProps } from "../../Navigator/Routes";
+import UserStorage from "../../storage/UserStorage";
+import { UserData } from "../../types/User";
 
 // interface WriteProps {
 //   boardType: BoardType;
@@ -18,6 +23,7 @@ const Post: React.FC = () => {
 
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
+  const navigation = useNavigation<NavigationProps>();
 
   useEffect(() => {
     // 받아온 게시판 타입(boardType)을 이용하여 필요한 작업 수행
@@ -32,15 +38,15 @@ const Post: React.FC = () => {
     }
   };
 
-  const categoryId = 3;
-  const userId = 1;
+  const user = useSelector(UserStorage.userProfileSelector)! as UserData;
+  const category = useSelector(UserStorage.userCategorySelector);
 
   const complete = async () => {
     try {
       const response = await boardPost(
         null,
-        categoryId,
-        userId,
+        category.categoryId,
+        user.id,
         boardType.id,
         title,
         body,
@@ -49,13 +55,15 @@ const Post: React.FC = () => {
         1,
       );
       console.log("게시물 작성 성공", response);
+      // console.log(categoryId, userId, boardType.id, title, body);
+      navigation.navigate("DetailList" as never);
     } catch (error) {
       console.error("게시물 작성 오류", error);
     }
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <ScrollView>
       <Container isFullScreen={true}>
         <Container style={{ flexDirection: "row" }}>
           <Container style={{ flexDirection: "row" }}>
@@ -91,7 +99,7 @@ const Post: React.FC = () => {
         </Container>
         <TextButton onPress={complete}>완료</TextButton>
       </Container>
-    </TouchableWithoutFeedback>
+    </ScrollView>
   );
 };
 
