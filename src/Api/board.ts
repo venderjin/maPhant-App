@@ -1,16 +1,14 @@
-import { dataResponse,DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
+import { dataResponse, DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
 const listArticle = (
-  boardType: string,
-  sortCriterion: string = "likeCnt",
+  boardType: number,
+  sortCriterion: number = 1,
   page: number = 1,
   pageSize: number = 10,
-  category: string = "",
 ): Promise<dataResponse> =>
-  PostAPI<dataResponse>(`/board/main`, {
-    category: category,
-    boardType: boardType,
-    sortCriterion: sortCriterion,
+  GetAPI<dataResponse>(`/board`, {
+    boardTypeId: boardType,
+    sortCriterionId: sortCriterion,
     page: page,
     pageSize: pageSize,
   });
