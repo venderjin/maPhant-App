@@ -1,19 +1,10 @@
+import { UserData } from "../types/User";
 import { dataResponse, GetAPI, PostAPI, statusResponse } from "./fetchAPI";
 
 type RespLogin = {
   pubKey: string;
   privKey: string;
 } & statusResponse;
-type UserData = {
-  id: number;
-  email: string;
-  password: string;
-  name: string;
-  nickname: string;
-  role: string;
-  categoryId: number;
-  majorId: number;
-};
 type UserDataResp = {
   data: UserData;
 } & dataResponse;
@@ -31,4 +22,3 @@ class UserAPI {
 }
 
 export default UserAPI;
-export type { UserData };

@@ -1,9 +1,11 @@
+import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import { Container } from "../../components/common";
+import { Container, TextButton } from "../../components/common";
+import { NavigationProps } from "../../Navigator/Routes";
 
 const mailData = [
   {
@@ -107,6 +109,10 @@ const mailData = [
 // }
 const Mail: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
+  const searchUser = () => {
+    navigation.navigate("SearchUser" as never);
+    console.log("유저 검색 페이지로 이동 ");
+  };
   return (
     <Container style={{ flex: 1 }}>
       <StatusBar style="auto" />
@@ -117,6 +123,7 @@ const Mail: React.FC = () => {
         <View style={styles.sender}>
           <View>
             {mailData.map(mail => (
+              // eslint-disable-next-line react/jsx-key
               <TouchableOpacity onPress={() => navigation.navigate("Chatroom" as never)}>
                 <View
                   key={mail.id}
@@ -133,6 +140,23 @@ const Mail: React.FC = () => {
           </View>
         </View>
       </ScrollView>
+      <Container
+        style={{
+          backgroundColor: "#e9ecef",
+          borderRadius: 100,
+          position: "absolute",
+          right: "10%",
+          bottom: "5%",
+        }}
+      >
+        <TextButton
+          style={{ flex: 1, backgroundColor: "#e9ecef" }}
+          paddingVertical={10}
+          onPress={searchUser}
+        >
+          <Entypo name="plus" size={24} color="black" />
+        </TextButton>
+      </Container>
     </Container>
   );
 };

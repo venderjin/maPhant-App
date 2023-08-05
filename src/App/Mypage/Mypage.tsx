@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 
 import { UserData } from "../../Api/memberAPI";
 import UserStorage from "../../storage/UserStorage";
+import { NavigationProps } from "../../Navigator/Routes";
 
 type sectionItem = {
   title?: string;
@@ -105,6 +106,7 @@ function Section({ item }: { item: sectionItem }) {
 
 const MyView = () => {
   const profile = useSelector(UserStorage.userProfileSelector)! as UserData;
+  const category = useSelector(UserStorage.userCategorySelector);
 
   return (
     <View style={styles.view}>
@@ -112,7 +114,11 @@ const MyView = () => {
       <View style={styles.info}>
         <Text>{profile.name} / </Text>
         <Text>{profile.role} - </Text>
-        <Text>{profile.majorId}</Text>
+        <Text>
+          {category !== null
+            ? `${category.categoryName} (${category?.majorName})`
+            : "학과·계열 선택안됨"}
+        </Text>
       </View>
     </View>
   );
