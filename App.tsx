@@ -1,5 +1,5 @@
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { NavigationContainer, useTheme } from "@react-navigation/native";
+import { DarkTheme, DefaultTheme, NavigationContainer, useTheme } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Spinner from "react-native-loading-spinner-overlay";
@@ -32,7 +32,6 @@ const App = () => {
 };
 
 const AppWrapper = () => {
-  const theme = useTheme();
   const isDarkModeContext = React.useState(false);
 
   return (
@@ -41,11 +40,11 @@ const AppWrapper = () => {
         <RootSiblingParent>
           <SafeAreaProvider>
             <Provider store={reduxStore}>
-              <ThemeContext.Provider value={isDarkModeContext}>
-                <NavigationContainer theme={theme}>
+              <NavigationContainer theme={isDarkModeContext[0] ? DarkTheme : DefaultTheme}>
+                <ThemeContext.Provider value={isDarkModeContext}>
                   <App />
-                </NavigationContainer>
-              </ThemeContext.Provider>
+                </ThemeContext.Provider>
+              </NavigationContainer>
             </Provider>
           </SafeAreaProvider>
         </RootSiblingParent>

@@ -1,19 +1,6 @@
-import {
-  BottomSheetFlatList,
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
-import { Portal } from "@gorhom/portal";
+import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
-import React, {
-  RefObject,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   Dimensions,
   ImageSourcePropType,
@@ -36,8 +23,8 @@ import { useSelector } from "react-redux";
 import { Container, ImageBox, Spacer, TextThemed } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
-import { ThemeContext } from "../Style/ThemeContext";
 import { UserCategory } from "../../types/User";
+import { ThemeContext } from "../Style/ThemeContext";
 
 interface Tags {
   id: string | undefined;
@@ -170,16 +157,9 @@ const HeaderCategory: React.FC = () => {
   }, []);
 
   const snapPoints = useMemo(() => ["25%", "60%"], []);
-
-  // callbacks
-  const handleSheetChange = useCallback(index => {
-    console.log("handleSheetChange", index);
-  }, []);
-  const handleSnapPress = useCallback(index => {
-    bottomSheetRef.current?.snapToIndex(index);
-  }, []);
-  const handleClosePress = useCallback(() => {
-    bottomSheetRef.current?.close();
+  const onCategoryPress = useCallback((item: UserCategory) => {
+    UserStorage.setUserCategoryCurrent(item);
+    bottomSheetRef.current?.dismiss();
   }, []);
 
   const renderItem = useCallback(({ item }: { item: UserCategory }) => {
@@ -189,7 +169,7 @@ const HeaderCategory: React.FC = () => {
     };
 
     return (
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => onCategoryPress(item)}>
         <Text style={style_text}>
           {item.majorName} ({item.categoryName})
         </Text>
@@ -206,15 +186,15 @@ const HeaderCategory: React.FC = () => {
   return (
     <Pressable
       onPress={() => {
-        console.log("Press");
         bottomSheetRef.current?.present();
       }}
     >
-      <Text style={styles.titleText}>{currentCategory?.majorName ?? "학과정보 없음"}</Text>
+      <TextThemed style={styles.titleText}>
+        {currentCategory?.majorName ?? "학과정보 없음"}
+      </TextThemed>
       <BottomSheetModal
         ref={bottomSheetRef}
         snapPoints={snapPoints}
-        onChange={handleSheetChange}
         style={{ paddingHorizontal: 16 }}
       >
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>계열·학과를 선택해 주세요</Text>

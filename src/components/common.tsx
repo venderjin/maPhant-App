@@ -315,7 +315,10 @@ const TextThemed: React.FC<TextThemedPropsType> = props => {
   const theme = useTheme();
   const textColor = (theme.dark ? props.onDarkColor : props.onLightColor) ?? theme.colors.text;
 
-  return <Text {...props} style={[props.style, { color: textColor }]} />;
+  const propsPassed = { ...props };
+  propsPassed.style = { color: textColor, ...(props.style as object) };
+
+  return <Text {...propsPassed} />;
 };
 
 export { Container, ImageBox, Input, Spacer, TextButton, TextThemed };
