@@ -1,7 +1,10 @@
+import { useRoute } from "@react-navigation/native";
 import React from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import { getArticle } from "../../Api/board";
 import { IconButton, TextButton } from "../../components/common";
+import { BoardArticle } from "../../types/Board";
 const data = [
   {
     id: 1,
@@ -16,6 +19,8 @@ const data = [
   { id: 3, name: "지망이", date: " 2023.03,12" },
 ];
 const QAdetail = () => {
+  const params = useRoute().params as { boardData: BoardArticle };
+  const boardData = params?.boardData;
   // const param = useRoute().params as { boardArticle: BoardArticle };
   // const boardArticle = param?.boardArticle;
   // const [post, setPost] = useState<BoardPost>({} as BoardPost);
@@ -27,7 +32,8 @@ const QAdetail = () => {
   //     })
   //     .catch();
   // }, []);
-
+  console.log(boardData);
+  console.log(getArticle(boardData.boardId));
   return (
     <View style={styles.container}>
       {/* <View style={styles.nameBox}>
@@ -46,10 +52,10 @@ const QAdetail = () => {
           <View style={styles.qaheader}>
             <View>
               <View>
-                <Text style={styles.nickname}>jingjing</Text>
+                <Text style={styles.nickname}>{boardData.userNickname}</Text>
               </View>
               <View>
-                <Text style={styles.date}>2023.04.13</Text>
+                <Text style={styles.date}>{boardData.createdAt}</Text>
               </View>
             </View>
             <View style={styles.qaButtonBox}>
@@ -71,10 +77,10 @@ const QAdetail = () => {
           </View>
           <View style={styles.qacontextBox}>
             <View>
-              <Text style={styles.qatitle}>안녕하세요 인사드립낟,</Text>
+              <Text style={styles.qatitle}>{boardData.title}</Text>
             </View>
             <View>
-              <Text style={styles.qacontext}>라고할뻔~</Text>
+              <Text style={styles.qacontext}></Text>
             </View>
           </View>
         </View>
