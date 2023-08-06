@@ -49,7 +49,7 @@ function boardDelete() {
   return DeleteAPI(`/board/10`);
 }
 const getArticle = (board_id: number): Promise<dataResponse> =>
-  PostAPI<dataResponse>(`/board/${board_id}`);
+  GetAPI<dataResponse>(`/board/${board_id}`);
 
 function insertLikePost(board_id: string) {
   return GetAPI(`/board/like/${board_id}`);
