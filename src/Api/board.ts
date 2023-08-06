@@ -45,9 +45,9 @@ function boardEdit(id: number, title: string, body: string, isHide: 0 | 1) {
   });
 }
 
-function boardDelete() {
-  return DeleteAPI(`/board/10`);
-}
+const boardDelete = (board_id: number): Promise<dataResponse> =>
+  DeleteAPI<dataResponse>(`/board/${board_id}`);
+
 const getArticle = (board_id: number): Promise<dataResponse> =>
   GetAPI<dataResponse>(`/board/${board_id}`);
 
