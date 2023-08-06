@@ -23,7 +23,7 @@ const QnABoard: React.FC = () => {
   //   .catch(err => console.log(err));
 
   useEffect(() => {
-    listArticle(boardType.id, 1, 1, 1)
+    listArticle(boardType.id, 1, 50, 1)
       .then(data => {
         if (data.data) setboardData(data.data as BoardArticle[]);
       })
