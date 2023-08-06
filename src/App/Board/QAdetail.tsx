@@ -1,10 +1,11 @@
 import { useRoute } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { getArticle } from "../../Api/board";
-import { IconButton, TextButton } from "../../components/common";
-import { BoardArticle } from "../../types/Board";
+import { Container, IconButton, TextButton } from "../../components/common";
+import { BoardArticle, BoardPost } from "../../types/Board";
+
 const data = [
   {
     id: 1,
@@ -18,35 +19,32 @@ const data = [
   },
   { id: 3, name: "지망이", date: " 2023.03,12" },
 ];
+
 const QAdetail = () => {
   const params = useRoute().params as { boardData: BoardArticle };
   const boardData = params?.boardData;
-  // const param = useRoute().params as { boardArticle: BoardArticle };
-  // const boardArticle = param?.boardArticle;
-  // const [post, setPost] = useState<BoardPost>({} as BoardPost);
+  const [post, setPost] = useState({ board: {} } as BoardPost);
+  const createdAtDate = new Date(post.board.createdAt);
 
-  // useEffect(() => {
-  //   getArticle(boardArticle.boardId)
-  //     .then(data => {
-  //       if (data.data) setPost(data.data as BoardPost);
-  //     })
-  //     .catch();
-  // }, []);
-  console.log(boardData);
-  console.log(getArticle(boardData.boardId));
+  const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  useEffect(() => {
+    getArticle(boardData.boardId)
+      .then(data => {
+        if (data.data) setPost(data.data as BoardPost);
+      })
+      .catch();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      {/* <View style={styles.nameBox}>
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <Text style={styles.headername}>Q&A게시판</Text>
-            <TouchableOpacity style={{ marginTop: 5, marginRight: 10 }}>
-              <Icon name="bell-o" size={30} />
-            </TouchableOpacity>
-          </View>
-          <View>
-            <Text>software</Text>
-          </View>
-        </View> */}
+    <Container style={styles.container}>
       <View style={styles.qainfoBox}>
         <View>
           <View style={styles.qaheader}>
@@ -55,7 +53,7 @@ const QAdetail = () => {
                 <Text style={styles.nickname}>{boardData.userNickname}</Text>
               </View>
               <View>
-                <Text style={styles.date}>{boardData.createdAt}</Text>
+                <Text style={styles.date}>{formattedDateTime}</Text>
               </View>
             </View>
             <View style={styles.qaButtonBox}>
@@ -77,10 +75,10 @@ const QAdetail = () => {
           </View>
           <View style={styles.qacontextBox}>
             <View>
-              <Text style={styles.qatitle}>{boardData.title}</Text>
+              <Text style={styles.qatitle}>{post.board.title}</Text>
             </View>
             <View>
-              <Text style={styles.qacontext}></Text>
+              <Text style={styles.qacontext}>{post.board.body}</Text>
             </View>
           </View>
         </View>
@@ -144,7 +142,7 @@ const QAdetail = () => {
           </View>
         ))}
       </ScrollView>
-    </View>
+    </Container>
   );
 };
 
