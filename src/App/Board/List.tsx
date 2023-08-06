@@ -31,9 +31,9 @@ const DetailList: React.FC = () => {
     console.log("글쓰기 화면으로 바뀌어야함");
     navigation.navigate("Post", { boardType: boardType });
   };
-  const detailContent = () => {
-    console.log(boardData);
-    navigation.navigate("QnAdetail" as never);
+  const detailContent = (board: BoardArticle) => {
+    // console.log(boardData);
+    navigation.navigate("QnAdetail", { boardData: board });
   };
   console.log(boardType);
   return (
@@ -41,7 +41,7 @@ const DetailList: React.FC = () => {
       <ScrollView>
         {boardData.map(board => (
           <View key={board.boardId} style={styles.body}>
-            <Pressable onPress={detailContent}>
+            <Pressable onPress={() => detailContent(board)}>
               <PostSummary post={board} boardType={boardType} />
             </Pressable>
           </View>
