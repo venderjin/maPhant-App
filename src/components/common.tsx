@@ -67,6 +67,7 @@ type ContainerProps = {
   isFullWindow?: boolean;
   isItemCenter?: boolean;
   isForceKeyboardAvoiding?: boolean;
+  isForceTopSafeArea?: boolean;
 } & ChildrenProps;
 // 문자열과 함수, 부울 타입의 props
 type InputProps = {
@@ -95,6 +96,7 @@ const Container: React.FC<ContainerProps> = props => {
     isFullWindow = false,
     isItemCenter = false,
     isForceKeyboardAvoiding = false,
+    isForceTopSafeArea = false,
     borderRadius,
   } = props;
   const isRootContainer = isFullScreen || isFullWindow;
@@ -129,6 +131,10 @@ const Container: React.FC<ContainerProps> = props => {
     });
   }, []);
 
+  let paddingBottom = 0;
+  if (isForceKeyboardAvoiding) paddingBottom = 50;
+  if (isFullWindow) paddingBottom += safeAreaInsets.bottom;
+
   const style_computed: StyleProp<ViewStyle> = {
     backgroundColor: isRootContainer ? theme.colors.background : "transparent",
     paddingHorizontal: isRootContainer && paddingHorizontal === undefined ? 16 : paddingHorizontal,
@@ -138,8 +144,8 @@ const Container: React.FC<ContainerProps> = props => {
     marginLeft: isItemCenter ? "auto" : undefined,
     marginRight: isItemCenter ? "auto" : undefined,
     borderRadius,
-    paddingBottom: isForceKeyboardAvoiding ? 50 : undefined,
-    paddingTop: isFullScreen ? safeAreaInsets.top : undefined,
+    paddingBottom: paddingBottom,
+    paddingTop: isFullScreen || isForceTopSafeArea ? safeAreaInsets.top : undefined,
     ...(style as object),
   };
 
