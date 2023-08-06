@@ -2,7 +2,6 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import CheckBox from "expo-checkbox";
 import React, { useEffect, useState } from "react";
 import { Text } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 
 import { boardPost } from "../../Api/board";
@@ -63,22 +62,26 @@ const Post: React.FC = () => {
   };
 
   return (
-    <ScrollView>
       <Container isFullScreen={true}>
-        <Container style={{ flexDirection: "row" }}>
-          <Container style={{ flexDirection: "row" }}>
-            <CheckBox
+        <Container style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Container style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10 }}>
+          <Container style={{ flexDirection: "row", marginRight: 10 }}>
+            <CheckBox style={{ marginRight: 5 }}
               value={checkList.includes("private")}
               onValueChange={isChecked => check("private", isChecked)}
             ></CheckBox>
             <Text>비공개</Text>
           </Container>
           <Container style={{ flexDirection: "row" }}>
-            <CheckBox
+            <CheckBox style={{ marginRight: 5 }}
               value={checkList.includes("anonymous")}
               onValueChange={isChecked => check("anonymous", isChecked)}
             ></CheckBox>
             <Text>익명</Text>
+          </Container>
+          </Container>
+          <Container style={{ flexDirection: "row" }}>
+          <TextButton onPress={complete}>완료</TextButton>
           </Container>
         </Container>
         <Container>
@@ -97,9 +100,7 @@ const Post: React.FC = () => {
             multiline={true}
           ></Input>
         </Container>
-        <TextButton onPress={complete}>완료</TextButton>
       </Container>
-    </ScrollView>
   );
 };
 
