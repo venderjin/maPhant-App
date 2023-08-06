@@ -1,11 +1,19 @@
+import { useRoute } from "@react-navigation/native";
+import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native";
 
 import { Container, ImageBox, Input, Spacer, TextButton } from "../../components/common";
-
+import { MailFormParams } from "../../Navigator/MailRoute";
 const Chatroom: React.FC = () => {
   // const chatData = { profile: "user", name: "User", time: "10:00 AM", content: "Hello" };
   // const chatComponents = Array(100).fill(chatData);
+
+  // SearchUser.tsx에서 입력한 유저의 id, nickname을 가져오기 위해 사용한 것
+  const route = useRoute();
+  const params = route.params as MailFormParams;
+
+  const [content, setContent] = useState("");
 
   function UserChat() {
     return (
@@ -34,7 +42,7 @@ const Chatroom: React.FC = () => {
     return (
       <Container style={{ paddingVertical: 0 }}>
         <Container style={{ padding: 10, alignItems: "flex-end" }}>
-          <Text>Username</Text>
+          <Text>{params.nickname}</Text>
           <Container style={{ flexDirection: "row", alignItems: "flex-end" }}>
             <Text style={{ marginRight: 5 }}>date</Text>
             <Container
@@ -54,7 +62,11 @@ const Chatroom: React.FC = () => {
     );
   }
   return (
-    <Container style={{ flex: 1, display: "flex" }}>
+    <Container
+      isFullScreen={true}
+      isForceKeyboardAvoiding={true}
+      style={{ flex: 1, display: "flex" }}
+    >
       <Container // 채팅방 이름
         style={{
           flex: 0.8,
@@ -71,29 +83,50 @@ const Chatroom: React.FC = () => {
         </ScrollView>
       </Container>
       <Container // 채팅입력창
+        paddingHorizontal={0}
         style={{
           flex: 1,
           flexDirection: "row",
+
+          // paddingHorizontal: 10,
           padding: "3%",
         }}
       >
-        <Container style={{ flex: 6 }}>
-          <Input placeholder="message" />
-        </Container>
-        <Container style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <TextButton
-            style={{
-              marginLeft: 10,
-              paddingHorizontal: 0,
-              paddingVertical: 0,
-              borderRadius: 300,
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            전송
-          </TextButton>
-        </Container>
+        {/* <Container style={{ flex: 6 }}> */}
+        <Input
+          multiline={true}
+          style={{ maxHeight: 100, flexShrink: 1, flex: 6 }}
+          placeholder="message"
+          value={content}
+          onChangeText={setContent}
+        />
+        {/* </Container> */}
+        {/* <Container
+          style={{
+            backgroundColor: "pink",
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        > */}
+        <TextButton
+          onPress={() => {
+            console.log(content);
+            setContent("");
+          }}
+          style={{
+            flex: 1,
+            marginLeft: 10,
+            paddingHorizontal: 0,
+            paddingVertical: 0,
+            borderRadius: 300,
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          전송
+        </TextButton>
+        {/* </Container> */}
       </Container>
     </Container>
   );

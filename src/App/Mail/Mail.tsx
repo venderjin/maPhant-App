@@ -1,6 +1,5 @@
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -111,11 +110,9 @@ const Mail: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
   const searchUser = () => {
     navigation.navigate("SearchUser" as never);
-    console.log("유저 검색 페이지로 이동 ");
   };
   return (
     <Container style={{ flex: 1 }}>
-      <StatusBar style="auto" />
       <View style={styles.header}>
         <Text style={styles.mailText}>쪽지함</Text>
       </View>
@@ -124,14 +121,18 @@ const Mail: React.FC = () => {
           <View>
             {mailData.map(mail => (
               // eslint-disable-next-line react/jsx-key
-              <TouchableOpacity onPress={() => navigation.navigate("Chatroom" as never)}>
-                <View
-                  key={mail.id}
-                  style={[styles.mail, mail.is_read ? styles.mail_true : styles.mail]}
-                >
+              <TouchableOpacity
+                key={mail.id}
+                onPress={
+                  () => console.info(mail.id)
+                  // 현재 userId를 못찾아서 채팅방으로 들어갈 수 없음
+                  // navigation.navigate("Chatroom" as never)
+                }
+              >
+                <View style={[styles.mail, mail.is_read ? styles.mail_true : styles.mail]}>
                   <View style={styles.space}>
                     <Text style={styles.nick}>{mail.sender_id_nick}</Text>
-                    <Text style={styles.date}>{mail.sendDate}</Text>
+                    <Text style={{ alignContent: "space-between" }}>{mail.sendDate}</Text>
                   </View>
                   <Text style={styles.content}>{mail.content}</Text>
                 </View>
@@ -164,11 +165,6 @@ const Mail: React.FC = () => {
 // 2023-07-10T04:39:44.555Z
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // margin: "5%",
-    // backgroundColor: "yellow",
-  },
   header: {
     flexDirection: "row",
     marginTop: "15%",

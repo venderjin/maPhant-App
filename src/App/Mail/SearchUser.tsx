@@ -1,4 +1,4 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { Field, Formik, FormikErrors } from "formik";
 import { useEffect, useState } from "react";
 import { TAutocompleteDropdownItem } from "react-native-autocomplete-dropdown";
@@ -34,13 +34,12 @@ const SearchUser: React.FC = () => {
         return validateNickname(value)
           .then(result => {
             if (result.success)
+              // Signup에서 쓴 닉네임 검증 함수라서 success === true 이면 존재하지 않는 별명임
               return testContext.createError({ message: "존재하지 않는 별명입니다." });
-
             return true;
           })
           .catch(error => {
             if (error === "이미 사용중인 별명입니다.") return true;
-
             return testContext.createError({ message: error });
           });
       }),
@@ -56,44 +55,80 @@ const SearchUser: React.FC = () => {
     });
   }, [nickname]);
 
+  // const userNickname: TargetNickId = {
+  //   id: 0,
+  //   nickname: "",
+  // };
   const userNickname: INickname = {
     nickname: "",
   };
-  // userNickname.nickname = "UuU";
   return (
-    <Formik
-      validateOnChange
-      initialValues={userNickname}
-      validationSchema={validationSchema}
-      onSubmit={values => {
-        const userId = nicknameAutocompleteList.find(item => item.title === values.nickname)?.id;
-
-        if (!userId) return alert("존재하지 않는 상대방입니다.");
-        navigation.navigate("Chatroom", { target: parseInt(userId) });
-      }}
+    <Container
+      isFullScreen={true}
+      isForceKeyboardAvoiding={true}
+      style={{ padding: 20, backgroundColor: "white", flex: 1 }}
     >
-      {({ handleSubmit, errors }) => (
-        <Container style={{ flex: 1 }}>
-          <Container borderRadius={20} style={{ marginBottom: 100, flex: 1 }}>
-            <Field
-              placeholder="유저 검색"
-              name="nickname"
-              component={Search}
-              list={nicknameAutocompleteList}
-              onChangeText={setNickname}
-            />
-          </Container>
-          <Container style={{ padding: 20, flex: 0 }}>
-            <TextButton
-              fontColor={"white"}
-              onPress={() => handleSubmitInterceptor(errors, handleSubmit)}
+      <Formik
+        validateOnChange
+        initialValues={userNickname}
+        validationSchema={validationSchema}
+        onSubmit={values => {
+          const userId = nicknameAutocompleteList.find(item => item.title === values.nickname)?.id;
+          if (!userId) return alert("존재하지 않는 상대방입니다.");
+          if (values.nickname.length === 0) return alert("에바야");
+          return navigation.navigate("Chatroom", {
+            id: parseInt(userId),
+            nickname: values.nickname,
+          });
+          // 다음 페이지에서 useParams() 사용하면 id 부분 사용가능, 다음 페이지에서는 userId롤 nickname을 찾자
+          // if (nickname === values.nickname)
+          // return navigation.navigate("Chatroom", { target: parseInt(userId) });
+          // else {
+          //   console.error(nickname);
+          //   console.info(values.nickname);
+          //   console.log(nicknameAutocompleteList, nicknameAutocompleteList.length);
+          //   return alert("닉네임이 다릅니다");
+          // }
+        }}
+      >
+        {({ handleSubmit, errors }) => (
+          <Container style={{ flex: 1 }}>
+            <Container
+              borderRadius={20}
+              style={{
+                marginTop: 15,
+                flex: 1,
+                padding: 10,
+              }}
             >
-              눌려!!
-            </TextButton>
+              <Field
+                placeholder="유저 검색"
+                name="nickname"
+                component={Search}
+                list={nicknameAutocompleteList}
+                onChangeText={(text: string) => setNickname(text)}
+              />
+            </Container>
+            <Container>
+              <TextButton
+                style={{
+                  flex: 0,
+                  borderWidth: 0.25,
+                  borderColor: nickname.length !== 0 ? "white" : "black",
+                  backgroundColor: nickname.length !== 0 ? "#5299EB" : "#A0A0A0",
+                  marginBottom: 30,
+                }}
+                fontColor={nickname.length !== 0 ? "white" : "#D3D3D3"}
+                onPress={() => handleSubmitInterceptor(errors, handleSubmit)}
+                disabled={!nickname.length}
+              >
+                채팅하기
+              </TextButton>
+            </Container>
           </Container>
-        </Container>
-      )}
-    </Formik>
+        )}
+      </Formik>
+    </Container>
   );
 };
 
