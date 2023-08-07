@@ -52,11 +52,11 @@ const Post: React.FC = () => {
         isHide,
         0,
         isanonymous,
-        hashtags.join(" ")
+        hashtags.join(" "),
       );
       console.log("게시물 작성 성공", response);
       // console.log(categoryId, userId, boardType.id, title, body);
-      navigation.navigate("DetailList" as never);
+      navigation.navigate("DetailList", { boardType: boardType });
     } catch (error) {
       console.error("게시물 작성 오류", error);
     }
@@ -73,7 +73,7 @@ const Post: React.FC = () => {
       updateHashtags();
       setHashtagInput("");
     }
-  }
+  };
 
   return (
     <Container isFullScreen={true}>
@@ -123,7 +123,7 @@ const Post: React.FC = () => {
           multiline={true}
           onSubmitEditing={addHashtag}
         ></Input>
-        <Spacer size = {10} />
+        <Spacer size={10} />
         {hashtags.map((tag, index) => (
           <Text key={index}>{tag}</Text>
         ))}
