@@ -9,16 +9,14 @@ import { BoardType } from "../../App/Board/BoardList";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
-import { UserData } from "../../types/User";
-
-// interface WriteProps {
-//   boardType: BoardType;
-// }
+import { UserCategory, UserData } from "../../types/User";
 
 const Post: React.FC = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [checkList, setCheckList] = useState<string[]>([]);
+  const [isanonymous, setIsanonymous] = useState(0);
+  const [isHide, setIsHide] = useState(0);
 
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
@@ -38,7 +36,7 @@ const Post: React.FC = () => {
   };
 
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
-  const category = useSelector(UserStorage.userCategorySelector);
+  const category = useSelector(UserStorage.userCategorySelector) as UserCategory;
 
   const complete = async () => {
     try {
@@ -49,9 +47,9 @@ const Post: React.FC = () => {
         boardType.id,
         title,
         body,
+        isHide,
         0,
-        1,
-        1,
+        isanonymous,
       );
       console.log("게시물 작성 성공", response);
       // console.log(categoryId, userId, boardType.id, title, body);
@@ -62,45 +60,55 @@ const Post: React.FC = () => {
   };
 
   return (
-      <Container isFullScreen={true}>
-        <Container style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Container style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10 }}>
+    <Container isFullScreen={true}>
+      <Container style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Container
+          style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10 }}
+        >
           <Container style={{ flexDirection: "row", marginRight: 10 }}>
-            <CheckBox style={{ marginRight: 5 }}
+            <CheckBox
+              style={{ marginRight: 5 }}
               value={checkList.includes("private")}
-              onValueChange={isChecked => check("private", isChecked)}
+              onValueChange={isChecked => {
+                check("private", isChecked);
+                setIsHide(isChecked ? 1 : 0);
+              }}
             ></CheckBox>
             <Text>비공개</Text>
           </Container>
           <Container style={{ flexDirection: "row" }}>
-            <CheckBox style={{ marginRight: 5 }}
+            <CheckBox
+              style={{ marginRight: 5 }}
               value={checkList.includes("anonymous")}
-              onValueChange={isChecked => check("anonymous", isChecked)}
+              onValueChange={isChecked => {
+                check("anonymous", isChecked);
+                setIsanonymous(isChecked ? 1 : 0);
+              }}
             ></CheckBox>
             <Text>익명</Text>
           </Container>
-          </Container>
-          <Container style={{ flexDirection: "row" }}>
-          <TextButton onPress={complete}>완료</TextButton>
-          </Container>
         </Container>
-        <Container>
-          <Input
-            placeholder="제목"
-            onChangeText={text => setTitle(text)}
-            value={title}
-            multiline={true}
-          ></Input>
-          <Spacer size={20} />
-          <Input
-            style={{ height: 500 }}
-            placeholder="본문"
-            onChangeText={text => setBody(text)}
-            value={body}
-            multiline={true}
-          ></Input>
+        <Container style={{ flexDirection: "row" }}>
+          <TextButton onPress={complete}>완료</TextButton>
         </Container>
       </Container>
+      <Container>
+        <Input
+          placeholder="제목"
+          onChangeText={text => setTitle(text)}
+          value={title}
+          multiline={true}
+        ></Input>
+        <Spacer size={20} />
+        <Input
+          style={{ height: 500 }}
+          placeholder="본문"
+          onChangeText={text => setBody(text)}
+          value={body}
+          multiline={true}
+        ></Input>
+      </Container>
+    </Container>
   );
 };
 

@@ -19,9 +19,9 @@ function boardPost(
   typeId: number,
   title: string,
   body: string,
-  isHide: 0 | 1,
+  isHide: number,
   isComplete: 0 | 1,
-  isAnonymous: 0 | 1,
+  isAnonymous: number,
 ) {
   return PostAPI(`/board/create`, {
     parentId,
