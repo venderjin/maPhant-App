@@ -39,4 +39,4 @@ type BoardType =
   | "홍보 게시판"
   | "취미 게시판";
 
-export type { BoardPost, BoardArticle, BoardType };
+export type { BoardArticle, BoardPost, BoardType };

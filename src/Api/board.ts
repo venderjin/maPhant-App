@@ -1,16 +1,14 @@
-import { DeleteAPI, GetAPI, PostAPI, PutAPI, dataResponse } from "./fetchAPI";
+import { dataResponse, DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
 const listArticle = (
-  boardType: string,
-  sortCriterion: string = "likeCnt",
+  boardType: number,
+  sortCriterion: number = 1,
   page: number = 1,
   pageSize: number = 10,
-  category: string = "",
 ): Promise<dataResponse> =>
-  PostAPI<dataResponse>(`/board/main`, {
-    category: category,
-    boardType: boardType,
-    sortCriterion: sortCriterion,
+  GetAPI<dataResponse>(`/board`, {
+    boardTypeId: boardType,
+    sortCriterionId: sortCriterion,
     page: page,
     pageSize: pageSize,
   });
@@ -51,15 +49,15 @@ function boardEdit(id: number, title: string, body: string, isHide: 0 | 1) {
 function boardDelete() {
   return DeleteAPI(`/board/10`);
 }
-function getArticle(board_id: String) {
+function getArticle(board_id: string) {
   return PostAPI(`/board/${board_id}`);
 }
 
-function insertLikePost(board_id: String) {
+function insertLikePost(board_id: string) {
   return GetAPI(`/board/like/${board_id}`);
 }
 
-function deleteLikeBoard(board_id: String) {
+function deleteLikeBoard(board_id: string) {
   return DeleteAPI(`/board/like/${board_id}`);
 }
 
@@ -68,12 +66,12 @@ function searchArticle() {
 }
 
 export {
-  listArticle,
-  boardPost,
-  boardEdit,
   boardDelete,
+  boardEdit,
+  boardPost,
+  deleteLikeBoard,
   getArticle,
   insertLikePost,
-  deleteLikeBoard,
+  listArticle,
   searchArticle,
 };

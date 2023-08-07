@@ -1,14 +1,14 @@
-import reduxStore, { LoadingUIStore, RootState } from "./reduxStore";
+import reduxStore, { LoadingUISlice, RootState } from "./reduxStore";
 
 class UIStore {
   static showLoadingOverlay() {
-    reduxStore.dispatch(LoadingUIStore.actions.showLoading());
+    reduxStore.dispatch(LoadingUISlice.actions.showLoading());
   }
   static hideLoadingOverlay() {
-    reduxStore.dispatch(LoadingUIStore.actions.hideLoading());
+    reduxStore.dispatch(LoadingUISlice.actions.hideLoading());
   }
 
-  static isLoadingUIVisible = (state: RootState) => state.LoadingUI > 0;
+  static isLoadingUIVisibleSelector = (state: RootState) => state.LoadingUI > 0;
 }
 
 export default UIStore;

@@ -1,9 +1,11 @@
-import { BoardType } from "./Board";
-type NavigationProps = {
-  DetailList: {
-    boardType: BoardType;
+type RouteType = {
+  name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  component: React.FC<any>;
+  options?: {
+    headerShown?: boolean;
+    tabBarVisible?: boolean;
   };
-  QnABoard: {};
 };
 
-export type { NavigationProps };
+export type { RouteType };

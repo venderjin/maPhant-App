@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useTheme } from "react-native-paper";
+
 import createStyle from "../Home/Home";
 import { ThemeContext } from "./ThemeContext";
 

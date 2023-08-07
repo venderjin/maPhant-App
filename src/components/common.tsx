@@ -11,14 +11,17 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   KeyboardTypeOptions,
+  ScrollView,
   StyleProp,
   Text,
   TextInput,
+  TextProps,
   TextStyle,
   TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // 컴포넌트들에 대한 타입 정의를 함
 // 각 컴포넌트가 어떤 props를 받을 수 있는지, 해당 props들이 어떤 타입을 가져야 하는지
@@ -76,14 +79,17 @@ type InputProps = {
   keyboardType?: KeyboardTypeOptions;
   ref?: LegacyRef<TextInput>;
   multiline?: boolean;
+  inputRef?: LegacyRef<TextInput>;
 } & DefaultProps;
 
 const Container: React.FC<ContainerProps> = props => {
+  const safeAreaInsets = useSafeAreaInsets();
+  const theme = useTheme();
   //props 기본값
   const {
     style = {},
     children,
-    paddingHorizontal = 16,
+    paddingHorizontal,
     paddingVertical = 8,
     isFullScreen = false,
     isFullWindow = false,
@@ -91,10 +97,10 @@ const Container: React.FC<ContainerProps> = props => {
     isForceKeyboardAvoiding = false,
     borderRadius,
   } = props;
+  const isRootContainer = isFullScreen || isFullWindow;
 
   // 커스텀으로 값 가져옴
   const headerHeight = useHeaderHeight();
-  const theme = useTheme();
   // 컨테이너 높이 결정 함수
   const adjustedHeight = () => {
     if (isFullScreen) return Dimensions.get("screen").height;
@@ -103,7 +109,7 @@ const Container: React.FC<ContainerProps> = props => {
   };
   // 높이와 키보드 높이를 상태로 관리
   const [height, setHeight] = useState<number | string>(adjustedHeight());
-  const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
+  const [, setKeyboardHeight] = useState<number>(0);
 
   // 컴포넌트 마운트될 때, 높이와 키보드 높이 설정 이벤트 리스너 추가
   useEffect(() => {
@@ -124,9 +130,8 @@ const Container: React.FC<ContainerProps> = props => {
   }, []);
 
   const style_computed: StyleProp<ViewStyle> = {
-    // backgroundColor: theme.colors.background,
-    backgroundColor: "white",
-    paddingHorizontal,
+    backgroundColor: isRootContainer ? theme.colors.background : "transparent",
+    paddingHorizontal: isRootContainer && paddingHorizontal === undefined ? 16 : paddingHorizontal,
     paddingVertical,
     minHeight: isFullScreen || isFullWindow ? height : undefined,
     height: isForceKeyboardAvoiding ? height : undefined,
@@ -134,16 +139,24 @@ const Container: React.FC<ContainerProps> = props => {
     marginRight: isItemCenter ? "auto" : undefined,
     borderRadius,
     paddingBottom: isForceKeyboardAvoiding ? 50 : undefined,
+    paddingTop: isFullScreen ? safeAreaInsets.top : undefined,
     ...(style as object),
   };
 
-  if (isFullScreen || isFullWindow) {
+  if (isRootContainer) {
     return (
       <KeyboardAvoidingView>
         <View style={style_computed}>{children}</View>
       </KeyboardAvoidingView>
     );
   }
+  // if children is ScrollView, set minHeight
+  if (children && (children as React.ReactElement).type === ScrollView) {
+    (children as React.ReactElement).props.style = {
+      minHeight: height,
+    };
+  }
+
   return <View style={style_computed}>{children}</View>;
 };
 
@@ -197,13 +210,12 @@ const Spacer: React.FC<SpacerProps> = props => {
 };
 
 const TextButton: React.FC<TextButtonProps> = props => {
-  const theme = useTheme();
   const {
     style = {},
     children,
-    backgroundColor = theme.colors.primary,
+    backgroundColor = "#5299EB",
     fontSize = 16,
-    fontColor,
+    fontColor = "white",
     widthFull = false,
     paddingHorizontal = 20,
     paddingVertical = 15,
@@ -254,9 +266,9 @@ const Input: React.FC<InputProps> = props => {
     onChangeText,
     value,
     keyboardType,
-    ref,
+    inputRef,
     secureTextEntry = false,
-    editable = false,
+    editable = true,
     paddingHorizontal = 16,
     paddingVertical = 8,
     borderRadius = 16,
@@ -278,13 +290,14 @@ const Input: React.FC<InputProps> = props => {
   return (
     <View style={style_container}>
       <TextInput
-        ref={ref}
+        ref={inputRef}
         style={style_text}
         value={value}
         editable={editable}
         keyboardType={keyboardType}
         onChangeText={onChangeText}
         placeholder={placeholder}
+        placeholderTextColor="#999"
         secureTextEntry={secureTextEntry}
         inputMode={inputMode}
         multiline={multiline}
@@ -293,4 +306,19 @@ const Input: React.FC<InputProps> = props => {
   );
 };
 
-export { Container, ImageBox, Input, Spacer, TextButton };
+type TextThemedPropsType = {
+  onDarkColor?: ColorValue;
+  onLightColor?: ColorValue;
+} & TextProps;
+
+const TextThemed: React.FC<TextThemedPropsType> = props => {
+  const theme = useTheme();
+  const textColor = (theme.dark ? props.onDarkColor : props.onLightColor) ?? theme.colors.text;
+
+  const propsPassed = { ...props };
+  propsPassed.style = { color: textColor, ...(props.style as object) };
+
+  return <Text {...propsPassed} />;
+};
+
+export { Container, ImageBox, Input, Spacer, TextButton, TextThemed };

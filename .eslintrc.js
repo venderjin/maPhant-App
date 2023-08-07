@@ -28,10 +28,11 @@ module.exports = {
   rules: {
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
-    "no-unused-vars": "off",
+    "no-unused-vars": ["error", { vars: "all", args: "none", ignoreRestSiblings: false }],
     "unused-imports/no-unused-imports-ts": ["error"],
     "@typescript-eslint/ban-ts-comment": "off",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
+    "react/no-unescaped-entities": "off",
   },
 };

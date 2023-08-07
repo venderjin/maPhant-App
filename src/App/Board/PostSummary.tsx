@@ -1,7 +1,8 @@
-import React from "react";
-import { BoardArticle, BoardType } from "../../types/Board";
-import { StyleSheet, View, Text } from "react-native";
 import { Feather, FontAwesome } from "@expo/vector-icons";
+import React from "react";
+import { StyleSheet, Text,View } from "react-native";
+
+import { BoardArticle, BoardType } from "../../types/Board";
 
 export default function ({
   post,

@@ -1,26 +1,24 @@
-import React, { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
-
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import React from "react";
 import {
+  Keyboard,
   StyleSheet,
-  View,
   Text,
   TouchableOpacity,
-  ScrollView,
   TouchableWithoutFeedback,
-  Keyboard,
+  View,
 } from "react-native";
-import SearchBar from "../../components/Input/searchbar";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import SearchBar from "../../components/Input/searchbar";
+import { NavigationProps } from "../../Navigator/Routes";
 import { BoardType } from "../../types/Board";
-import { NavigationProps } from "../../types/Navigation";
-import { transparent } from "react-native-paper/lib/typescript/src/styles/themes/v2/colors";
 
 const BoardList = () => {
-  const navigation = useNavigation<NavigationProp<NavigationProps>>();
+  const navigation = useNavigation<NavigationProps>();
 
   const BoardNavigateBtn: React.FC<{ boardType: BoardType }> = ({ boardType }) => {
     return (
