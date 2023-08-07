@@ -1,7 +1,15 @@
 import { Entypo } from "@expo/vector-icons";
 import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { listArticle } from "../../Api/board";
 import { Container } from "../../components/common";
@@ -13,6 +21,7 @@ const DetailList: React.FC = () => {
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation<NavigationProp<NavigationProps>>();
   // const [sort, setSort] = useState<SortType[]>([]);
 
@@ -20,12 +29,30 @@ const DetailList: React.FC = () => {
   //   setSort(data.data as SortType);
   // }).catch(err => console.log(err));
 
+  const fetchData = async () => {
+    try {
+      if (!boardType) {
+        setRefreshing(false);
+        return;
+      }
+      const data = await listArticle(boardType.id, 1, 50, 1);
+      if (data.data) {
+        setboardData(data.data as BoardArticle[]);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    fetchData();
+  };
+
   useEffect(() => {
-    listArticle(boardType.id, 1, 50, 1)
-      .then(data => {
-        if (data.data) setboardData(data.data as BoardArticle[]);
-      })
-      .catch(err => console.log(err));
+    fetchData();
   }, []);
 
   const createBoard = () => {
@@ -37,17 +64,20 @@ const DetailList: React.FC = () => {
     navigation.navigate("QnAdetail", { boardData: board });
   };
   console.log(boardType);
+
   return (
     <Container style={styles.container}>
-      <ScrollView>
-        {boardData.map(board => (
+      <FlatList
+        data={boardData}
+        renderItem={({ item: board }) => (
           <View key={board.boardId} style={styles.body}>
             <Pressable onPress={() => detailContent(board)}>
               <PostSummary post={board} boardType={boardType} />
             </Pressable>
           </View>
-        ))}
-      </ScrollView>
+        )}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      />
       <View style={styles.btn}>
         <TouchableOpacity onPress={createBoard}>
           <Text>
