@@ -1,15 +1,35 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 
+import { PostAPI } from "../../Api/fetchAPI";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
+import { NavigationProps } from "../../Navigator/Routes";
+import UserStorage from "../../storage/UserStorage";
 
 const PasswordCheck: React.FC = () => {
   const [password, setPassword] = useState("");
   const navigation = useNavigation<NavigationProps>();
   //로그인된  회원의 email을 서버로 받고 user가 입력한 비밀번호를 넘겨서 check
+
+  const profile = useSelector(UserStorage.userProfileSelector);
+
+  const checkPasswordHandler = () => {
+    PostAPI("/user/changeinfo/identification", {
+      email: profile?.email,
+      password: password,
+    }).then(res => {
+      if (res.success == true) {
+        console.log(res.success);
+        navigation.navigate("ProfileModify");
+      } else {
+        console.log(res.errors);
+      }
+    });
+  };
   return (
-    <Container isFullScreen={true} paddingHorizontal={0} style={{ backgroundColor: "white" }}>
+    <Container isFullScreen={true} paddingHorizontal={0}>
       <ScrollView
         contentContainerStyle={{
           flexDirection: "column",
@@ -33,7 +53,7 @@ const PasswordCheck: React.FC = () => {
             </View>
             <Spacer size={25} />
             <Input
-              style={{ paddingVertical: "5%", backgroundColor: "#D8E1EC" }}
+              style={{ paddingVertical: "5%" }}
               paddingHorizontal={20}
               borderRadius={30}
               placeholder="Password"
@@ -44,7 +64,7 @@ const PasswordCheck: React.FC = () => {
             <Spacer size={30} />
             <TextButton
               onPress={() => {
-                navigation.navigate("ProfileModify");
+                checkPasswordHandler();
               }}
             >
               확인하기
@@ -56,11 +76,4 @@ const PasswordCheck: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 16,
-    paddingVertical: 30,
-    marginTop: 18,
-  },
-});
 export default PasswordCheck;

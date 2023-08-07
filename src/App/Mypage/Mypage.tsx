@@ -4,9 +4,10 @@ import React from "react";
 import { ColorValue, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { UserData } from "../../Api/memberAPI";
+import { DeleteAPI } from "../../Api/fetchAPI";
 import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
+import { UserData } from "../../types/User";
 
 type sectionItem = {
   title?: string;
@@ -125,6 +126,14 @@ const MyView = () => {
 };
 
 export default function MyPage() {
+  const userProfle = useSelector(UserStorage.userProfileSelector);
+
+  const deleteUser = () => {
+    DeleteAPI("/user?userId=" + userProfle?.id).then(res => {
+      console.log(res.success);
+    });
+  };
+
   const sections: sectionItem[] = [
     {
       title: "계정 설정",
@@ -173,7 +182,10 @@ export default function MyPage() {
       contents: [
         {
           title: "회원탈퇴",
-          // description: "공지사항 및 새소식을 확인합니다.",
+          onclick: () => {
+            deleteUser();
+            UserStorage.removeUserData();
+          },
           href: "5",
         },
       ],
