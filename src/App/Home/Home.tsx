@@ -59,11 +59,11 @@ const Home: React.FC = () => {
 
   return (
     //view화면
-    <Container isFullScreen={true} paddingHorizontal={0}>
-      <MainHeader />
-      <SearchBar text={text} onTextChanged={setText} />
+    <Container isForceTopSafeArea={true} paddingHorizontal={0}>
+      <ScrollView>
+        <MainHeader />
+        <SearchBar text={text} onTextChanged={setText} />
 
-      <ScrollView style={{ height: Dimensions.get("window").height }}>
         <Carousel imageList={info} />
         <Spacer size={20} />
         <TodaysHot />
@@ -71,6 +71,7 @@ const Home: React.FC = () => {
         <Advertisements />
         <Spacer size={20} />
         <ToolBox />
+        <Spacer size={20} />
       </ScrollView>
     </Container>
   );

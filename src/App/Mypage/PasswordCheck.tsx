@@ -9,7 +9,7 @@ const PasswordCheck: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
   //로그인된  회원의 email을 서버로 받고 user가 입력한 비밀번호를 넘겨서 check
   return (
-    <Container isFullScreen={true} paddingHorizontal={0}>
+    <Container isFullScreen={true} paddingHorizontal={0} style={{ backgroundColor: "white" }}>
       <ScrollView
         contentContainerStyle={{
           flexDirection: "column",
@@ -33,7 +33,7 @@ const PasswordCheck: React.FC = () => {
             </View>
             <Spacer size={25} />
             <Input
-              style={{ paddingVertical: "5%" }}
+              style={{ paddingVertical: "5%", backgroundColor: "#D8E1EC" }}
               paddingHorizontal={20}
               borderRadius={30}
               placeholder="Password"
