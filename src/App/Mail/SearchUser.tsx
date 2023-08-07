@@ -56,15 +56,9 @@ const SearchUser: React.FC = () => {
       .catch(error => console.log(error));
   }, [nickname]);
 
-  // const userNickname: TargetNickId = {
-  //   id: 0,
-  //   nickname: "",
-  // };
   const userNickname: INickname = {
     nickname: "",
   };
-  console.log(nicknameAutocompleteList);
-  console.log(nickname);
   return (
     <Container
       isFullScreen={true}
@@ -83,15 +77,6 @@ const SearchUser: React.FC = () => {
             id: parseInt(userId),
             nickname: values.nickname,
           });
-          // 다음 페이지에서 useParams() 사용하면 id 부분 사용가능, 다음 페이지에서는 userId롤 nickname을 찾자
-          // if (nickname === values.nickname)
-          // return navigation.navigate("Chatroom", { target: parseInt(userId) });
-          // else {
-          //   console.error(nickname);
-          //   console.info(values.nickname);
-          //   console.log(nicknameAutocompleteList, nicknameAutocompleteList.length);
-          //   return alert("닉네임이 다릅니다");
-          // }
         }}
       >
         {({ handleSubmit, errors }) => (

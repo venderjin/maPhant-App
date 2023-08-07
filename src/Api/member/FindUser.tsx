@@ -1,5 +1,5 @@
 import { MessageList, TargetNickId } from "../../types/DM";
-import { GetAPI, PostAPI, statusResponse } from "../fetchAPI";
+import { DeleteAPI, GetAPI, PostAPI, statusResponse } from "../fetchAPI";
 
 function SearchNickname(nickname: string) {
   return GetAPI<{ data: TargetNickId[] } & statusResponse>(`/dm/target/search`, { nickname });
@@ -12,8 +12,12 @@ function sendContent(receiver_id: number, content: string) {
   });
 }
 
-function receiveContent() {
+function receiveChatrooms() {
   return GetAPI<{ data: MessageList[] } & statusResponse>(`/room`);
 }
 
-export { receiveContent, SearchNickname, sendContent };
+function deleteChat(id: number) {
+  return DeleteAPI(`/room/${id}`);
+}
+
+export { deleteChat, receiveChatrooms, SearchNickname, sendContent };

@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import { receiveContent } from "../../Api/member/FindUser";
+import { deleteChat, receiveChatrooms } from "../../Api/member/FindUser";
 import { Container, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import { MessageList } from "../../types/DM";
@@ -35,11 +35,15 @@ const Mail: React.FC = () => {
   }
   const [chatList, setChatList] = useState<MessageList[]>([]);
   const navigation = useNavigation<NavigationProps>();
+  const del = (id: number) => {
+    //삭제는 되는데 삭제된 방이 다시 생성이 안됨 이거는 백엔드에서 해줘야하는 것 같음
+    deleteChat(id);
+  };
   const searchUser = () => {
     navigation.navigate("SearchUser" as never);
   };
   useEffect(() => {
-    receiveContent()
+    receiveChatrooms()
       .then(res => {
         // 리스트에 대화방 정보 담음
         setChatList(res.data);
@@ -59,6 +63,7 @@ const Mail: React.FC = () => {
               <TouchableOpacity
                 key={mail.id}
                 onPress={() => {
+                  console.log(mail.id);
                   // 채티방 페이지로 상대방 아이디랑, 닉네임 같이 넘김
                   navigation.navigate("Chatroom", {
                     id: mail.other_id,
@@ -69,11 +74,19 @@ const Mail: React.FC = () => {
                 <View style={[styles.mail, mail.unread_count ? styles.mail_true : styles.mail]}>
                   <View style={styles.space}>
                     <Text style={styles.nick}>{mail.other_nickname}</Text>
+
                     <Text style={{ alignContent: "space-between" }}>
+                      {/* 시간이 최근에 채팅한 시간이 아니라 최초에 채팅한 시간을 기준으로 하고 있음, 이것도 백엔드에서 해야하는 것 같음 */}
                       {formatTimeDifference(new Date(mail.time))}
                     </Text>
+                    {/* 삭제 기능 제대로 됨 ,나중에 버튼 새로 깔끔하게 만들기 */}
                   </View>
-                  <Text style={styles.content}>{mail.last_content}</Text>
+                  <Container style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <Text style={styles.content}>{mail.last_content}</Text>
+                    <TextButton style={{ justifyContent: "flex-end" }} onPress={() => del(mail.id)}>
+                      삭제
+                    </TextButton>
+                  </Container>
                 </View>
               </TouchableOpacity>
             ))}
@@ -107,7 +120,6 @@ const styles = StyleSheet.create({
     marginTop: "15%",
     marginLeft: "8%",
     marginBottom: "3%",
-    // borderBottomColor: "blue",
   },
   mailText: {
     fontSize: 30,
@@ -116,11 +128,10 @@ const styles = StyleSheet.create({
 
   sender: {
     backgroundColor: "white",
-    // marginLeft: "5%",
+
     border: "2px",
   },
   mail: {
-    // backgroundColor: "yellow",
     padding: "3%",
   },
   mail_true: {

@@ -58,7 +58,10 @@ const Chatroom: React.FC = () => {
     const now = new Date();
     const hours = now.getHours();
     const minutes = now.getMinutes();
-    const currentTime = `${hours}:${minutes}`;
+    // 00 : 00 분으로 표시되게 바꿈
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    const currentTime = `${formattedHours}:${formattedMinutes}`;
     return currentTime;
   }
 
