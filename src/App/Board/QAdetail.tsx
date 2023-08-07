@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { boardDelete, getArticle } from "../../Api/board";
+import { boardDelete, boardEdit, getArticle } from "../../Api/board";
 import { Container, IconButton, TextButton } from "../../components/common";
 import UserStorage from "../../storage/UserStorage";
 import { BoardArticle, BoardPost } from "../../types/Board";
@@ -44,10 +44,26 @@ const QAdetail = () => {
   const handleDelete = async (board_id: number) => {
     try {
       const response = await boardDelete(board_id);
-      navigation.navigate("DetailList");
+      navigation.navigate("DetailList" as never);
       console.log("삭제 성공", response);
     } catch (error) {
       console.error("삭제 오류", error);
+    }
+  };
+  // console.log(boardData)
+  console.log(post);
+  const handleUpdate = async () => {
+    try {
+      const response = await boardEdit(
+        post.board.id,
+        post.board.title,
+        post.board.body,
+        post.board.isHide,
+      );
+      console.log("수정 가능", response);
+      navigation.navigate("Post", { post: post });
+    } catch (error) {
+      console.error("수정 오류", error);
     }
   };
 
@@ -92,7 +108,7 @@ const QAdetail = () => {
                 <TextButton
                   style={styles.button}
                   backgroundColor={"#f2f2f2"}
-                  onPress={() => console.log("수정")}
+                  onPress={handleUpdate}
                 >
                   수정
                 </TextButton>
