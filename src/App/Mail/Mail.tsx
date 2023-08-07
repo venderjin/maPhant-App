@@ -45,7 +45,7 @@ const Mail: React.FC = () => {
         setChatList(res.data);
       })
       .catch(e => console.info(e));
-  }, []);
+  }, [chatList]);
   return (
     <Container style={{ flex: 1 }}>
       <View style={styles.header}>
