@@ -1,4 +1,4 @@
-import { TargetNickId } from "../../types/DM";
+import { MessageList, TargetNickId } from "../../types/DM";
 import { GetAPI, PostAPI, statusResponse } from "../fetchAPI";
 
 function SearchNickname(nickname: string) {
@@ -12,4 +12,8 @@ function sendContent(receiver_id: number, content: string) {
   });
 }
 
-export { SearchNickname, sendContent };
+function receiveContent() {
+  return GetAPI<{ data: MessageList[] } & statusResponse>(`/room`);
+}
+
+export { receiveContent, SearchNickname, sendContent };

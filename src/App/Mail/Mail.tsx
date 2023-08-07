@@ -1,116 +1,51 @@
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import { receiveContent } from "../../Api/member/FindUser";
 import { Container, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
+import { MessageList } from "../../types/DM";
 
-const mailData = [
-  {
-    id: 1,
-    sender_id_nick: "R",
-    content: "헤헤",
-    is_read: true,
-    sendDate: "어제",
-  },
-  {
-    id: 2,
-    sender_id_nick: "B",
-    content: "네",
-    is_read: true,
-    sendDate: "어제",
-  },
-  {
-    id: 3,
-    sender_id_nick: "C",
-    content: "ㄹㅇㅁㄴ",
-    is_read: true,
-    sendDate: "어제",
-  },
-  {
-    id: 4,
-    sender_id_nick: "C",
-    content: "ㅁㅁ",
-    is_read: true,
-    sendDate: "어제",
-  },
-  {
-    id: 5,
-    sender_id_nick: "D",
-    content: "ㅂㅈㄷㅂㅈㄷ",
-    is_read: false,
-    sendDate: "어제",
-  },
-  {
-    id: 6,
-    sender_id_nick: "E",
-    content: "ㅠㅠ",
-    is_read: false,
-    sendDate: "어제",
-  },
-  {
-    id: 7,
-    sender_id_nick: "F",
-    content: "ㅋㅋ",
-    is_read: true,
-    sendDate: "어제",
-  },
-  {
-    id: 8,
-    sender_id_nick: "G",
-    content: "ㅎㅎ",
-    is_read: false,
-    sendDate: "어제",
-  },
-  {
-    id: 9,
-    sender_id_nick: "H",
-    content: "fdㅠㅠs",
-    is_read: false,
-    sendDate: "어제",
-  },
-  {
-    id: 10,
-    sender_id_nick: "G",
-    content: "gk",
-    is_read: false,
-    sendDate: "어제",
-  },
-];
-//is_read : 안 읽었을때 1 = true 읽었을 때 0 = false
-
-// sendDate 가 들어왔을 때 분전 , 시간 전으로 바꾸는 코드
-// export function gettimeDiff(timeToCompare: Dayjs): string {
-//   const timeDiffDuration: Duration = dayjs.duration(dayjs().diff(timeToCompare));
-//   const yearDiff: number = parseInt(timeDiffDuration.format("Y"));
-//   const monthDiff: number = parseInt(timeDiffDuration.format("M"));
-//   const dateDiff: number = parseInt(timeDiffDuration.format("D"));
-//   const hourDiff: number = parseInt(timeDiffDuration.format("H"));
-//   const minuteDiff: number = parseInt(timeDiffDuration.format("m"));
-//   const secondDiff: number = parseInt(timeDiffDuration.format("s"));
-
-//   if (yearDiff > 0) {
-//     return `${yearDiff} 년 전`;
-//   } else if (monthDiff > 0) {
-//     return `${monthDiff} 달 전`;
-//   } else if (dateDiff > 0) {
-//     return `${dateDiff} 일 전`;
-//   } else if (hourDiff > 0) {
-//     return `${hourDiff} 시간 전`;
-//   } else if (minuteDiff > 0) {
-//     return `${minuteDiff} 분 전`;
-//   } else if (secondDiff > 0) {
-//     return `${secondDiff} 초 전`;
-//   } else {
-//     return "";
-//   }
-// }
 const Mail: React.FC = () => {
+  //is_read : 안 읽었을때 1 = true 읽었을 때 0 = false
+  // sendDate 가 들어왔을 때 분전 , 시간 전으로 바꾸는 코드
+  function formatTimeDifference(targetDate: Date): string {
+    const currentDate = new Date();
+    const timeDifference = currentDate.getTime() - targetDate.getTime();
+
+    const seconds = Math.floor(timeDifference / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30);
+
+    if (seconds < 60) {
+      return `${seconds}초 전`;
+    } else if (minutes < 60) {
+      return `${minutes}분 전`;
+    } else if (hours < 24) {
+      return `${hours}시간 전`;
+    } else if (days < 30) {
+      return `${days}일 전`;
+    } else {
+      return `${months}개월 전`;
+    }
+  }
+  const [chatList, setChatList] = useState<MessageList[]>([]);
   const navigation = useNavigation<NavigationProps>();
   const searchUser = () => {
     navigation.navigate("SearchUser" as never);
   };
+  useEffect(() => {
+    receiveContent()
+      .then(res => {
+        // 리스트에 대화방 정보 담음
+        setChatList(res.data);
+      })
+      .catch(e => console.info(e));
+  }, []);
   return (
     <Container style={{ flex: 1 }}>
       <View style={styles.header}>
@@ -119,22 +54,26 @@ const Mail: React.FC = () => {
       <ScrollView>
         <View style={styles.sender}>
           <View>
-            {mailData.map(mail => (
+            {chatList.map(mail => (
               // eslint-disable-next-line react/jsx-key
               <TouchableOpacity
                 key={mail.id}
-                onPress={
-                  () => console.info(mail.id)
-                  // 현재 userId를 못찾아서 채팅방으로 들어갈 수 없음
-                  // navigation.navigate("Chatroom" as never)
-                }
+                onPress={() => {
+                  // 채티방 페이지로 상대방 아이디랑, 닉네임 같이 넘김
+                  navigation.navigate("Chatroom", {
+                    id: mail.other_id,
+                    nickname: mail.other_nickname,
+                  });
+                }}
               >
-                <View style={[styles.mail, mail.is_read ? styles.mail_true : styles.mail]}>
+                <View style={[styles.mail, mail.unread_count ? styles.mail_true : styles.mail]}>
                   <View style={styles.space}>
-                    <Text style={styles.nick}>{mail.sender_id_nick}</Text>
-                    <Text style={{ alignContent: "space-between" }}>{mail.sendDate}</Text>
+                    <Text style={styles.nick}>{mail.other_nickname}</Text>
+                    <Text style={{ alignContent: "space-between" }}>
+                      {formatTimeDifference(new Date(mail.time))}
+                    </Text>
                   </View>
-                  <Text style={styles.content}>{mail.content}</Text>
+                  <Text style={styles.content}>{mail.last_content}</Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -161,8 +100,6 @@ const Mail: React.FC = () => {
     </Container>
   );
 };
-
-// 2023-07-10T04:39:44.555Z
 
 const styles = StyleSheet.create({
   header: {
