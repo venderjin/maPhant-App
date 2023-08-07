@@ -1,10 +1,13 @@
 import { useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { getArticle } from "../../Api/board";
 import { Container, IconButton, TextButton } from "../../components/common";
+import UserStorage from "../../storage/UserStorage";
 import { BoardArticle, BoardPost } from "../../types/Board";
+import { UserData } from "../../types/User";
 
 const data = [
   {
@@ -24,8 +27,9 @@ const QAdetail = () => {
   const params = useRoute().params as { boardData: BoardArticle };
   const boardData = params?.boardData;
   const [post, setPost] = useState({ board: {} } as BoardPost);
-  const createdAtDate = new Date(post.board.createdAt);
+  const user = useSelector(UserStorage.userProfileSelector)! as UserData;
 
+  const createdAtDate = new Date(post.board.createdAt);
   const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
     year: "numeric",
     month: "2-digit",
@@ -43,6 +47,19 @@ const QAdetail = () => {
       .catch();
   }, []);
 
+  function alert() {
+    Alert.alert("삭제", "삭제하시겠습니까?", [
+      {
+        text: "네",
+        // onPress: 삭제기능 넣으면 됨,
+      },
+      {
+        text: "아니오",
+        style: "cancel",
+      },
+    ]);
+  }
+
   return (
     <Container style={styles.container}>
       <View style={styles.qainfoBox}>
@@ -56,22 +73,20 @@ const QAdetail = () => {
                 <Text style={styles.date}>{formattedDateTime}</Text>
               </View>
             </View>
-            <View style={styles.qaButtonBox}>
-              <TextButton
-                style={styles.button}
-                backgroundColor={"#f2f2f2"}
-                onPress={() => console.log("수정")}
-              >
-                수정
-              </TextButton>
-              <TextButton
-                style={styles.button}
-                backgroundColor={"#f2f2f2"}
-                onPress={() => console.log("삭제")}
-              >
-                삭제
-              </TextButton>
-            </View>
+            {user.nickname === boardData.userNickname && (
+              <View style={styles.qaButtonBox}>
+                <TextButton
+                  style={styles.button}
+                  backgroundColor={"#f2f2f2"}
+                  onPress={() => console.log("수정")}
+                >
+                  수정
+                </TextButton>
+                <TextButton style={styles.button} backgroundColor={"#f2f2f2"} onPress={alert}>
+                  삭제
+                </TextButton>
+              </View>
+            )}
           </View>
           <View style={styles.qacontextBox}>
             <View>
