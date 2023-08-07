@@ -4,6 +4,26 @@ import { ScrollView, Text, View } from "react-native";
 import { Container, Input, TextButton } from "../../components/common";
 
 const ProfileModify: React.FC = () => {
+  type UserType = {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    nickname: string;
+    name: string;
+    phoneNumber: string;
+    studentNumber: string;
+  };
+
+  const usetModifying: NewUserType = {
+    email: "user.email",
+    password: "",
+    confirmPassword: "",
+    nickname: "",
+    name: "user.name",
+    phoneNumber: "",
+    studentNumber: "user.studentNumber",
+  };
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [nickname, setNickname] = useState("");
@@ -22,6 +42,19 @@ const ProfileModify: React.FC = () => {
       >
         <View>
           <Text style={{ fontSize: 18, padding: 10 }}>이메일</Text>
+          <View
+            style={{
+              borderColor: "#D8E1EC",
+              borderWidth: 3,
+              borderRadius: 30,
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+            }}
+          >
+            <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
+              {usetModifying.email}
+            </Text>
+          </View>
           <Text style={{ fontSize: 18, padding: 10 }}>비밀번호</Text>
           <Input
             style={{ paddingVertical: "5%", backgroundColor: "#D8E1EC" }}
@@ -50,19 +83,45 @@ const ProfileModify: React.FC = () => {
             placeholder="nickname"
             onChangeText={text => setNickname(text)}
             value={nickname}
-            secureTextEntry={true}
+            secureTextEntry={false}
           ></Input>
           <Text style={{ fontSize: 18, padding: 10 }}>이름</Text>
+          <View
+            style={{
+              borderColor: "#D8E1EC",
+              borderWidth: 3,
+              borderRadius: 30,
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+            }}
+          >
+            <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
+              {usetModifying.name}
+            </Text>
+          </View>
           <Text style={{ fontSize: 18, padding: 10 }}>학번</Text>
+          <View
+            style={{
+              borderColor: "#D8E1EC",
+              borderWidth: 3,
+              borderRadius: 30,
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+            }}
+          >
+            <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
+              {usetModifying.studentNumber}
+            </Text>
+          </View>
           <Text style={{ fontSize: 18, padding: 10 }}>핸드폰 번호</Text>
           <Input
             style={{ paddingVertical: "5%", backgroundColor: "#D8E1EC" }}
             paddingHorizontal={20}
             borderRadius={30}
-            placeholder=" PhoneNumber"
+            placeholder=" PhoneNumber ( 000 - 0000 - 0000 )"
             onChangeText={text => setPhoneNumber(text)}
             value={phoneNumber}
-            secureTextEntry={true}
+            secureTextEntry={false}
           ></Input>
           <Text style={{ fontSize: 18, padding: 10 }}>계열</Text>
           <Text style={{ fontSize: 18, padding: 10 }}>학과</Text>
