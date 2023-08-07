@@ -3,6 +3,7 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native";
 
+import { sendContent } from "../../Api/member/FindUser";
 import { Container, ImageBox, Input, Spacer, TextButton } from "../../components/common";
 import { MailFormParams } from "../../Navigator/MailRoute";
 const Chatroom: React.FC = () => {
@@ -12,10 +13,24 @@ const Chatroom: React.FC = () => {
   // SearchUser.tsx에서 입력한 유저의 id, nickname을 가져오기 위해 사용한 것
   const route = useRoute();
   const params = route.params as MailFormParams;
-
+  //
+  // const messages = params.id;
   const [content, setContent] = useState("");
-
-  function UserChat() {
+  const send = () => {
+    sendContent(params.id, content)
+      .then(res => {
+        if (res.success) {
+          console.log(content);
+        }
+      })
+      .catch(e => console.info(e));
+    //   {
+    //   throw new Error("오류뜸");
+    // }
+    // return res.json();
+    setContent("");
+  };
+  function OtherUserChat() {
     return (
       <Container style={{ paddingVertical: 0 }}>
         <Container style={{ padding: 10 }}>
@@ -38,7 +53,7 @@ const Chatroom: React.FC = () => {
       </Container>
     );
   }
-  function OtherUserChat() {
+  function UserChat() {
     return (
       <Container style={{ paddingVertical: 0 }}>
         <Container style={{ padding: 10, alignItems: "flex-end" }}>
@@ -78,6 +93,9 @@ const Chatroom: React.FC = () => {
       </Container>
       <Container style={{ flex: 10 }}>
         <ScrollView>
+          {/* {messages.map(({ id, data }) =>
+            data.email === auth.currentUser.email ? <UserChat /> : <OtherChat />,
+          )} */}
           <UserChat />
           <OtherUserChat />
         </ScrollView>
@@ -111,8 +129,7 @@ const Chatroom: React.FC = () => {
         > */}
         <TextButton
           onPress={() => {
-            console.log(content);
-            setContent("");
+            send();
           }}
           style={{
             flex: 1,
