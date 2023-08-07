@@ -1,5 +1,5 @@
 import { useRoute } from "@react-navigation/native";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native";
 
@@ -13,28 +13,60 @@ const Chatroom: React.FC = () => {
   // SearchUser.tsx에서 입력한 유저의 id, nickname을 가져오기 위해 사용한 것
   const route = useRoute();
   const params = route.params as MailFormParams;
+
   //
   // const messages = params.id;
+
+  const [messageList, setMessageList] = useState<
+    { id: number; sender: string; date: string; content: string }[]
+  >([]);
   const [content, setContent] = useState("");
+
   const send = () => {
     sendContent(params.id, content)
       .then(res => {
-        if (res.success) {
-          console.log(content);
+        if (res.data) {
+          const currentTime = getCurrentTime();
+          const newMessage = {
+            id: params.id,
+            sender: "ME",
+            date: currentTime,
+            content: content,
+          };
+          setMessageList(prevMessageList => [...prevMessageList, newMessage]);
+          console.log(params.id, content);
         }
       })
+      // .then(json => {
+      //   console.log(json);
+      // })
       .catch(e => console.info(e));
-    //   {
-    //   throw new Error("오류뜸");
-    // }
-    // return res.json();
     setContent("");
   };
+
+  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollToBottom = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [messageList]);
+
+  function getCurrentTime() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const currentTime = `${hours}:${minutes}`;
+    return currentTime;
+  }
+
   function OtherUserChat() {
     return (
       <Container style={{ paddingVertical: 0 }}>
         <Container style={{ padding: 10 }}>
-          <Text>Username</Text>
+          <Text>{params.nickname}</Text>
           <Container style={{ flexDirection: "row", alignItems: "flex-end" }}>
             <Container
               style={{
@@ -56,23 +88,25 @@ const Chatroom: React.FC = () => {
   function UserChat() {
     return (
       <Container style={{ paddingVertical: 0 }}>
-        <Container style={{ padding: 10, alignItems: "flex-end" }}>
-          <Text>{params.nickname}</Text>
-          <Container style={{ flexDirection: "row", alignItems: "flex-end" }}>
-            <Text style={{ marginRight: 5 }}>date</Text>
-            <Container
-              style={{
-                backgroundColor: "#5299EB",
-                paddingVertical: 13,
-                paddingHorizontal: 20,
-                borderRadius: 10,
-                flexShrink: 1,
-              }}
-            >
-              <Text style={{ color: "white" }}>안녕하세dfdfsdfdsdfasdfadfadsfasddfasdfasdf요</Text>
+        {messageList.map((message, i) => (
+          <Container key={i} style={{ padding: 10, alignItems: "flex-end" }}>
+            <Text>Me</Text>
+            <Container style={{ flexDirection: "row", alignItems: "flex-end" }}>
+              <Text style={{ marginRight: 5 }}>{message.date}</Text>
+              <Container
+                style={{
+                  backgroundColor: "#5299EB",
+                  paddingVertical: 13,
+                  paddingHorizontal: 20,
+                  borderRadius: 10,
+                  flexShrink: 1,
+                }}
+              >
+                <Text style={{ color: "white" }}>{message.content}</Text>
+              </Container>
             </Container>
           </Container>
-        </Container>
+        ))}
       </Container>
     );
   }
@@ -92,10 +126,7 @@ const Chatroom: React.FC = () => {
         <Text style={{ fontSize: 23, fontWeight: "bold" }}>채팅방이름</Text>
       </Container>
       <Container style={{ flex: 10 }}>
-        <ScrollView>
-          {/* {messages.map(({ id, data }) =>
-            data.email === auth.currentUser.email ? <UserChat /> : <OtherChat />,
-          )} */}
+        <ScrollView ref={scrollViewRef}>
           <UserChat />
           <OtherUserChat />
         </ScrollView>
@@ -148,10 +179,5 @@ const Chatroom: React.FC = () => {
     </Container>
   );
 };
-const styles = StyleSheet.create({
-  chatText: {
-    fontSize: 16,
-    marginVertical: 8,
-  },
-});
+
 export default Chatroom;

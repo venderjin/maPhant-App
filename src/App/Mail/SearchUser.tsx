@@ -47,12 +47,13 @@ const SearchUser: React.FC = () => {
 
   useEffect(() => {
     if (nickname.trim().length < 2) return;
-
-    SearchNickname(nickname).then(res => {
-      setNicknameAutocompleteList(
-        res.data.map(item => ({ id: item.id.toString(), title: item.nickname })),
-      );
-    });
+    SearchNickname(nickname)
+      .then(res => {
+        setNicknameAutocompleteList(
+          res.data.map(item => ({ id: item.id.toString(), title: item.nickname })),
+        );
+      })
+      .catch(error => console.log(error));
   }, [nickname]);
 
   // const userNickname: TargetNickId = {
@@ -62,6 +63,8 @@ const SearchUser: React.FC = () => {
   const userNickname: INickname = {
     nickname: "",
   };
+  console.log(nicknameAutocompleteList);
+  console.log(nickname);
   return (
     <Container
       isFullScreen={true}

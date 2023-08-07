@@ -57,9 +57,11 @@ function fetchAPI<T extends statusResponse>(
   }
 
   const url_complete = `${constraints.SERVER_URL}${url}`;
+  console.log(url_complete, method, options);
 
   return fetch(url_complete, options)
     .catch(err => {
+      console.error(err);
       if (err.name && (err.name === "AbortError" || err.name === "TimeoutError")) {
         return Promise.reject("서버와 통신에 실패 했습니다 (Timeout)");
       }
@@ -67,9 +69,11 @@ function fetchAPI<T extends statusResponse>(
       return Promise.reject("서버와 통신 중 오류가 발생했습니다.");
     })
     .then(res => {
+      console.log(res);
       // 특수 처리 (로그인 실패시에도 401이 들어옴)
       // 로그인의 경우는 바로 내려 보냄
       if (url == "/user/login") {
+        console.info(res);
         return res.json();
       }
 
