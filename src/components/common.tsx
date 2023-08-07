@@ -82,6 +82,7 @@ type InputProps = {
   ref?: LegacyRef<TextInput>;
   multiline?: boolean;
   inputRef?: LegacyRef<TextInput>;
+  onSubmitEditing?: undefined;
 } & DefaultProps;
 
 type IconButtonProps = {
@@ -291,6 +292,7 @@ const Input: React.FC<InputProps> = props => {
     borderRadius = 16,
     inputMode = "text",
     multiline = false,
+    onSubmitEditing,
   } = props;
 
   const style_container: StyleProp<ViewStyle> = {
@@ -318,6 +320,7 @@ const Input: React.FC<InputProps> = props => {
         secureTextEntry={secureTextEntry}
         inputMode={inputMode}
         multiline={multiline}
+        onSubmitEditing={onSubmitEditing}
       />
     </View>
   );

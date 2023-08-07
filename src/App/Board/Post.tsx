@@ -14,6 +14,8 @@ import { UserCategory, UserData } from "../../types/User";
 const Post: React.FC = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [hashtagInput, setHashtagInput] = useState("");
+  const [hashtags, setHashtags] = useState<string[]>([]);
   const [checkList, setCheckList] = useState<string[]>([]);
   const [isanonymous, setIsanonymous] = useState(0);
   const [isHide, setIsHide] = useState(0);
@@ -50,6 +52,7 @@ const Post: React.FC = () => {
         isHide,
         0,
         isanonymous,
+        hashtags.join(" ")
       );
       console.log("게시물 작성 성공", response);
       // console.log(categoryId, userId, boardType.id, title, body);
@@ -58,6 +61,19 @@ const Post: React.FC = () => {
       console.error("게시물 작성 오류", error);
     }
   };
+
+  const updateHashtags = () => {
+    const words = hashtagInput.split("");
+    const newHashtags = words.filter(word => word.startsWith("#"));
+    setHashtags(newHashtags);
+  };
+
+  const addHashtag = () => {
+    if (hashtagInput.trim() !== "") {
+      updateHashtags();
+      setHashtagInput("");
+    }
+  }
 
   return (
     <Container isFullScreen={true}>
@@ -99,6 +115,18 @@ const Post: React.FC = () => {
           value={title}
           multiline={true}
         ></Input>
+        <Spacer size={20} />
+        <Input
+          placeholder="해시태그"
+          onChangeText={text => setHashtagInput(text)}
+          value={hashtagInput}
+          multiline={true}
+          onSubmitEditing={addHashtag}
+        ></Input>
+        <Spacer size = {10} />
+        {hashtags.map((tag, index) => (
+          <Text key={index}>{tag}</Text>
+        ))}
         <Spacer size={20} />
         <Input
           style={{ height: 500 }}
