@@ -30,7 +30,7 @@ const ProfileModify: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
 
   return (
-    <Container isFullScreen={true} paddingHorizontal={0} style={{ backgroundColor: "white" }}>
+    <Container style={{ backgroundColor: "white" }}>
       <ScrollView
         contentContainerStyle={{
           flexDirection: "column",
@@ -40,93 +40,95 @@ const ProfileModify: React.FC = () => {
         }}
         keyboardShouldPersistTaps="handled"
       >
-        <View>
-          <Text style={{ fontSize: 18, padding: 10 }}>이메일</Text>
-          <View
-            style={{
-              borderColor: "#D8E1EC",
-              borderWidth: 3,
-              borderRadius: 30,
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-            }}
-          >
-            <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
-              {usetModifying.email}
-            </Text>
+        <Container>
+          <View>
+            <Text style={{ fontSize: 18, padding: 10 }}>이메일</Text>
+            <View
+              style={{
+                borderColor: "#D8E1EC",
+                borderWidth: 3,
+                borderRadius: 30,
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+              }}
+            >
+              <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
+                {usetModifying.email}
+              </Text>
+            </View>
+            <Text style={{ fontSize: 18, padding: 10 }}>비밀번호</Text>
+            <Input
+              style={{ paddingVertical: "5%", backgroundColor: "#D8E1EC" }}
+              paddingHorizontal={20}
+              borderRadius={30}
+              placeholder="password"
+              onChangeText={text => setPassword(text)}
+              value={password}
+              secureTextEntry={true}
+            ></Input>
+            <Text style={{ fontSize: 18, padding: 10 }}>비밀번호 확인</Text>
+            <Input
+              style={{ paddingVertical: "5%", backgroundColor: "#D8E1EC" }}
+              paddingHorizontal={20}
+              borderRadius={30}
+              placeholder="confirmPassword"
+              onChangeText={text => setConfirmPassword(text)}
+              value={confirmPassword}
+              secureTextEntry={true}
+            ></Input>
+            <Text style={{ fontSize: 18, padding: 10 }}>닉네임</Text>
+            <Input
+              style={{ paddingVertical: "5%", backgroundColor: "#D8E1EC" }}
+              paddingHorizontal={20}
+              borderRadius={30}
+              placeholder="nickname"
+              onChangeText={text => setNickname(text)}
+              value={nickname}
+              secureTextEntry={false}
+            ></Input>
+            <Text style={{ fontSize: 18, padding: 10 }}>이름</Text>
+            <View
+              style={{
+                borderColor: "#D8E1EC",
+                borderWidth: 3,
+                borderRadius: 30,
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+              }}
+            >
+              <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
+                {usetModifying.name}
+              </Text>
+            </View>
+            <Text style={{ fontSize: 18, padding: 10 }}>학번</Text>
+            <View
+              style={{
+                borderColor: "#D8E1EC",
+                borderWidth: 3,
+                borderRadius: 30,
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+              }}
+            >
+              <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
+                {usetModifying.studentNumber}
+              </Text>
+            </View>
+            <Text style={{ fontSize: 18, padding: 10 }}>핸드폰 번호</Text>
+            <Input
+              style={{ paddingVertical: "5%", backgroundColor: "#D8E1EC" }}
+              paddingHorizontal={20}
+              borderRadius={30}
+              placeholder=" PhoneNumber ( 000 - 0000 - 0000 )"
+              onChangeText={text => setPhoneNumber(text)}
+              value={phoneNumber}
+              secureTextEntry={false}
+            ></Input>
+            <Text style={{ fontSize: 18, padding: 10 }}>계열</Text>
+            <Text style={{ fontSize: 18, padding: 10 }}>학과</Text>
+            <TextButton onPress={() => {}}>저장 </TextButton>
           </View>
-          <Text style={{ fontSize: 18, padding: 10 }}>비밀번호</Text>
-          <Input
-            style={{ paddingVertical: "5%", backgroundColor: "#D8E1EC" }}
-            paddingHorizontal={20}
-            borderRadius={30}
-            placeholder="password"
-            onChangeText={text => setPassword(text)}
-            value={password}
-            secureTextEntry={true}
-          ></Input>
-          <Text style={{ fontSize: 18, padding: 10 }}>비밀번호 확인</Text>
-          <Input
-            style={{ paddingVertical: "5%", backgroundColor: "#D8E1EC" }}
-            paddingHorizontal={20}
-            borderRadius={30}
-            placeholder="confirmPassword"
-            onChangeText={text => setConfirmPassword(text)}
-            value={confirmPassword}
-            secureTextEntry={true}
-          ></Input>
-          <Text style={{ fontSize: 18, padding: 10 }}>닉네임</Text>
-          <Input
-            style={{ paddingVertical: "5%", backgroundColor: "#D8E1EC" }}
-            paddingHorizontal={20}
-            borderRadius={30}
-            placeholder="nickname"
-            onChangeText={text => setNickname(text)}
-            value={nickname}
-            secureTextEntry={false}
-          ></Input>
-          <Text style={{ fontSize: 18, padding: 10 }}>이름</Text>
-          <View
-            style={{
-              borderColor: "#D8E1EC",
-              borderWidth: 3,
-              borderRadius: 30,
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-            }}
-          >
-            <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
-              {usetModifying.name}
-            </Text>
-          </View>
-          <Text style={{ fontSize: 18, padding: 10 }}>학번</Text>
-          <View
-            style={{
-              borderColor: "#D8E1EC",
-              borderWidth: 3,
-              borderRadius: 30,
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-            }}
-          >
-            <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
-              {usetModifying.studentNumber}
-            </Text>
-          </View>
-          <Text style={{ fontSize: 18, padding: 10 }}>핸드폰 번호</Text>
-          <Input
-            style={{ paddingVertical: "5%", backgroundColor: "#D8E1EC" }}
-            paddingHorizontal={20}
-            borderRadius={30}
-            placeholder=" PhoneNumber ( 000 - 0000 - 0000 )"
-            onChangeText={text => setPhoneNumber(text)}
-            value={phoneNumber}
-            secureTextEntry={false}
-          ></Input>
-          <Text style={{ fontSize: 18, padding: 10 }}>계열</Text>
-          <Text style={{ fontSize: 18, padding: 10 }}>학과</Text>
-          <TextButton onPress={() => {}}>저장 </TextButton>
-        </View>
+        </Container>
       </ScrollView>
     </Container>
   );
