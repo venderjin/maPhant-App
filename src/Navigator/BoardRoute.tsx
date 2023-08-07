@@ -1,4 +1,5 @@
 import BoardList, { BoardType } from "../App/Board/BoardList";
+import Edit from "../App/Board/editPost";
 import DetailList from "../App/Board/List";
 import Post from "../App/Board/Post";
 import QA_answer from "../App/Board/QA_answer";
@@ -30,6 +31,10 @@ const Routes: RouteType[] = [
   {
     name: "Post",
     component: Post,
+  },
+  {
+    name: "editPost",
+    component: Edit,
   },
 ];
 

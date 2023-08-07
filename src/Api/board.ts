@@ -36,7 +36,7 @@ function boardPost(
   });
 }
 
-function boardEdit(id: number, title: string, body: string, isHide: 0 | 1) {
+function boardEdit(id: number, title: string, body: string, isHide: number) {
   return PutAPI(`/board/update`, {
     id,
     title,

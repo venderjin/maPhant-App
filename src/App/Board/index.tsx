@@ -11,6 +11,7 @@ export default function BoardIndex(): JSX.Element {
       <Stack.Screen name="DetailList" component={Routes[2].component} />
       <Stack.Screen name="QnAdetail" component={Routes[3].component} />
       <Stack.Screen name="Post" component={Routes[5].component} />
+      <Stack.Screen name="editPost" component={Routes[6].component} />
     </Stack.Navigator>
   );
 }

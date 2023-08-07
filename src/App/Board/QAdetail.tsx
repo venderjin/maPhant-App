@@ -51,7 +51,7 @@ const QAdetail = () => {
     }
   };
   // console.log(boardData)
-  console.log(post);
+  // console.log(post);
   const handleUpdate = async () => {
     try {
       const response = await boardEdit(
@@ -61,7 +61,7 @@ const QAdetail = () => {
         post.board.isHide,
       );
       console.log("수정 가능", response);
-      navigation.navigate("Post", { post: post });
+      navigation.navigate("editPost", { post: post, boardType: boardData });
     } catch (error) {
       console.error("수정 오류", error);
     }
