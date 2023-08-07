@@ -1,10 +1,11 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
-import { ColorValue, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { ColorValue, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { DeleteAPI } from "../../Api/fetchAPI";
+import { Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
 import { UserData } from "../../types/User";
@@ -126,6 +127,9 @@ const MyView = () => {
 };
 
 export default function MyPage() {
+  const [visibleLogoutModal, setVisibleLogoutModal] = useState(false);
+  const [visibleWithdrawModal, setVisibleWithdrawModal] = useState(false);
+
   const userProfle = useSelector(UserStorage.userProfileSelector);
 
   const deleteUser = () => {
@@ -153,7 +157,7 @@ export default function MyPage() {
           title: "로그아웃",
           // description: "장치를 로그아웃하여 새 계정으로 전환합니다.",
           onclick: () => {
-            UserStorage.removeUserData();
+            setVisibleLogoutModal(true);
           },
           href: "2",
         },
@@ -195,6 +199,130 @@ export default function MyPage() {
 
   return (
     <ScrollView style={styles.container}>
+      {/* ------------ 로그아웃 모달창 */}
+      <Modal animationType="fade" transparent={true} visible={visibleLogoutModal}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            // backgroundColor: "skyblue",
+          }}
+        >
+          <View
+            style={{
+              flex: 0.6,
+              borderRadius: 25,
+              backgroundColor: "#ffffff",
+              padding: 25,
+            }}
+          >
+            <Spacer size={5} />
+            <View
+              style={{
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 18 }}>로그아웃 하시겠습니까?</Text>
+            </View>
+            <Spacer size={20} />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+              }}
+            >
+              <TextButton
+                style={{
+                  width: "45%",
+                }}
+                onPress={() => {
+                  UserStorage.removeUserData();
+                }}
+              >
+                예
+              </TextButton>
+              <TextButton
+                style={{
+                  width: "45%",
+                }}
+                onPress={() => {
+                  setVisibleLogoutModal(false);
+                }}
+              >
+                아니오
+              </TextButton>
+            </View>
+            <Spacer size={5} />
+
+            {/* <Button title="닫기" onPress={() => setVisibleModal(false)} /> */}
+          </View>
+        </View>
+      </Modal>
+
+      {/* ------------ 회원탈퇴 모달창 */}
+      <Modal animationType="fade" transparent={true} visible={visibleWithdrawModal}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            // backgroundColor: "skyblue",
+          }}
+        >
+          <View
+            style={{
+              flex: 0.6,
+              borderRadius: 25,
+              backgroundColor: "#ffffff",
+              padding: 25,
+            }}
+          >
+            <Spacer size={5} />
+            <View
+              style={{
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 18 }}>회원탈퇴 하시겠습니까?</Text>
+            </View>
+            <Spacer size={20} />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+              }}
+            >
+              <TextButton
+                style={{
+                  width: "45%",
+                }}
+                onPress={() => {
+                  // 회원탈퇴 API 넣기
+                }}
+              >
+                예
+              </TextButton>
+              <TextButton
+                style={{
+                  width: "45%",
+                }}
+                onPress={() => {
+                  setVisibleWithdrawModal(false);
+                }}
+              >
+                아니오
+              </TextButton>
+            </View>
+            <Spacer size={5} />
+          </View>
+        </View>
+      </Modal>
+
       <MyView />
       {sections.map((section, index) => (
         <Section key={index.toString()} item={section} />
