@@ -1,12 +1,13 @@
-import { useRoute } from "@react-navigation/native";
+import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { getArticle } from "../../Api/board";
+import { boardDelete, getArticle } from "../../Api/board";
 import { Container, IconButton, TextButton } from "../../components/common";
 import UserStorage from "../../storage/UserStorage";
 import { BoardArticle, BoardPost } from "../../types/Board";
+import { NavigationProps } from "../../types/Navigation";
 import { UserData } from "../../types/User";
 
 const data = [
@@ -28,6 +29,7 @@ const QAdetail = () => {
   const boardData = params?.boardData;
   const [post, setPost] = useState({ board: {} } as BoardPost);
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
+  const navigation = useNavigation<NavigationProp<NavigationProps>>();
 
   const createdAtDate = new Date(post.board.createdAt);
   const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
@@ -38,6 +40,16 @@ const QAdetail = () => {
     minute: "2-digit",
     second: "2-digit",
   });
+
+  const handleDelete = async (board_id: number) => {
+    try {
+      const response = await boardDelete(board_id);
+      navigation.navigate("DetailList");
+      console.log("삭제 성공", response);
+    } catch (error) {
+      console.error("삭제 오류", error);
+    }
+  };
 
   useEffect(() => {
     getArticle(boardData.boardId)
@@ -51,7 +63,9 @@ const QAdetail = () => {
     Alert.alert("삭제", "삭제하시겠습니까?", [
       {
         text: "네",
-        // onPress: 삭제기능 넣으면 됨,
+        onPress: () => {
+          handleDelete(boardData.boardId);
+        },
       },
       {
         text: "아니오",
