@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { listArticle } from "../../Api/board";
+import { Container } from "../../components/common";
 import { BoardArticle, BoardType } from "../../types/Board";
 import { NavigationProps } from "../../types/Navigation";
 import PostSummary from "./PostSummary";
@@ -37,7 +38,7 @@ const DetailList: React.FC = () => {
   };
   console.log(boardType);
   return (
-    <View style={styles.container}>
+    <Container style={styles.container}>
       <ScrollView>
         {boardData.map(board => (
           <View key={board.boardId} style={styles.body}>
@@ -54,7 +55,7 @@ const DetailList: React.FC = () => {
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Container>
   );
 };
 

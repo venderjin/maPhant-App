@@ -30,7 +30,7 @@ const QnABoard: React.FC = () => {
       .catch(err => console.log(err));
   }, []);
   return (
-    <Container>
+    <Container style={styles.container}>
       <View style={styles.total}>
         <View style={styles.hHead}>
           <Text style={styles.hFont}>
