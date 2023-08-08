@@ -73,11 +73,14 @@ function deleteLikeBoard(board_id: number) {
 function searchArticle(content: string, boardType_id: number) {
   return GetAPI(`/board/search?content=${content}&boardTypeId=${boardType_id}`);
 }
-
+function bookMarkArticle(board_id: number) {
+  return PostAPI(`/bookmark/${board_id}`);
+}
 export {
   boardDelete,
   boardEdit,
   boardPost,
+  bookMarkArticle,
   deleteLikeBoard,
   getArticle,
   insertLikePost,

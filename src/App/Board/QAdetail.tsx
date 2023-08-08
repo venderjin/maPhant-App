@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import {
   boardDelete,
   boardEdit,
+  bookMarkArticle,
   deleteLikeBoard,
   getArticle,
   insertLikePost,
@@ -132,7 +133,17 @@ const QAdetail = () => {
       Alert.alert(error);
     }
   };
-  console.log(post.board.isLike);
+  const handleBookmark = async (board_id: number) => {
+    try {
+      const response = await bookMarkArticle(board_id);
+      Alert.alert("북마크 추가 되었습니다.");
+      console.log(response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+
+  // const report =
   return (
     <Container style={styles.container}>
       <View style={styles.qainfoBox}>
@@ -181,8 +192,12 @@ const QAdetail = () => {
           >
             {likeCnt === 0 ? "추천" : likeCnt}
           </IconButton>
-          <IconButton name="star-o" color="orange" onPress={() => console.log("스크랩")}>
-            스크랩
+          <IconButton
+            name="star-o"
+            color="orange"
+            onPress={() => handleBookmark(boardData.boardId)}
+          >
+            북마크
           </IconButton>
           <IconButton name="exclamation-circle" color="red" onPress={() => console.log("신고")}>
             신고
