@@ -24,7 +24,7 @@ const data = [
   { id: 3, name: "지망이", date: " 2023.03,12" },
 ];
 
-export const dateFormat = (date: Date): string => {
+export const dateTimeFormat = (date: Date): string => {
   const createdAtDate = new Date(date);
   const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
     year: "numeric",
@@ -33,6 +33,15 @@ export const dateFormat = (date: Date): string => {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
+  });
+  return formattedDateTime;
+};
+export const dateFormat = (date: Date): string => {
+  const createdAtDate = new Date(date);
+  const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
   return formattedDateTime;
 };

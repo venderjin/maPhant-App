@@ -1,3 +1,4 @@
+import { HotBoard } from "../types/Board";
 import { dataResponse, DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
 const listArticle = (
@@ -36,6 +37,16 @@ function boardPost(
   });
 }
 
+const listHotBoardTotal = (page: number, recordSize: number): Promise<dataResponse> =>
+  GetAPI(`/board/hot?page=${page}&recordSize=${recordSize}`);
+
+const listHotBoard = (
+  boardType_id: number,
+  page: number,
+  recordSize: number,
+): Promise<dataResponse<{ list: HotBoard[] }>> =>
+  GetAPI(`/board/hot?boardTypeId=${boardType_id}&page=${page}&recordSize=${recordSize}`);
+
 function boardEdit(id: number, title: string, body: string, isHide: number) {
   return PutAPI(`/board/update`, {
     id,
@@ -72,5 +83,7 @@ export {
   insertLikePost,
   listArticle,
   listBoardType,
+  listHotBoard,
+  listHotBoardTotal,
   searchArticle,
 };
