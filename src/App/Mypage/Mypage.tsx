@@ -151,7 +151,7 @@ export default function MyPage() {
           title: "회원정보 수정",
           onclick: () => {
             // navigation.navigate("PasswordCheck");
-            navigation.navigate("PasswordCheck");
+            navigation.navigate("ProfileModify");
           },
           // description: "다른 기기를 추가하거나 삭제합니다.",
           href: "1",
