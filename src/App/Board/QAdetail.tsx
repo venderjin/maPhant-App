@@ -1,6 +1,14 @@
-import React from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useSelector } from "react-redux";
+
+import { boardDelete, boardEdit, getArticle } from "../../Api/board";
+import { Container, IconButton, TextButton } from "../../components/common";
+import UserStorage from "../../storage/UserStorage";
+import { BoardArticle, BoardPost } from "../../types/Board";
+import { NavigationProps } from "../../types/Navigation";
+import { UserData } from "../../types/User";
 
 const data = [
   {
@@ -16,67 +24,125 @@ const data = [
   { id: 3, name: "지망이", date: " 2023.03,12" },
 ];
 
+export const dateFormat = (date: Date): string => {
+  const createdAtDate = new Date(date);
+  const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  return formattedDateTime;
+};
 const QAdetail = () => {
+  const params = useRoute().params as { boardData: BoardArticle };
+  const boardData = params?.boardData;
+  const [post, setPost] = useState({ board: {} } as BoardPost);
+  const user = useSelector(UserStorage.userProfileSelector)! as UserData;
+  const navigation = useNavigation<NavigationProp<NavigationProps>>();
+
+  const handleDelete = async (board_id: number) => {
+    try {
+      const response = await boardDelete(board_id);
+      navigation.navigate("DetailList" as never);
+      console.log("삭제 성공", response);
+    } catch (error) {
+      console.error("삭제 오류", error);
+    }
+  };
+  // console.log(boardData)
+  // console.log(post);
+  const handleUpdate = async () => {
+    try {
+      const response = await boardEdit(
+        post.board.id,
+        post.board.title,
+        post.board.body,
+        post.board.isHide,
+      );
+      console.log("수정 가능", response);
+      navigation.navigate("editPost", { post: post, boardType: boardData });
+    } catch (error) {
+      console.error("수정 오류", error);
+    }
+  };
+
+  useEffect(() => {
+    getArticle(boardData.boardId)
+      .then(data => {
+        if (data.data) setPost(data.data as BoardPost);
+      })
+      .catch();
+  }, []);
+
+  function alert() {
+    Alert.alert("삭제", "삭제하시겠습니까?", [
+      {
+        text: "아니오",
+        style: "cancel",
+      },
+      {
+        text: "네",
+        onPress: () => {
+          handleDelete(boardData.boardId);
+        },
+      },
+    ]);
+  }
+
   return (
-    <View style={styles.container}>
-      <View style={styles.nameBox}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={styles.headername}>Q&A게시판</Text>
-          <TouchableOpacity style={{ marginTop: 5, marginRight: 10 }}>
-            <Icon name="bell-o" size={30} />
-          </TouchableOpacity>
-        </View>
-        <View>
-          <Text>software</Text>
-        </View>
-      </View>
+    <Container style={styles.container}>
       <View style={styles.qainfoBox}>
         <View>
           <View style={styles.qaheader}>
             <View>
               <View>
-                <Text style={styles.nickname}>jingjing</Text>
+                <Text style={styles.nickname}>{boardData.userNickname}</Text>
               </View>
               <View>
-                <Text style={styles.date}>2023.04.13</Text>
+                <Text style={styles.date}>{dateFormat(post.board.createdAt)}</Text>
               </View>
             </View>
-            <View style={styles.qaButtonBox}>
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.btext}>수정</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.btext}>삭제</Text>
-              </TouchableOpacity>
-            </View>
+            {user.nickname === boardData.userNickname && (
+              <View style={styles.qaButtonBox}>
+                <TextButton
+                  style={styles.button}
+                  backgroundColor={"#f2f2f2"}
+                  onPress={handleUpdate}
+                >
+                  수정
+                </TextButton>
+                <TextButton style={styles.button} backgroundColor={"#f2f2f2"} onPress={alert}>
+                  삭제
+                </TextButton>
+              </View>
+            )}
           </View>
           <View style={styles.qacontextBox}>
             <View>
-              <Text style={styles.qatitle}>안녕하세요 인사드립낟,</Text>
+              <Text style={styles.qatitle}>{post.board.title}</Text>
             </View>
             <View>
-              <Text style={styles.qacontext}>라고할뻔~</Text>
+              <Text style={styles.qacontext}>{post.board.body}</Text>
             </View>
           </View>
         </View>
 
         <View style={styles.cbutBox}>
-          <TouchableOpacity style={styles.commonbutton}>
-            <Icon name="thumbs-o-up" color="skyblue" />
-            <Text style={styles.btext}>추천</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.commonbutton}>
-            <Icon name="star-o" color="yellow" />
-            <Text style={styles.btext}>스크랩</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.commonbutton}>
-            <Icon name="exclamation-circle" color="red" />
-            <Text style={styles.btext}>신고</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.commonbutton}>
-            <Icon name="comment-o" color="purple" />
-            <Text style={styles.btext}>답변</Text>
-          </TouchableOpacity>
+          <IconButton name="thumbs-o-up" color="skyblue" onPress={() => console.log("추천")}>
+            추천
+          </IconButton>
+          <IconButton name="star-o" color="orange" onPress={() => console.log("스크랩")}>
+            스크랩
+          </IconButton>
+          <IconButton name="exclamation-circle" color="red" onPress={() => console.log("신고")}>
+            신고
+          </IconButton>
+          <IconButton name="comment-o" color="purple" onPress={() => console.log("답변")}>
+            답변
+          </IconButton>
         </View>
       </View>
       <ScrollView style={styles.scroll}>
@@ -90,18 +156,23 @@ const QAdetail = () => {
                   <Text style={styles.answerdate}>{answer.date}</Text>
                 </View>
                 <View style={styles.cbutBox}>
-                  <TouchableOpacity style={styles.commonbutton}>
-                    <Icon name="lightbulb-o" color="purple" />
-                    <Text style={styles.btext}>해결</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.commonbutton}>
-                    <Icon name="thumbs-o-up" color="skyblue" />
-                    <Text style={styles.btext}>추천</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.commonbutton}>
-                    <Icon name="exclamation-circle" color="red" />
-                    <Text style={styles.btext}>신고</Text>
-                  </TouchableOpacity>
+                  <IconButton name="lightbulb-o" color="purple" onPress={() => console.log("해결")}>
+                    해결
+                  </IconButton>
+                  <IconButton
+                    name="thumbs-o-up"
+                    color="skyblue"
+                    onPress={() => console.log("추천")}
+                  >
+                    추천
+                  </IconButton>
+                  <IconButton
+                    name="exclamation-circle"
+                    color="red"
+                    onPress={() => console.log("신고")}
+                  >
+                    신고
+                  </IconButton>
                 </View>
               </View>
               <TouchableOpacity
@@ -118,7 +189,7 @@ const QAdetail = () => {
           </View>
         ))}
       </ScrollView>
-    </View>
+    </Container>
   );
 };
 
@@ -174,25 +245,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 9,
     paddingHorizontal: 15,
-    margin: 5,
-    backgroundColor: "#f2f2f2",
   },
 
   cbutBox: {
     flexDirection: "row",
-  },
-  commonbutton: {
-    borderRadius: 4,
-    paddingVertical: 5,
-    paddingHorizontal: 11,
-    marginHorizontal: 5,
-    backgroundColor: "#f2f2f2",
-    flexDirection: "row",
-  },
-
-  btext: {
-    marginLeft: 5,
-    fontSize: 9,
   },
   answerBox: {
     flexDirection: "row",

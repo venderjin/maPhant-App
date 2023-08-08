@@ -1,21 +1,43 @@
 type BoardPost = {
-  id: number;
-  parent_id: number;
-  category_id: number;
-  user_id: number;
-  type_id: string;
-  title: string;
-  body: string;
-  state: string;
-  is_hide: number;
-  is_complete: number;
-  is_anonymous: number;
-  created_at: Date;
-  modified_at: Date;
-  comment_cnt: number;
-  like_cnt: number;
-  report_cnt: number;
-  image_url: string;
+  board: {
+    id: number;
+    parentId: number;
+    categoryId: number;
+    userId: number;
+    typeId: string;
+    title: string;
+    body: string;
+    state: string;
+    isHide: number;
+    isComplete: number;
+    isAnonymous: number;
+    createdAt: Date;
+    modifiedAt?: Date;
+    commentCnt: number;
+    likeCnt: number;
+    reportCnt: number;
+    imageUrl?: string;
+    isLike: boolean;
+  };
+  answerList?: {
+    id: number;
+    parentId: number;
+    categoryId: number;
+    userId: number;
+    typeId: string;
+    title: string;
+    body: string;
+    state: string;
+    isHide: number;
+    isComplete: number;
+    isAnonymous: number;
+    createdAt: string;
+    modifiedAt?: Date;
+    commentCnt: number;
+    likeCnt: number;
+    reportCnt: number;
+    imageUrl?: string;
+  };
 };
 
 type BoardArticle = {
@@ -31,12 +53,15 @@ type BoardArticle = {
   isLike: number | null;
 };
 
-type BoardType =
-  | "자유 게시판"
-  | "지식 게시판"
-  | "QnA 게시판"
-  | "취업 / 진로 게시판"
-  | "홍보 게시판"
-  | "취미 게시판";
+type BoardType = {
+  id: number;
+  name: string;
+  postCnt: number;
+};
 
-export type { BoardArticle, BoardPost, BoardType };
+type SortType = {
+  id: number;
+  name: string;
+};
+
+export type { BoardArticle, BoardPost, BoardType, SortType };
