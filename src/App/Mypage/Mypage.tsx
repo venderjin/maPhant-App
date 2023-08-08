@@ -133,7 +133,7 @@ export default function MyPage() {
   const userProfle = useSelector(UserStorage.userProfileSelector);
 
   const deleteUser = () => {
-    DeleteAPI("/user?userId=" + userProfle?.id).then(res => {
+    DeleteAPI(`/user?userId=${userProfle?.id}`).then(res => {
       console.log(res.success);
     });
   };
@@ -187,8 +187,7 @@ export default function MyPage() {
         {
           title: "회원탈퇴",
           onclick: () => {
-            deleteUser();
-            UserStorage.removeUserData();
+            setVisibleWithdrawModal(true);
           },
           href: "5",
         },
@@ -256,8 +255,6 @@ export default function MyPage() {
               </TextButton>
             </View>
             <Spacer size={5} />
-
-            {/* <Button title="닫기" onPress={() => setVisibleModal(false)} /> */}
           </View>
         </View>
       </Modal>
@@ -302,7 +299,8 @@ export default function MyPage() {
                   width: "45%",
                 }}
                 onPress={() => {
-                  // 회원탈퇴 API 넣기
+                  deleteUser();
+                  UserStorage.removeUserData();
                 }}
               >
                 예
