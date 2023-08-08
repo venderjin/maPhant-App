@@ -82,7 +82,7 @@ type InputProps = {
   ref?: LegacyRef<TextInput>;
   multiline?: boolean;
   inputRef?: LegacyRef<TextInput>;
-  onSubmitEditing?: undefined;
+  onSubmitEditing?: () => void;
 } & DefaultProps;
 
 type IconButtonProps = {
