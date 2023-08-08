@@ -1,26 +1,36 @@
-import { useRoute } from "@react-navigation/native";
+import { StackActions, useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useWindowDimensions } from "react-native";
 
 import { sendContent } from "../../Api/member/FindUser";
 import { Container, ImageBox, Input, Spacer, TextButton } from "../../components/common";
 import { MailFormParams } from "../../Navigator/MailRoute";
+import { NavigationProps } from "../../Navigator/Routes";
 const Chatroom: React.FC = () => {
-  // const chatData = { profile: "user", name: "User", time: "10:00 AM", content: "Hello" };
-  // const chatComponents = Array(100).fill(chatData);
-
+  const navigation = useNavigation<NavigationProps>();
+  const windowWidth = useWindowDimensions().width; // window 가로 길이
+  console.log(windowWidth);
   // SearchUser.tsx에서 입력한 유저의 id, nickname을 가져오기 위해 사용한 것
   const route = useRoute();
   const params = route.params as MailFormParams;
-
-  //
-  // const messages = params.id;
-
   const [messageList, setMessageList] = useState<
     { id: number; sender: string; date: string; content: string }[]
   >([]);
   const [content, setContent] = useState("");
+  //
+  // const messages = params.id;
+  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollToBottom = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [messageList]);
 
   const send = () => {
     sendContent(params.id, content)
@@ -43,25 +53,11 @@ const Chatroom: React.FC = () => {
       .catch(e => console.info(e));
     setContent("");
   };
-
-  const scrollViewRef = useRef<ScrollView>(null);
-  const scrollToBottom = () => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: true });
-    }
-  };
-  useEffect(() => {
-    scrollToBottom();
-  }, [messageList]);
-
   function getCurrentTime() {
     const now = new Date();
     const hours = now.getHours();
     const minutes = now.getMinutes();
-    // 00 : 00 분으로 표시되게 바꿈
-    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    const formattedHours = hours < 10 ? `0${hours}` : hours;
-    const currentTime = `${formattedHours}:${formattedMinutes}`;
+    const currentTime = `${hours}:${minutes}`;
     return currentTime;
   }
 
@@ -121,12 +117,19 @@ const Chatroom: React.FC = () => {
     >
       <Container // 채팅방 이름
         style={{
-          flex: 0.8,
-          justifyContent: "center",
+          flex: 0.7,
           alignItems: "center",
+          justifyContent: "space-between",
+          flexDirection: "row",
+          flexShrink: 1,
         }}
       >
-        <Text style={{ fontSize: 23, fontWeight: "bold" }}>채팅방이름</Text>
+        <TouchableOpacity onPress={() => navigation.dispatch(StackActions.popToTop())}>
+          <ImageBox source={require("../../../assets/arrow-circle.png")} width={35}></ImageBox>
+        </TouchableOpacity>
+        <Text style={{ fontSize: 23, fontWeight: "bold", marginRight: windowWidth / 2 - 66 }}>
+          채팅방이름
+        </Text>
       </Container>
       <Container style={{ flex: 10 }}>
         <ScrollView ref={scrollViewRef}>
