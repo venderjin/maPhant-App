@@ -52,7 +52,7 @@ const Post: React.FC = () => {
         isHide,
         0,
         isanonymous,
-        hashtags.join(" "),
+        //hashtags.join(" "),
       );
       console.log("게시물 작성 성공", response);
       // console.log(categoryId, userId, boardType.id, title, body);

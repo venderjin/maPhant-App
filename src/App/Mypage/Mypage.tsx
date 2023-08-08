@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { ColorValue, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { DeleteAPI } from "../../Api/fetchAPI";
+import { DeleteAPI, GetAPI } from "../../Api/fetchAPI";
 import { Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
@@ -174,7 +174,9 @@ export default function MyPage() {
       contents: [
         {
           title: "내가 쓴 글",
-          // description: "알람을 받지 않을 시간을 설정합니다.",
+          onclick: () => {
+            navigation.navigate("Mypost" as never);
+          },
           href: "3",
         },
         {

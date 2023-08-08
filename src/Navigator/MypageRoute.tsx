@@ -1,6 +1,9 @@
+import QAdetail from "../App/Board/QAdetail";
 import Mypage from "../App/Mypage/Mypage";
+import Mypost from "../App/Mypage/Mypost";
 import PasswordCheck from "../App/Mypage/PasswordCheck";
 import ProfileModify from "../App/Mypage/ProfileModify";
+import { BoardArticle } from "../types/Board";
 import { RouteType } from "../types/Navigation";
 
 const Routes: RouteType[] = [
@@ -16,12 +19,22 @@ const Routes: RouteType[] = [
     name: "ProfileModify",
     component: ProfileModify,
   },
+  {
+    name: "Mypost",
+    component: Mypost,
+  },
+  {
+    name: "detail",
+    component: QAdetail,
+  },
 ];
 
 export type NavigationProp = {
   Mypage: undefined;
   PasswordCheck: undefined;
   ProfileModify: undefined;
+  Mypost: BoardArticle[];
+  detail: BoardArticle;
 };
 
 export default Routes;
