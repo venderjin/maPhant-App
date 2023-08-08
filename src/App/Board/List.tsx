@@ -11,8 +11,9 @@ import {
   View,
 } from "react-native";
 
-import { listArticle } from "../../Api/board";
+import { listArticle, searchArticle } from "../../Api/board";
 import { Container } from "../../components/common";
+import SearchBar from "../../components/Input/searchbar";
 import { BoardArticle, BoardType } from "../../types/Board";
 import { NavigationProps } from "../../types/Navigation";
 import PostSummary from "./PostSummary";
@@ -23,11 +24,8 @@ const DetailList: React.FC = () => {
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation<NavigationProp<NavigationProps>>();
-  // const [sort, setSort] = useState<SortType[]>([]);
-
-  // sortCriterion().then(data => {
-  //   setSort(data.data as SortType);
-  // }).catch(err => console.log(err));
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchResults, setSearchResults] = useState<BoardArticle[]>([]);
 
   const fetchData = async () => {
     try {
@@ -51,6 +49,22 @@ const DetailList: React.FC = () => {
     fetchData();
   };
 
+  const handleSearch = async (searchText: string) => {
+    setSearchQuery(searchText);
+    if (searchText.trim() === "") {
+      setSearchResults([]);
+      console.log("searchText is empty");
+      return;
+    }
+    try {
+      const data = await searchArticle(searchText); // Implement your searchArticle function to call the API for search results
+      setSearchResults(data.data as BoardArticle[]);
+      console.log(data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -59,16 +73,18 @@ const DetailList: React.FC = () => {
     console.log("글쓰기 화면으로 바뀌어야함");
     navigation.navigate("Post", { boardType: boardType });
   };
+
   const detailContent = (board: BoardArticle) => {
-    // console.log(boardData);
     navigation.navigate("QnAdetail", { boardData: board });
   };
-  console.log(boardType);
+
+  const displayData = searchQuery.trim() === "" ? boardData : searchResults;
 
   return (
     <Container style={styles.container}>
+      <SearchBar onSearchChange={handleSearch} />
       <FlatList
-        data={boardData}
+        data={displayData}
         renderItem={({ item: board }) => (
           <View key={board.boardId} style={styles.body}>
             <Pressable onPress={() => detailContent(board)}>
@@ -111,4 +127,5 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
+
 export default DetailList;
