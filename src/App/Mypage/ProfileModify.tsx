@@ -29,7 +29,7 @@ const ProfileModify: React.FC = () => {
     nickname: "",
     name: profile?.name,
     phoneNumber: "",
-    studentNumber: profile?.id,
+    studentNumber: profile?.sno,
   };
 
   const [password, setPassword] = useState("");
@@ -103,39 +103,20 @@ const ProfileModify: React.FC = () => {
         <Container>
           <View>
             {/* -----------이메일 */}
-            <Text style={{ fontSize: 18, padding: 10 }}>이메일</Text>
+            <Text style={styles.text}>이메일</Text>
             <View style={styles.modifyingContainer}>
-              <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
-                {usetModifying.email}
-              </Text>
+              <Text style={styles.text}>{usetModifying.email}</Text>
             </View>
 
             {/* --------------비밀번호 수정 */}
-            <View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              <View
-                style={{
-                  width: "70%",
-                }}
-              >
-                <Text style={{ fontSize: 18, padding: 10 }}>비밀번호</Text>
+            <View style={styles.childRow}>
+              <View style={styles.modifyingContentWidth}>
+                <Text style={styles.text}>비밀번호</Text>
                 <View style={styles.modifyingContainer}>
-                  <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
-                    {usetModifying.password}
-                  </Text>
+                  <Text style={styles.text}>{usetModifying.password}</Text>
                 </View>
               </View>
-              <View
-                style={{
-                  // backgroundColor: "skyblue",
-                  width: "30%",
-                  justifyContent: "flex-end",
-                  paddingLeft: 10,
-                }}
-              >
+              <View style={styles.modifyingBtn}>
                 <TextButton
                   fontSize={16}
                   onPress={() => {
@@ -148,38 +129,14 @@ const ProfileModify: React.FC = () => {
             </View>
 
             <Modal animationType="fade" transparent={true} visible={modifyingPassWordModal}>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                  // backgroundColor: "skyblue",
-                }}
-              >
-                <View
-                  style={{
-                    flex: 0.8,
-                    borderRadius: 25,
-                    backgroundColor: "#ffffff",
-                    padding: 25,
-                  }}
-                >
+              <View style={styles.modalBackground}>
+                <View style={styles.modalContainer}>
                   <Spacer size={5} />
-                  <View
-                    style={{
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <Text style={{ fontSize: 18, paddingLeft: 5 }}>수정할 비밀번호</Text>
+                  <View>
+                    <Text style={styles.text}>수정할 비밀번호</Text>
                     <Spacer size={10} />
                     <Input
-                      style={{
-                        width: "100%",
-                        paddingVertical: "5%",
-                        backgroundColor: "#D8E1EC",
-                      }}
+                      style={styles.modalInput}
                       paddingHorizontal={20}
                       borderRadius={30}
                       placeholder="password"
@@ -189,15 +146,11 @@ const ProfileModify: React.FC = () => {
                     ></Input>
                     <Spacer size={10} />
 
-                    <Text style={{ fontSize: 18, paddingLeft: 5 }}>수정할 비밀번호 확인</Text>
+                    <Text style={styles.text}>수정할 비밀번호 확인</Text>
                     <Spacer size={10} />
 
                     <Input
-                      style={{
-                        width: "100%",
-                        paddingVertical: "5%",
-                        backgroundColor: "#D8E1EC",
-                      }}
+                      style={styles.modalInput}
                       paddingHorizontal={20}
                       borderRadius={30}
                       placeholder="confirmPassword"
@@ -207,16 +160,9 @@ const ProfileModify: React.FC = () => {
                     ></Input>
                   </View>
                   <Spacer size={20} />
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                    }}
-                  >
+                  <View style={styles.modalBtnDirection}>
                     <TextButton
-                      style={{
-                        width: "45%",
-                      }}
+                      style={styles.modalConfirmBtn}
                       onPress={() => {
                         setModyfyingPassWordModal(false);
                       }}
@@ -224,9 +170,7 @@ const ProfileModify: React.FC = () => {
                       취소
                     </TextButton>
                     <TextButton
-                      style={{
-                        width: "45%",
-                      }}
+                      style={styles.modalConfirmBtn}
                       onPress={() => {
                         // 수정된 비밀번호 server 전송
                       }}
@@ -240,31 +184,14 @@ const ProfileModify: React.FC = () => {
             </Modal>
 
             {/* ---------닉네임 수정 */}
-            <View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              <View
-                style={{
-                  width: "70%",
-                }}
-              >
-                <Text style={{ fontSize: 18, padding: 10 }}>닉네임</Text>
+            <View style={styles.childRow}>
+              <View style={styles.modifyingContentWidth}>
+                <Text style={styles.text}>닉네임</Text>
                 <View style={styles.modifyingContainer}>
-                  <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
-                    {usetModifying.nickname}
-                  </Text>
+                  <Text style={styles.text}>{usetModifying.nickname}</Text>
                 </View>
               </View>
-              <View
-                style={{
-                  // backgroundColor: "skyblue",
-                  width: "30%",
-                  justifyContent: "flex-end",
-                  paddingLeft: 10,
-                }}
-              >
+              <View style={styles.modifyingBtn}>
                 <TextButton
                   fontSize={16}
                   onPress={() => {
@@ -277,38 +204,14 @@ const ProfileModify: React.FC = () => {
             </View>
 
             <Modal animationType="fade" transparent={true} visible={modifyingNicknameModal}>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                  // backgroundColor: "skyblue",
-                }}
-              >
-                <View
-                  style={{
-                    flex: 0.8,
-                    borderRadius: 25,
-                    backgroundColor: "#ffffff",
-                    padding: 25,
-                  }}
-                >
+              <View style={styles.modalBackground}>
+                <View style={styles.modalContainer}>
                   <Spacer size={5} />
-                  <View
-                    style={{
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <Text style={{ fontSize: 18, paddingLeft: 5 }}>수정할 닉네임</Text>
+                  <View>
+                    <Text style={styles.text}>수정할 닉네임</Text>
                     <Spacer size={10} />
                     <Input
-                      style={{
-                        width: "100%",
-                        paddingVertical: "5%",
-                        backgroundColor: "#D8E1EC",
-                      }}
+                      style={styles.modalInput}
                       paddingHorizontal={20}
                       borderRadius={30}
                       placeholder="nickname"
@@ -319,16 +222,9 @@ const ProfileModify: React.FC = () => {
                     <Spacer size={10} />
                   </View>
                   <Spacer size={20} />
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                    }}
-                  >
+                  <View style={styles.modalBtnDirection}>
                     <TextButton
-                      style={{
-                        width: "45%",
-                      }}
+                      style={styles.modalConfirmBtn}
                       onPress={() => {
                         setModyfyingNicknameModal(false);
                       }}
@@ -336,9 +232,7 @@ const ProfileModify: React.FC = () => {
                       취소
                     </TextButton>
                     <TextButton
-                      style={{
-                        width: "45%",
-                      }}
+                      style={styles.modalConfirmBtn}
                       onPress={() => {
                         // 수정된 닉네임 server 전송
                       }}
@@ -352,47 +246,26 @@ const ProfileModify: React.FC = () => {
             </Modal>
 
             {/* ----------이름  */}
-            <Text style={{ fontSize: 18, padding: 10 }}>이름</Text>
+            <Text style={styles.text}>이름</Text>
             <View style={styles.modifyingContainer}>
-              <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
-                {usetModifying.name}
-              </Text>
+              <Text style={styles.text}>{usetModifying.name}</Text>
             </View>
 
             {/* ----------학번 */}
-            <Text style={{ fontSize: 18, padding: 10 }}>학번</Text>
+            <Text style={styles.text}>학번</Text>
             <View style={styles.modifyingContainer}>
-              <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
-                {usetModifying.studentNumber}
-              </Text>
+              <Text style={styles.text}>{usetModifying.studentNumber}</Text>
             </View>
 
             {/* ----------핸드폰 번호 수정 */}
-            <View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              <View
-                style={{
-                  width: "70%",
-                }}
-              >
-                <Text style={{ fontSize: 18, padding: 10 }}>핸드폰 번호</Text>
+            <View style={styles.childRow}>
+              <View style={styles.modifyingContentWidth}>
+                <Text style={styles.text}>핸드폰 번호</Text>
                 <View style={styles.modifyingContainer}>
-                  <Text style={{ fontSize: 18, padding: 10, fontWeight: "bold" }}>
-                    {usetModifying.nickname}
-                  </Text>
+                  <Text style={styles.text}>{usetModifying.nickname}</Text>
                 </View>
               </View>
-              <View
-                style={{
-                  // backgroundColor: "skyblue",
-                  width: "30%",
-                  justifyContent: "flex-end",
-                  paddingLeft: 10,
-                }}
-              >
+              <View style={styles.modifyingBtn}>
                 <TextButton
                   fontSize={16}
                   onPress={() => {
@@ -404,38 +277,14 @@ const ProfileModify: React.FC = () => {
               </View>
             </View>
             <Modal animationType="fade" transparent={true} visible={modifyingPhoneNumModal}>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                  // backgroundColor: "skyblue",
-                }}
-              >
-                <View
-                  style={{
-                    flex: 0.8,
-                    borderRadius: 25,
-                    backgroundColor: "#ffffff",
-                    padding: 25,
-                  }}
-                >
+              <View style={styles.modalBackground}>
+                <View style={styles.modalContainer}>
                   <Spacer size={5} />
-                  <View
-                    style={{
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <Text style={{ fontSize: 18, paddingLeft: 5 }}>수정 핸드폰 번호</Text>
+                  <View>
+                    <Text style={styles.text}>수정 핸드폰 번호</Text>
                     <Spacer size={10} />
                     <Input
-                      style={{
-                        width: "100%",
-                        paddingVertical: "5%",
-                        backgroundColor: "#D8E1EC",
-                      }}
+                      style={styles.modalInput}
                       paddingHorizontal={20}
                       borderRadius={30}
                       placeholder="phoneNumber"
@@ -446,16 +295,9 @@ const ProfileModify: React.FC = () => {
                     <Spacer size={10} />
                   </View>
                   <Spacer size={20} />
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                    }}
-                  >
+                  <View style={styles.modalBtnDirection}>
                     <TextButton
-                      style={{
-                        width: "45%",
-                      }}
+                      style={styles.modalConfirmBtn}
                       onPress={() => {
                         setModyfyingPhoneNumModal(false);
                       }}
@@ -463,9 +305,7 @@ const ProfileModify: React.FC = () => {
                       취소
                     </TextButton>
                     <TextButton
-                      style={{
-                        width: "45%",
-                      }}
+                      style={styles.modalConfirmBtn}
                       onPress={() => {
                         // 수정된 핸드폰번호 server 전송
                       }}
@@ -479,14 +319,14 @@ const ProfileModify: React.FC = () => {
             </Modal>
 
             {/* 계열학과 변경학 */}
-            <Text style={{ fontSize: 18, padding: 10 }}>계열</Text>
-            <Text style={{ fontSize: 18, padding: 10 }}>학과</Text>
+            <Text style={styles.text}>계열</Text>
+            <Text style={styles.text}>학과</Text>
             <TextButton
               onPress={() => {
                 navigation.navigate("Mypage");
               }}
             >
-              저장{" "}
+              저장
             </TextButton>
           </View>
         </Container>
@@ -502,6 +342,46 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     paddingHorizontal: 5,
     paddingVertical: 5,
+  },
+  text: {
+    fontSize: 18,
+    padding: 10,
+  },
+  childRow: {
+    flexDirection: "row",
+  },
+  modalBtnDirection: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  modifyingContentWidth: {
+    width: "70%",
+  },
+  modalBackground: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContainer: {
+    flex: 0.8,
+    borderRadius: 25,
+    backgroundColor: "#ffffff",
+    padding: 25,
+  },
+  modalInput: {
+    width: "100%",
+    paddingVertical: "5%",
+    backgroundColor: "#D8E1EC",
+  },
+  modifyingBtn: {
+    width: "30%",
+    justifyContent: "flex-end",
+    paddingLeft: 10,
+  },
+  modalConfirmBtn: {
+    width: "45%",
   },
 });
 
