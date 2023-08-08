@@ -1,13 +1,24 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Field, Formik, FormikErrors } from "formik";
+import React, { useCallback, useState } from "react";
 import { Modal, ScrollView, StyleSheet, Text, View } from "react-native";
+import Toast from "react-native-root-toast";
 import { useSelector } from "react-redux";
 
 import { PostAPI } from "../../Api/fetchAPI";
+import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
 import UserAPI from "../../Api/memberAPI";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
+import SearchByFilter from "../../components/Input/SearchByFilter";
 import { NavigationProps } from "../../Navigator/Routes";
+import { SignUpFormParams } from "../../Navigator/SigninRoutes";
+import UIStore from "../../storage/UIStore";
 import UserStorage from "../../storage/UserStorage";
+
+interface ISearchForm {
+  field: string;
+  major: string;
+}
 
 const ProfileModify: React.FC = () => {
   const profile = useSelector(UserStorage.userProfileSelector);
@@ -39,6 +50,7 @@ const ProfileModify: React.FC = () => {
   const [modifyingPassWordModal, setModyfyingPassWordModal] = useState(false);
   const [modifyingNicknameModal, setModyfyingNicknameModal] = useState(false);
   const [modifyingPhoneNumModal, setModyfyingPhoneNumModal] = useState(false);
+  const [modifyingFieldModal, setModyfyingFieldModal] = useState(false);
 
   const changePassword = () => {
     if (password !== confirmPassword) {
@@ -89,8 +101,26 @@ const ProfileModify: React.FC = () => {
   };
   const navigation = useNavigation<NavigationProps>();
 
+  const route = useRoute();
+  const params = route.params as SignUpFormParams;
+
+  const onSubmit = useCallback((errors: FormikErrors<ISearchForm>, next: () => void) => {
+    if (Object.keys(errors).length === 0) {
+      next();
+    }
+
+    const msg = Object.values(errors)
+      .map(val => `${val}`)
+      .join("\n");
+    return Toast.show(msg);
+  }, []);
+
+  const SearchForm: ISearchForm = {
+    field: "",
+    major: "",
+  };
   return (
-    <Container style={{ backgroundColor: "white" }}>
+    <Container style={{ backgroundColor: "white" }} paddingHorizontal={10}>
       <ScrollView
         contentContainerStyle={{
           flexDirection: "column",
@@ -99,6 +129,7 @@ const ProfileModify: React.FC = () => {
           paddingHorizontal: 16,
         }}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
         <Container>
           <View>
@@ -318,10 +349,96 @@ const ProfileModify: React.FC = () => {
               </View>
             </Modal>
 
-            {/* 계열학과 변경학 */}
-            <Text style={styles.text}>계열</Text>
-            <Text style={styles.text}>학과</Text>
+            {/* 계열 추가하기 */}
+            <View style={styles.childRow}>
+              <View style={styles.modifyingContentWidth}>
+                <Text style={styles.text}>계열 / 학과</Text>
+                <View style={styles.modifyingContainer}>
+                  <Text style={styles.text}>유저.계열-유저.학과 map으로 보여주기</Text>
+                </View>
+              </View>
+              <View style={styles.modifyingBtn}>
+                <TextButton
+                  fontSize={16}
+                  onPress={() => {
+                    setModyfyingFieldModal(true);
+                  }}
+                >
+                  추가
+                </TextButton>
+              </View>
+            </View>
+            <Modal animationType="fade" transparent={true} visible={modifyingFieldModal}>
+              <View style={styles.modalBackground}>
+                <View style={styles.modalContainer}>
+                  <Formik
+                    initialValues={SearchForm}
+                    // validationSchema={validationSchema}
+                    onSubmit={async values => {
+                      UIStore.showLoadingOverlay();
+                      await categorymajor(usetModifying.email, values.field, values.major)
+                        .then(response => {
+                          if (response.success) {
+                            console.log("학과, 계열 추가완료");
+                          }
+                        })
+                        .catch(error => {
+                          alert(`학과 등록에 실패하였습니다.: ${error}`);
+                        })
+                        .finally(() => UIStore.hideLoadingOverlay());
+                    }}
+                  >
+                    {({ handleSubmit, errors }) => (
+                      <Container style={styles.modalContainer}>
+                        <Text style={styles.text}>계열 추가하기</Text>
+                        <Container style={styles.FlistContainer}>
+                          <Field
+                            placeholder="계열 입력해 주세요."
+                            name="field"
+                            list={fieldList}
+                            component={SearchByFilter}
+                          />
+                        </Container>
+                        <Spacer size={10} />
+                        <Text style={styles.text}>학과 추가하기</Text>
+                        <Container style={styles.MlistContainer}>
+                          <Field
+                            placeholder="전공 입력해 주세요."
+                            name="major"
+                            list={majorList}
+                            component={SearchByFilter}
+                          />
+                        </Container>
+                        <View style={styles.modalBtnDirection}>
+                          <TextButton
+                            style={styles.modalConfirmBtn}
+                            onPress={() => {
+                              setModyfyingFieldModal(false);
+                            }}
+                          >
+                            취소
+                          </TextButton>
+                          <TextButton
+                            style={styles.modalConfirmBtn}
+                            onPress={() => {
+                              onSubmit(errors, handleSubmit);
+                              // 계열 추가하기
+                            }}
+                          >
+                            추가
+                          </TextButton>
+                        </View>
+                      </Container>
+                    )}
+                  </Formik>
+                </View>
+              </View>
+            </Modal>
+
             <TextButton
+              style={{
+                marginVertical: 20,
+              }}
               onPress={() => {
                 navigation.navigate("Mypage");
               }}
@@ -337,6 +454,7 @@ const ProfileModify: React.FC = () => {
 
 const styles = StyleSheet.create({
   modifyingContainer: {
+    flexDirection: "column",
     borderColor: "#D8E1EC",
     borderWidth: 3,
     borderRadius: 30,
@@ -344,8 +462,9 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   text: {
-    fontSize: 18,
-    padding: 10,
+    fontSize: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
   childRow: {
     flexDirection: "row",
@@ -355,7 +474,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   modifyingContentWidth: {
-    width: "70%",
+    width: "75%",
   },
   modalBackground: {
     flex: 1,
@@ -368,7 +487,7 @@ const styles = StyleSheet.create({
     flex: 0.8,
     borderRadius: 25,
     backgroundColor: "#ffffff",
-    padding: 25,
+    padding: 15,
   },
   modalInput: {
     width: "100%",
@@ -376,12 +495,27 @@ const styles = StyleSheet.create({
     backgroundColor: "#D8E1EC",
   },
   modifyingBtn: {
-    width: "30%",
+    width: "25%",
     justifyContent: "flex-end",
     paddingLeft: 10,
   },
   modalConfirmBtn: {
     width: "45%",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "skyblue",
+    justifyContent: "center",
+    paddingHorizontal: 40,
+    paddingTop: 80,
+  },
+  FlistContainer: {
+    flex: 1,
+  },
+  MlistContainer: {
+    flex: 1,
+    marginBottom: 20,
+    // paddingHorizontal: 40,
   },
 });
 
