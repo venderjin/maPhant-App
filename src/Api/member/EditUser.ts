@@ -1,21 +1,24 @@
 import UserStorage from "../../storage/UserStorage";
-import { GetAPI, PostAPI } from "../fetchAPI";
+import { PostAPI } from "../fetchAPI";
 import UserAPI from "../memberAPI";
 
-const getOldData = (email: string) => {
-  GetAPI("/user/changeinfo/olddata", {
-    email: email,
-  }).then(res => {
-    return res.data;
+const getOldData = () => {
+  PostAPI("/user/changeinfo/olddata").then(res => {
+    if (res.success === true) {
+      return res["data"];
+    } else {
+      console.log(res.errors);
+      return;
+    }
   });
+  return console.log("서버 통신 오류");
 };
 
-const changePassword = (email: string | undefined, password: string, confirmPassword: string) => {
+const changePassword = (password: string, confirmPassword: string) => {
   if (password !== confirmPassword) {
     alert("비밀번호가 일치하지 않습니다.");
   } else {
     PostAPI("/user/changeinfo/password", {
-      email: email,
       newPassword: password,
       newPasswordCheck: confirmPassword,
     }).then(res => {
@@ -28,9 +31,8 @@ const changePassword = (email: string | undefined, password: string, confirmPass
   }
 };
 
-const changeNickname = (email: string | undefined, nickname: string) => {
+const changeNickname = (nickname: string) => {
   PostAPI("/user/changeinfo/nickname", {
-    email: email,
     nickname: nickname,
   }).then(res => {
     if (res.success == true) {
@@ -44,9 +46,8 @@ const changeNickname = (email: string | undefined, nickname: string) => {
   });
 };
 
-const changePhNum = (email: string | undefined, phoneNumber: string) => {
+const changePhNum = (phoneNumber: string) => {
   PostAPI("/user/changeinfo/phnum", {
-    email: email,
     phNum: phoneNumber,
   }).then(res => {
     if (res.success == true) {

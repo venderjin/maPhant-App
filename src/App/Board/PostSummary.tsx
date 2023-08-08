@@ -1,6 +1,6 @@
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, Text,View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import { BoardArticle, BoardType } from "../../types/Board";
 
@@ -77,10 +77,10 @@ function dateToString(date: string): string {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#fff",
     paddingHorizontal: 20,
     paddingVertical: 10,
+    margintop: 10,
   },
   head: {
     flexDirection: "row",

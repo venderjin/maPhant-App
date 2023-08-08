@@ -1,23 +1,18 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { PostAPI } from "../../Api/fetchAPI";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
-import UserStorage from "../../storage/UserStorage";
 
 const PasswordCheck: React.FC = () => {
   const [password, setPassword] = useState("");
   const navigation = useNavigation<NavigationProps>();
   //로그인된  회원의 email을 서버로 받고 user가 입력한 비밀번호를 넘겨서 check
 
-  const profile = useSelector(UserStorage.userProfileSelector);
-
   const checkPasswordHandler = () => {
     PostAPI("/user/changeinfo/identification", {
-      email: profile?.email,
       password: password,
     }).then(res => {
       if (res.success == true) {

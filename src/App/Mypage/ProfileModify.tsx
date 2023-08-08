@@ -7,7 +7,7 @@ import { Container, Input, TextButton } from "../../components/common";
 import UserStorage from "../../storage/UserStorage";
 const ProfileModify: React.FC = () => {
   const profile = useSelector(UserStorage.userProfileSelector);
-  const olddata = EditUser.getOldData(profile!.email);
+  // const olddata = EditUser.getOldData();
 
   type UserType = {
     email?: string;
@@ -16,7 +16,7 @@ const ProfileModify: React.FC = () => {
     nickname: string;
     name?: string;
     phoneNumber: string;
-    studentNumber?: number;
+    studentNumber?: string;
   };
 
   const usetModifying: UserType = {
@@ -26,7 +26,7 @@ const ProfileModify: React.FC = () => {
     nickname: "",
     name: profile?.name,
     phoneNumber: "",
-    studentNumber: olddata["sno"],
+    studentNumber: "",
   };
 
   const [password, setPassword] = useState("");
@@ -133,9 +133,9 @@ const ProfileModify: React.FC = () => {
             <Text style={{ fontSize: 18, padding: 10 }}>학과</Text>
             <TextButton
               onPress={() => {
-                EditUser.changePassword(profile?.email, password, confirmPassword);
-                EditUser.changeNickname(profile?.email, nickname);
-                EditUser.changePhNum(profile?.email, phoneNumber);
+                EditUser.changePassword(password, confirmPassword);
+                EditUser.changeNickname(nickname);
+                EditUser.changePhNum(phoneNumber);
               }}
             >
               저장{" "}
