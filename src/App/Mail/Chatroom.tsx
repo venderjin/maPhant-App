@@ -1,29 +1,28 @@
 import { StackActions, useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text } from "react-native";
 import { ScrollView } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { useWindowDimensions } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
 
-import { sendContent } from "../../Api/member/FindUser";
-import { Container, ImageBox, Input, Spacer, TextButton } from "../../components/common";
+import { chartLists, sendContent } from "../../Api/member/FindUser";
+import { Container, ImageBox, Input, TextButton } from "../../components/common";
 import { MailFormParams } from "../../Navigator/MailRoute";
 import { NavigationProps } from "../../Navigator/Routes";
-import { useDispatch, useSelector } from "react-redux";
 import reduxStore, { ChatSlice, RootState } from "../../storage/reduxStore";
+import { ReceiveList } from "../../types/DM";
 const Chatroom: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
   const windowWidth = useWindowDimensions().width; // window 가로 길이
-  console.log(windowWidth);
   // SearchUser.tsx에서 입력한 유저의 id, nickname을 가져오기 위해 사용한 것
   const route = useRoute();
   const params = route.params as MailFormParams;
+
   const [messageList, setMessageList] = useState<
     { id: number; sender: string; date: string; content: string }[]
   >([]);
   const [content, setContent] = useState("");
-  //
-  // const messages = params.id;
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollToBottom = () => {
     if (scrollViewRef.current) {
@@ -36,13 +35,15 @@ const Chatroom: React.FC = () => {
 
   const Chatdata = useSelector((state: RootState) => state.ChatSlice);
   const Chatroom: string[] = Chatdata[1] ? Chatdata[1] : [];
+  // 상대방이 보낸 내용 담는 배열
+  const [receiveContent, setReceiveContent] = useState<ReceiveList[]>([]);
 
   const send = () => {
     reduxStore.dispatch(ChatSlice.actions.addChat({ chatid: 1, content: content }));
     sendContent(params.id, content)
       .then(res => {
         if (res.data) {
-          const currentTime = getCurrentTime();
+          const currentTime = res.data.time;
           const newMessage = {
             id: params.id,
             sender: "ME",
@@ -50,43 +51,68 @@ const Chatroom: React.FC = () => {
             content: content,
           };
           setMessageList(prevMessageList => [...prevMessageList, newMessage]);
-          console.log(params.id, content);
         }
       })
-      // .then(json => {
-      //   console.log(json);
-      // })
       .catch(e => console.info(e));
     setContent("");
   };
-  function getCurrentTime() {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const currentTime = `${hours}:${minutes}`;
+
+  useEffect(() => {
+    // 대화방 처음 만들 때는 바로 채팅방 id를 확인 할수 없어서 방에 들어와서 찾아주는 거임
+
+    // if (params.roomId === 0) {
+    //   receiveChatrooms().then(res => {
+    //     if (res.success) setChatroomId(res.data);
+    //   });
+    // }
+    // console.info(chatroomId);
+    // chatroomId[0].id 이렇게 값을 못찾는다...
+
+    //상대방이 보낸 대화내용 불러옴
+    chartLists(params.roomId)
+      .then(res => {
+        if (res.success) {
+          setReceiveContent(res.data?.list);
+        }
+      })
+      .catch(e => console.error(e));
+    scrollToBottom();
+  }, [messageList]);
+
+  function getCurrentTime(targetDate: Date) {
+    const hours = targetDate.getHours();
+    const minutes = targetDate.getMinutes();
+    // 00 : 00 분으로 표시되게 바꿈
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    const currentTime = `${formattedHours}:${formattedMinutes}`;
     return currentTime;
   }
-
   function OtherUserChat() {
     return (
       <Container style={{ paddingVertical: 0 }}>
-        <Container style={{ padding: 10 }}>
-          <Text>{params.nickname}</Text>
-          <Container style={{ flexDirection: "row", alignItems: "flex-end" }}>
-            <Container
-              style={{
-                backgroundColor: "rgba(82, 153, 235, 0.3)",
-                paddingVertical: 13,
-                paddingHorizontal: 20,
-                borderRadius: 10,
-                flexShrink: 1,
-              }}
-            >
-              <Text>안녕하세요</Text>
-            </Container>
-            <Text style={{ marginLeft: 5 }}>date</Text>
-          </Container>
-        </Container>
+        {receiveContent.map(
+          message =>
+            !message.is_me && (
+              <Container key={message.id} style={{ padding: 10 }}>
+                <Text>{params.nickname}</Text>
+                <Container style={{ flexDirection: "row", alignItems: "flex-end" }}>
+                  <Container
+                    style={{
+                      backgroundColor: "rgba(82, 153, 235, 0.3)",
+                      paddingVertical: 13,
+                      paddingHorizontal: 20,
+                      borderRadius: 10,
+                      flexShrink: 1,
+                    }}
+                  >
+                    <Text>{message.content}</Text>
+                  </Container>
+                  <Text style={{ marginLeft: 5 }}>{getCurrentTime(new Date(message.time))}</Text>
+                </Container>
+              </Container>
+            ),
+        )}
       </Container>
     );
   }
@@ -98,7 +124,7 @@ const Chatroom: React.FC = () => {
           <Container key={i} style={{ padding: 10, alignItems: "flex-end" }}>
             <Text>Me</Text>
             <Container style={{ flexDirection: "row", alignItems: "flex-end" }}>
-              <Text style={{ marginRight: 5 }}>{message.date}</Text>
+              <Text style={{ marginRight: 5 }}>{getCurrentTime(new Date(message.date))}</Text>
               <Container
                 style={{
                   backgroundColor: "#5299EB",

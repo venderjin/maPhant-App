@@ -1,6 +1,7 @@
 type TargetNickId = {
   id: number;
   nickname: string;
+  roomId: number | undefined;
 };
 type MessageList = {
   id: number;
@@ -14,5 +15,14 @@ type MessageList = {
   time: Date;
   unread_count: number;
 };
+type ReceiveList = {
+  content: string;
+  id: number;
+  is_me: boolean;
+  is_read: boolean;
+  room_id: number;
+  time: Date;
+  visible: string;
+};
 
-export type { MessageList, TargetNickId };
+export type { MessageList, ReceiveList, TargetNickId };

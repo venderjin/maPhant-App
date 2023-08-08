@@ -45,6 +45,8 @@ const Mail: React.FC = () => {
   useEffect(() => {
     receiveChatrooms()
       .then(res => {
+        // 이렇게 해서 roomId만 뽑아지는지 확인하고 싶음
+        // console.log(res.data.find(item => item.id)?.id);
         // 리스트에 대화방 정보 담음
         setChatList(res.data);
       })
@@ -54,6 +56,7 @@ const Mail: React.FC = () => {
     <Container style={{ flex: 1 }}>
       <View style={styles.header}>
         <Text style={styles.mailText}>쪽지함</Text>
+        {/* <TextButton onPress={() => console.log("편집")}>편집</TextButton> */}
       </View>
       <ScrollView>
         <View style={styles.sender}>
@@ -63,11 +66,13 @@ const Mail: React.FC = () => {
               <TouchableOpacity
                 key={mail.id}
                 onPress={() => {
-                  console.log(mail.id);
+                  // console.log(mail.id);
                   // 채티방 페이지로 상대방 아이디랑, 닉네임 같이 넘김
                   navigation.navigate("Chatroom", {
                     id: mail.other_id,
                     nickname: mail.other_nickname,
+                    // 이렇게 roomId를 넘겨줘야함
+                    roomId: parseInt(mail.id),
                   });
                 }}
               >
@@ -117,8 +122,10 @@ const Mail: React.FC = () => {
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: "15%",
     marginLeft: "8%",
+    marginRight: "3%",
     marginBottom: "3%",
   },
   mailText: {

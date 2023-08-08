@@ -76,6 +76,7 @@ const SearchUser: React.FC = () => {
           return navigation.navigate("Chatroom", {
             id: parseInt(userId),
             nickname: values.nickname,
+            roomId: 0,
           });
         }}
       >
