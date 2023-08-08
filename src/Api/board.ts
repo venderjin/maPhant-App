@@ -1,17 +1,16 @@
 import { dataResponse, DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
 const listArticle = (
-  boardType: number,
-  sortCriterion: number = 1,
-  page: number = 1,
-  pageSize: number = 10,
+  boardType_id: number,
+  page: number,
+  pageSize: number,
+  sortCriterion: number,
 ): Promise<dataResponse> =>
-  GetAPI<dataResponse>(`/board`, {
-    boardTypeId: boardType,
-    sortCriterionId: sortCriterion,
-    page: page,
-    pageSize: pageSize,
-  });
+  GetAPI<dataResponse>(
+    `/board?boardTypeId=${boardType_id}&page=${page}&pageSize=${pageSize}&sortCriterionId=${sortCriterion}`,
+  );
+
+const listBoardType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/board/boardType`);
 
 function boardPost(
   parentId: null | number,
@@ -20,9 +19,9 @@ function boardPost(
   typeId: number,
   title: string,
   body: string,
-  isHide: 0 | 1,
+  isHide: number,
   isComplete: 0 | 1,
-  isAnonymous: 0 | 1,
+  isAnonymous: number,
 ) {
   return PostAPI(`/board/create`, {
     parentId,
@@ -37,7 +36,7 @@ function boardPost(
   });
 }
 
-function boardEdit(id: number, title: string, body: string, isHide: 0 | 1) {
+function boardEdit(id: number, title: string, body: string, isHide: number) {
   return PutAPI(`/board/update`, {
     id,
     title,
@@ -46,12 +45,11 @@ function boardEdit(id: number, title: string, body: string, isHide: 0 | 1) {
   });
 }
 
-function boardDelete() {
-  return DeleteAPI(`/board/10`);
-}
-function getArticle(board_id: string) {
-  return PostAPI(`/board/${board_id}`);
-}
+const boardDelete = (board_id: number): Promise<dataResponse> =>
+  DeleteAPI<dataResponse>(`/board/${board_id}`);
+
+const getArticle = (board_id: number): Promise<dataResponse> =>
+  GetAPI<dataResponse>(`/board/${board_id}`);
 
 function insertLikePost(board_id: string) {
   return GetAPI(`/board/like/${board_id}`);
@@ -73,5 +71,6 @@ export {
   getArticle,
   insertLikePost,
   listArticle,
+  listBoardType,
   searchArticle,
 };

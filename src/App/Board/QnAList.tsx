@@ -4,26 +4,33 @@ import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import { listArticle } from "../../Api/board";
+import { Container } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import { BoardArticle, BoardType } from "../../types/Board";
 import ScrollList from "./ScrollList";
-// const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const QnABoard: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
+  // const [sort, setSort] = useState<SortType>();
+
+  // sortCriterion()
+  //   .then(data => {
+  //     setSort(data.data as SortType);
+  //   })
+  //   .catch(err => console.log(err));
 
   useEffect(() => {
-    listArticle(boardType)
+    listArticle(boardType.id, 1, 50, 1)
       .then(data => {
         if (data.data) setboardData(data.data as BoardArticle[]);
       })
       .catch(err => console.log(err));
   }, []);
   return (
-    <View style={styles.container}>
+    <Container style={styles.container}>
       <View style={styles.total}>
         <View style={styles.hHead}>
           <Text style={styles.hFont}>
@@ -33,7 +40,7 @@ const QnABoard: React.FC = () => {
           </Text>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("DetailList" as never);
+              navigation.navigate("DetailList", { boardType: boardType });
             }}
           >
             <Text style={styles.detail}>더보기</Text>
@@ -53,7 +60,11 @@ const QnABoard: React.FC = () => {
       <View style={styles.total}>
         <View style={styles.hHead}>
           <Text style={styles.hFont}> 최신 게시글</Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("DetailList", { boardType: boardType });
+            }}
+          >
             <Text style={styles.detail}>더보기</Text>
           </TouchableOpacity>
         </View>
@@ -65,7 +76,7 @@ const QnABoard: React.FC = () => {
           ))}
         </ScrollView>
       </View>
-    </View>
+    </Container>
   );
 };
 
