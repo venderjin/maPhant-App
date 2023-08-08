@@ -28,7 +28,7 @@ function Section({ item }: { item: sectionItem }) {
   const last_idx = item.contents.length - 1;
 
   return (
-    <View style={styles.view}>
+    <View style={styles.profileView}>
       {!item.isNoHeader && (
         <View
           style={{
@@ -69,16 +69,6 @@ function Section({ item }: { item: sectionItem }) {
               >
                 <View>
                   <Text style={styles.text}>{content.title}</Text>
-                  {/* <Text
-                    style={{
-                      fontSize: 13,
-                      letterSpacing: 0.2,
-                      color: "#aaa",
-                      marginTop: 8,
-                    }}
-                  >
-                    {content.description}
-                  </Text> */}
                 </View>
                 <View
                   style={{
@@ -112,15 +102,27 @@ const MyView = () => {
 
   return (
     <View style={styles.view}>
-      <Text style={styles.nickName}>{profile.nickname}</Text>
       <View style={styles.info}>
-        <Text>{profile.name} / </Text>
-        <Text>{profile.role} - </Text>
-        <Text>
-          {category !== null
-            ? `${category.categoryName} (${category?.majorName})`
-            : "학과·계열 선택안됨"}
-        </Text>
+        <View>
+          <Text>프로필사진</Text>
+        </View>
+        <View>
+          <Text style={styles.nickName}>{profile.nickname}</Text>
+          <View
+            style={{
+              justifyContent: "flex-end",
+              backgroundColor: "skyblue",
+            }}
+          >
+            <Text>{profile.name} / </Text>
+            <Text>{profile.role} - </Text>
+            <Text>
+              {category !== null
+                ? `${category.categoryName} (${category?.majorName})`
+                : "학과·계열 선택안됨"}
+            </Text>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -148,6 +150,7 @@ export default function MyPage() {
         {
           title: "회원정보 수정",
           onclick: () => {
+            // navigation.navigate("PasswordCheck");
             navigation.navigate("PasswordCheck");
           },
           // description: "다른 기기를 추가하거나 삭제합니다.",
@@ -256,8 +259,6 @@ export default function MyPage() {
               </TextButton>
             </View>
             <Spacer size={5} />
-
-            {/* <Button title="닫기" onPress={() => setVisibleModal(false)} /> */}
           </View>
         </View>
       </Modal>
@@ -344,6 +345,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
   },
+  profileView: {
+    marginTop: 18,
+    backgroundColor: "white",
+    borderRadius: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
   text: {
     fontSize: 14,
     letterSpacing: 0.2,
@@ -355,6 +363,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   info: {
-    flexDirection: "row",
+    width: "100%",
+    height: "40%",
+    flexDirection: "column",
+    backgroundColor: "orange",
   },
 });
