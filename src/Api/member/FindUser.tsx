@@ -21,7 +21,7 @@ function deleteChat(id: number) {
 }
 
 function chartLists(id: number | undefined) {
-  return GetAPI(`/room/${id}?page=1&recordSize=100`);
+  return GetAPI(`/room/${id}?cursor=0&limit=100`);
 }
 
 export { chartLists, deleteChat, receiveChatrooms, SearchNickname, sendContent };

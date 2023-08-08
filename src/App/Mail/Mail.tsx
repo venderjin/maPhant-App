@@ -45,8 +45,6 @@ const Mail: React.FC = () => {
   useEffect(() => {
     receiveChatrooms()
       .then(res => {
-        // 이렇게 해서 roomId만 뽑아지는지 확인하고 싶음
-        // console.log(res.data.find(item => item.id)?.id);
         // 리스트에 대화방 정보 담음
         setChatList(res.data);
       })
@@ -56,7 +54,6 @@ const Mail: React.FC = () => {
     <Container style={{ flex: 1 }}>
       <View style={styles.header}>
         <Text style={styles.mailText}>쪽지함</Text>
-        {/* <TextButton onPress={() => console.log("편집")}>편집</TextButton> */}
       </View>
       <ScrollView>
         <View style={styles.sender}>
