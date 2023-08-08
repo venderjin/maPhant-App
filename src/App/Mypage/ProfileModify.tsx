@@ -1,4 +1,4 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { Field, Formik, FormikErrors } from "formik";
 import React, { useCallback, useState } from "react";
 import { Modal, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -11,7 +11,6 @@ import UserAPI from "../../Api/memberAPI";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
 import SearchByFilter from "../../components/Input/SearchByFilter";
 import { NavigationProps } from "../../Navigator/Routes";
-import { SignUpFormParams } from "../../Navigator/SigninRoutes";
 import UIStore from "../../storage/UIStore";
 import UserStorage from "../../storage/UserStorage";
 
@@ -22,6 +21,7 @@ interface ISearchForm {
 
 const ProfileModify: React.FC = () => {
   const profile = useSelector(UserStorage.userProfileSelector);
+  const category = useSelector(UserStorage.userCategorySelector);
 
   type UserType = {
     email?: string;
@@ -33,6 +33,11 @@ const ProfileModify: React.FC = () => {
     studentNumber?: number;
   };
 
+  type UserCategory = {
+    field?: string;
+    major?: string;
+  };
+
   const usetModifying: UserType = {
     email: profile?.email,
     password: "",
@@ -41,6 +46,11 @@ const ProfileModify: React.FC = () => {
     name: profile?.name,
     phoneNumber: "",
     studentNumber: profile?.sno,
+  };
+
+  const useCategoryModifying: UserCategory = {
+    field: category?.categoryName,
+    major: category?.majorName,
   };
 
   const [password, setPassword] = useState("");
@@ -99,10 +109,25 @@ const ProfileModify: React.FC = () => {
       }
     });
   };
+
+  const addField = () => {
+    PostAPI("/user/changeinfo/categorymajor", {
+      category: category?.categoryName,
+      major: category?.majorName,
+    }).then(res => {
+      if (res.success == true) {
+        console.log(res.success);
+      } else {
+        console.log(res.errors);
+        alert("계열 / 전공을 확인해주세요 (중복선택 불가능)");
+      }
+    });
+  };
+
   const navigation = useNavigation<NavigationProps>();
 
-  const route = useRoute();
-  const params = route.params as SignUpFormParams;
+  // const route = useRoute();
+  // const params = route.params as SignUpFormParams;
 
   const onSubmit = useCallback((errors: FormikErrors<ISearchForm>, next: () => void) => {
     if (Object.keys(errors).length === 0) {
@@ -248,7 +273,6 @@ const ProfileModify: React.FC = () => {
                       placeholder="nickname"
                       onChangeText={text => setNickname(text)}
                       value={nickname}
-                      secureTextEntry={true}
                     ></Input>
                     <Spacer size={10} />
                   </View>
@@ -321,7 +345,8 @@ const ProfileModify: React.FC = () => {
                       placeholder="phoneNumber"
                       onChangeText={text => setPhoneNumber(text)}
                       value={phoneNumber}
-                      secureTextEntry={true}
+                      keyboardType="numbers-and-punctuation"
+                      inputMode="tel"
                     ></Input>
                     <Spacer size={10} />
                   </View>
@@ -354,7 +379,18 @@ const ProfileModify: React.FC = () => {
               <View style={styles.modifyingContentWidth}>
                 <Text style={styles.text}>계열 / 학과</Text>
                 <View style={styles.modifyingContainer}>
-                  <Text style={styles.text}>유저.계열-유저.학과 map으로 보여주기</Text>
+                  <Text style={styles.text}>
+                    {useCategoryModifying.field} - {useCategoryModifying.major}
+                  </Text>
+                  <Text style={styles.text}>
+                    {useCategoryModifying.field} - {useCategoryModifying.major}
+                  </Text>
+                  <Text style={styles.text}>
+                    {useCategoryModifying.field} - {useCategoryModifying.major}
+                  </Text>
+                  <Text style={styles.text}>
+                    {useCategoryModifying.field} - {useCategoryModifying.major}
+                  </Text>
                 </View>
               </View>
               <View style={styles.modifyingBtn}>
@@ -365,6 +401,14 @@ const ProfileModify: React.FC = () => {
                   }}
                 >
                   추가
+                </TextButton>
+                <TextButton
+                  fontSize={16}
+                  onPress={() => {
+                    setModyfyingFieldModal(true);
+                  }}
+                >
+                  삭제
                 </TextButton>
               </View>
             </View>
