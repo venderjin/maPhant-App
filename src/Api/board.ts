@@ -62,11 +62,11 @@ const boardDelete = (board_id: number): Promise<dataResponse> =>
 const getArticle = (board_id: number): Promise<dataResponse> =>
   GetAPI<dataResponse>(`/board/${board_id}`);
 
-function insertLikePost(board_id: string) {
-  return GetAPI(`/board/like/${board_id}`);
+function insertLikePost(board_id: number) {
+  return PostAPI(`/board/like/${board_id}`);
 }
 
-function deleteLikeBoard(board_id: string) {
+function deleteLikeBoard(board_id: number) {
   return DeleteAPI(`/board/like/${board_id}`);
 }
 
