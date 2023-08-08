@@ -59,8 +59,8 @@ function deleteLikeBoard(board_id: string) {
   return DeleteAPI(`/board/like/${board_id}`);
 }
 
-function searchArticle(content: string) {
-  return GetAPI(`/board/search?content=${content}`);
+function searchArticle(content: string, boardType_id: number) {
+  return GetAPI(`/board/search?content=${content}&boardTypeId=${boardType_id}`);
 }
 
 export {

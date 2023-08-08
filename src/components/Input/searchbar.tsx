@@ -10,7 +10,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchQuery, onSearchChange, onCl
   const clearTextHandler = () => {
     onClearText();
   };
-  console.log("찍히긴하나 시바렇ㅅㅅ");
+
   return (
     <View style={styles.searchContainer}>
       <View style={styles.searchBox}>

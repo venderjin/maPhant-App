@@ -57,7 +57,7 @@ const DetailList: React.FC = () => {
       return;
     }
     try {
-      const data = await searchArticle(searchText); // Implement your searchArticle function to call the API for search results
+      const data = await searchArticle(searchText, boardType.id); // Implement your searchArticle function to call the API for search results
       setSearchResults(data.data as BoardArticle[]);
       console.log(data.data);
     } catch (err) {
