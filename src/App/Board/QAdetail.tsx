@@ -24,14 +24,8 @@ const data = [
   { id: 3, name: "지망이", date: " 2023.03,12" },
 ];
 
-const QAdetail = () => {
-  const params = useRoute().params as { boardData: BoardArticle };
-  const boardData = params?.boardData;
-  const [post, setPost] = useState({ board: {} } as BoardPost);
-  const user = useSelector(UserStorage.userProfileSelector)! as UserData;
-  const navigation = useNavigation<NavigationProp<NavigationProps>>();
-
-  const createdAtDate = new Date(post.board.createdAt);
+export const dateFormat = (date: Date): string => {
+  const createdAtDate = new Date(date);
   const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
     year: "numeric",
     month: "2-digit",
@@ -40,6 +34,14 @@ const QAdetail = () => {
     minute: "2-digit",
     second: "2-digit",
   });
+  return formattedDateTime;
+};
+const QAdetail = () => {
+  const params = useRoute().params as { boardData: BoardArticle };
+  const boardData = params?.boardData;
+  const [post, setPost] = useState({ board: {} } as BoardPost);
+  const user = useSelector(UserStorage.userProfileSelector)! as UserData;
+  const navigation = useNavigation<NavigationProp<NavigationProps>>();
 
   const handleDelete = async (board_id: number) => {
     try {
@@ -78,14 +80,14 @@ const QAdetail = () => {
   function alert() {
     Alert.alert("삭제", "삭제하시겠습니까?", [
       {
+        text: "아니오",
+        style: "cancel",
+      },
+      {
         text: "네",
         onPress: () => {
           handleDelete(boardData.boardId);
         },
-      },
-      {
-        text: "아니오",
-        style: "cancel",
       },
     ]);
   }
@@ -100,7 +102,7 @@ const QAdetail = () => {
                 <Text style={styles.nickname}>{boardData.userNickname}</Text>
               </View>
               <View>
-                <Text style={styles.date}>{formattedDateTime}</Text>
+                <Text style={styles.date}>{dateFormat(post.board.createdAt)}</Text>
               </View>
             </View>
             {user.nickname === boardData.userNickname && (
