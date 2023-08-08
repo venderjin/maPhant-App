@@ -1,3 +1,5 @@
+import Toast from "react-native-root-toast";
+
 import UserStorage from "../../storage/UserStorage";
 import { PostAPI } from "../fetchAPI";
 import UserAPI from "../memberAPI";
@@ -24,7 +26,7 @@ const changePassword = (password: string, confirmPassword: string) => {
     }).then(res => {
       if (res.success == true) {
         console.log(res.success);
-      } else {
+      } else if (res.success == false) {
         console.log(res.errors);
       }
     });
@@ -59,4 +61,17 @@ const changePhNum = (phoneNumber: string) => {
   });
 };
 
-export default { getOldData, changePassword, changeNickname, changePhNum };
+const addCategoryAndMajor = (category: string, major: string) => {
+  PostAPI("/user/changeinfo/categorymajor", {
+    category: category,
+    major: major,
+  }).then(res => {
+    if (res.success == true) {
+      console.log(res.success);
+    } else {
+      console.log(res.errors);
+    }
+  });
+};
+
+export default { getOldData, changePassword, changeNickname, changePhNum, addCategoryAndMajor };

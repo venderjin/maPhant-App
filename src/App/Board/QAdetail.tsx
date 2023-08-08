@@ -92,8 +92,6 @@ const QAdetail = () => {
     ]);
   }
 
-  const userNickname = useSelector(UserStorage.userProfileSelector)!.nickname;
-
   return (
     <Container style={styles.container}>
       <View style={styles.qainfoBox}>
@@ -101,13 +99,13 @@ const QAdetail = () => {
           <View style={styles.qaheader}>
             <View>
               <View>
-                <Text style={styles.nickname}>{userNickname}</Text>
+                <Text style={styles.nickname}>{boardData.userNickname}</Text>
               </View>
               <View>
                 <Text style={styles.date}>{dateFormat(post.board.createdAt)}</Text>
               </View>
             </View>
-            {user.nickname === userNickname && (
+            {user.nickname === boardData.userNickname && (
               <View style={styles.qaButtonBox}>
                 <TextButton
                   style={styles.button}
