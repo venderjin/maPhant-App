@@ -9,6 +9,8 @@ import { sendContent } from "../../Api/member/FindUser";
 import { Container, ImageBox, Input, Spacer, TextButton } from "../../components/common";
 import { MailFormParams } from "../../Navigator/MailRoute";
 import { NavigationProps } from "../../Navigator/Routes";
+import { useDispatch, useSelector } from "react-redux";
+import reduxStore, { ChatSlice, RootState } from "../../storage/reduxStore";
 const Chatroom: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
   const windowWidth = useWindowDimensions().width; // window 가로 길이
@@ -32,7 +34,11 @@ const Chatroom: React.FC = () => {
     scrollToBottom();
   }, [messageList]);
 
+  const Chatdata = useSelector((state: RootState) => state.ChatSlice);
+  const Chatroom: string[] = Chatdata[1] ? Chatdata[1] : [];
+
   const send = () => {
+    reduxStore.dispatch(ChatSlice.actions.addChat({ chatid: 1, content: content }));
     sendContent(params.id, content)
       .then(res => {
         if (res.data) {
@@ -84,7 +90,8 @@ const Chatroom: React.FC = () => {
       </Container>
     );
   }
-  function UserChat() {
+  function UserChat(props: { messageList: { date: string; content: string }[] }) {
+    const { messageList } = props;
     return (
       <Container style={{ paddingVertical: 0 }}>
         {messageList.map((message, i) => (
@@ -133,7 +140,10 @@ const Chatroom: React.FC = () => {
       </Container>
       <Container style={{ flex: 10 }}>
         <ScrollView ref={scrollViewRef}>
-          <UserChat />
+          {Chatroom.map((content, id) => (
+            // <Text>{content}</Text>
+            <UserChat key={id} messageList={[{ date: "someDate", content: content }]} />
+          ))}
           <OtherUserChat />
         </ScrollView>
       </Container>
