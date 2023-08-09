@@ -41,6 +41,8 @@ type BoardPost = {
 };
 
 type BoardArticle = {
+  type: string;
+  created_at: string;
   boardId: number;
   title: string;
   createdAt: Date;

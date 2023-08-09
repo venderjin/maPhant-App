@@ -16,6 +16,7 @@ export default function MypageIndex() {
       <Stack.Screen name="ProfileModify" component={Routes[2].component} />
       <Stack.Screen name="Mypost" component={Routes[3].component} />
       <Stack.Screen name="QnAdetail" component={Routes[4].component} />
+      <Stack.Screen name="Bookmark" component={Routes[5].component} />
     </Stack.Navigator>
   );
 }

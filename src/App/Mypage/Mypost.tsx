@@ -1,5 +1,5 @@
 import { Feather, FontAwesome } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -24,7 +24,7 @@ function MyPost(): JSX.Element {
   const userID = useSelector(UserStorage.userProfileSelector)!.id;
 
   useEffect(() => {
-    GetAPI(`/profile/board?page=${pages}&recordSize=${5}&targetUserId=${userID}`).then(res => {
+    GetAPI(`/profile/board?page=${pages}&recordSize=${20}&targetUserId=${userID}`).then(res => {
       if (res.success === false) {
         console.log(res.errors);
         return;
@@ -41,6 +41,7 @@ function MyPost(): JSX.Element {
     if (!isLoading) {
       setIsLoading(true);
       setPages(pages + 1);
+      return;
     }
     setIsLoading(false);
   };
@@ -75,7 +76,7 @@ function MyPost(): JSX.Element {
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    marginTop: 5,
+                    marginTop: 10,
                   }}
                 >
                   <View style={styles.time}>
@@ -87,18 +88,18 @@ function MyPost(): JSX.Element {
                 </View>
 
                 <View style={styles.head}>
-                  {post.likeCnt > 0 ? (
+                  {post.like_cnt > 0 ? (
                     <>
                       <Feather name="thumbs-up" size={13} color="tomato" />
-                      <Text style={styles.good}>&#9; {post.likeCnt}</Text>
+                      <Text style={styles.good}>&#9; {post.like_cnt}</Text>
                     </>
                   ) : post.commentCnt == 0 ? (
                     <View style={{ flex: 1 }}></View>
                   ) : null}
-                  {post.commentCnt > 0 ? (
+                  {post.comment_cnt > 0 ? (
                     <>
                       <FontAwesome name="comment-o" size={13} color="blue" />
-                      <Text style={styles.comment}>&#9; {post.commentCnt}</Text>
+                      <Text style={styles.comment}>&#9; {post.comment_cnt}</Text>
                     </>
                   ) : null}
                   <Text style={{ justifyContent: "flex-end", fontSize: 10 }}></Text>

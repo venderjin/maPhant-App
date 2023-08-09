@@ -4,12 +4,14 @@ import React, { useState } from "react";
 import { ColorValue, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { DeleteAPI } from "../../Api/fetchAPI";
-import { Spacer, TextButton } from "../../components/common";
+import DeleteAPI from "../../Api/member/DeleteUser";
+import { Input, Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
 import { UserData } from "../../types/User";
 import Myimg from "./Myimg";
+import { PostAPI } from "../../Api/fetchAPI";
+import { set } from "react-native-reanimated";
 
 type sectionItem = {
   title?: string;
@@ -126,13 +128,24 @@ const MyView = () => {
 export default function MyPage() {
   const [visibleLogoutModal, setVisibleLogoutModal] = useState(false);
   const [visibleWithdrawModal, setVisibleWithdrawModal] = useState(false);
+  const [visibleAuthentication, setVisibleAuthentication] = useState(false);
+  const [checkPassword, setCheckPassword] = useState("");
 
   const userProfle = useSelector(UserStorage.userProfileSelector);
 
-  const deleteUser = () => {
-    DeleteAPI(`/user?userId=${userProfle?.id}`).then(res => {
-      console.log(res.success);
-    });
+  const checkPasswordHandler = () => {
+    PostAPI("/user/changeinfo/identification", {
+      password: checkPassword,
+    })
+      .then(res => {
+        if (res.success == true) {
+          setVisibleAuthentication(false);
+          setVisibleWithdrawModal(true);
+        }
+      })
+      .catch(res => {
+        alert(res);
+      });
   };
 
   const sections: sectionItem[] = [
@@ -179,6 +192,13 @@ export default function MyPage() {
           // description: "알림음을 설정합니다.",
           href: "4",
         },
+        {
+          title: "북마크",
+          onclick: () => {
+            navigation.navigate("Bookmark" as never);
+          },
+          href: "5",
+        },
       ],
     },
     {
@@ -187,9 +207,10 @@ export default function MyPage() {
         {
           title: "회원탈퇴",
           onclick: () => {
-            setVisibleWithdrawModal(true);
+            //setVisibleWithdrawModal(true);
+            setVisibleAuthentication(true);
           },
-          href: "5",
+          href: "6",
         },
       ],
     },
@@ -259,6 +280,76 @@ export default function MyPage() {
         </View>
       </Modal>
 
+      {/* ------------ 회원탈퇴 전 인증 모달창 */}
+      <Modal animationType="fade" transparent={true} visible={visibleAuthentication}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            // backgroundColor: "skyblue",
+          }}
+        >
+          <View
+            style={{
+              flex: 0.6,
+              borderRadius: 25,
+              backgroundColor: "#ffffff",
+              padding: 25,
+            }}
+          >
+            <Spacer size={5} />
+            <View
+              style={{
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 18 }}>비밀번호를 입력해주세요.</Text>
+            </View>
+            <Spacer size={20} />
+            <Input
+              style={{ paddingVertical: "5%", backgroundColor: "#e8eaec" }}
+              paddingHorizontal={20}
+              borderRadius={30}
+              placeholder="Password"
+              onChangeText={text => setCheckPassword(text)}
+              value={checkPassword}
+              secureTextEntry={true}
+            ></Input>
+            <Spacer size={20} />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+              }}
+            >
+              <TextButton
+                style={{
+                  width: "45%",
+                }}
+                onPress={() => {
+                  checkPasswordHandler();
+                }}
+              >
+                확인
+              </TextButton>
+              <TextButton
+                style={{
+                  width: "45%",
+                }}
+                onPress={() => {
+                  setVisibleAuthentication(false);
+                }}
+              >
+                취소
+              </TextButton>
+            </View>
+            <Spacer size={5} />
+          </View>
+        </View>
+      </Modal>
       {/* ------------ 회원탈퇴 모달창 */}
       <Modal animationType="fade" transparent={true} visible={visibleWithdrawModal}>
         <View
@@ -299,7 +390,7 @@ export default function MyPage() {
                   width: "45%",
                 }}
                 onPress={() => {
-                  deleteUser();
+                  DeleteAPI.deleteUser(userProfle!.id);
                   UserStorage.removeUserData();
                 }}
               >

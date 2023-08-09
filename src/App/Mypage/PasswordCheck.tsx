@@ -14,14 +14,16 @@ const PasswordCheck: React.FC = () => {
   const checkPasswordHandler = () => {
     PostAPI("/user/changeinfo/identification", {
       password: password,
-    }).then(res => {
-      if (res.success == true) {
-        console.log(res.success);
-        navigation.navigate("ProfileModify");
-      } else {
-        console.log(res.errors);
-      }
-    });
+    })
+      .then(res => {
+        if (res.success == true) {
+          console.log(res.success);
+          navigation.navigate("ProfileModify");
+        }
+      })
+      .catch(res => {
+        alert(res);
+      });
   };
   return (
     <Container isFullScreen={true} paddingHorizontal={0}>

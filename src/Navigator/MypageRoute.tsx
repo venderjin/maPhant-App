@@ -1,4 +1,5 @@
 import QAdetail from "../App/Board/QAdetail";
+import Bookmark from "../App/Mypage/Bookmark";
 import Mypage from "../App/Mypage/Mypage";
 import Mypost from "../App/Mypage/Mypost";
 import PasswordCheck from "../App/Mypage/PasswordCheck";
@@ -27,6 +28,10 @@ const Routes: RouteType[] = [
     name: "detail",
     component: QAdetail,
   },
+  {
+    name: "Bookmark",
+    component: Bookmark,
+  },
 ];
 
 export type NavigationProp = {
@@ -35,6 +40,7 @@ export type NavigationProp = {
   ProfileModify: undefined;
   Mypost: BoardArticle[];
   detail: BoardArticle;
+  Bookmark: undefined;
 };
 
 export default Routes;

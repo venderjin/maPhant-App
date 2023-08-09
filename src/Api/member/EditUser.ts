@@ -73,6 +73,9 @@ const addCategoryAndMajor = (category: string, major: string) => {
       }
     })
     .catch(err => alert(err));
+  UserAPI.getProfile().then(res => {
+    UserStorage.setUserProfile(res.data);
+  });
 };
 
 export default { getOldData, changePassword, changeNickname, changePhNum, addCategoryAndMajor };
