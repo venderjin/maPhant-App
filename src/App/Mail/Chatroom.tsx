@@ -12,7 +12,6 @@ import { NavigationProps } from "../../Navigator/Routes";
 import { ReceiveList } from "../../types/DM";
 const Chatroom: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
-  const scrollViewRef = useRef<FlatList<ReceiveList>>(null);
 
   const windowWidth = useWindowDimensions().width; // window 가로 길이s
   // SearchUser.tsx에서 입력한 유저의 id, nickname을 가져오기 위해 사용한 것
@@ -20,12 +19,6 @@ const Chatroom: React.FC = () => {
   const params = route.params as MailFormParams;
   const [receiveContent, setReceiveContent] = useState<ReceiveList[]>([]);
   const [content, setContent] = useState("");
-  const scrollToBottom = () => {
-    //스크롤
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: false });
-    }
-  };
 
   const fetchChatLists = async (roomId: number) => {
     //대화내용 받아오는거 같음
@@ -50,7 +43,6 @@ const Chatroom: React.FC = () => {
       })
       .catch(e => console.error("send에러", e));
     setContent("");
-    scrollToBottom();
   };
 
   useEffect(() => {
@@ -124,7 +116,7 @@ const Chatroom: React.FC = () => {
       return <OtherUserChat item={item} />;
     }
   };
-
+  const reversedReceiveContent = [...receiveContent].reverse();
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -150,10 +142,11 @@ const Chatroom: React.FC = () => {
         </Container>
         <Container style={{ flex: 10 }}>
           <FlatList
-            ref={scrollViewRef}
-            data={receiveContent}
+            data={reversedReceiveContent}
             renderItem={renderItem}
             keyExtractor={item => item.id.toString()}
+            inverted={true} //역순 스크롤 ㅜㅜ
+            // ListHeaderComponent={}
           />
         </Container>
         <Container // 채팅입력창
