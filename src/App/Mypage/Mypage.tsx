@@ -108,15 +108,22 @@ const MyView = () => {
           <Myimg></Myimg>
         </View>
         <View style={styles.userinfoContainer}>
-          <Text style={styles.nickName}>{profile.nickname}</Text>
-          <Text>
-            {profile.role} - {profile.name}
-          </Text>
-          <Text>
-            {category !== null
-              ? `${category.categoryName} - (${category?.majorName})`
-              : "학과·계열 선택안됨"}
-          </Text>
+          <View style={styles.paddingVertical}>
+            <Text style={styles.nickName}>{profile.nickname}</Text>
+          </View>
+          <View style={styles.paddingVertical}>
+            <Text style={styles.name}>
+              {profile.role} - {profile.name}
+            </Text>
+          </View>
+          <View style={styles.paddingVertical}>
+            <Text style={styles.fieldtxt}>
+              {category !== null ? `${category.categoryName}` : "계열 선택안됨"}
+            </Text>
+            <Text style={styles.fieldtxt}>
+              {category !== null ? `${category?.majorName}` : "학과 선택안됨"}
+            </Text>
+          </View>
         </View>
       </View>
     </View>
@@ -356,24 +363,32 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   nickName: {
-    fontSize: 20,
-    letterSpacing: 0.2,
+    fontSize: 30,
     fontWeight: "bold",
+  },
+  name: {
+    fontSize: 20,
+  },
+  fieldtxt: {
+    fontSize: 16,
   },
   info: {
     flex: 1,
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
   },
   userPic: {
-    flex: 0.7,
-    alignItems: "center",
-    justifyContent: "center",
+    flex: 1,
+    paddingHorizontal: 5,
   },
   userinfoContainer: {
-    flex: 0.3,
-    alignItems: "center",
+    flex: 1,
+    alignItems: "flex-end",
     justifyContent: "flex-end",
-    backgroundColor: "skyblue",
+  },
+  paddingVertical: {
+    paddingVertical: 5,
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
   },
 });
