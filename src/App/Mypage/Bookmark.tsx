@@ -2,51 +2,61 @@ import { Feather, FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { useSelector } from "react-redux";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { set } from "react-native-reanimated";
 
 import { GetAPI } from "../../Api/fetchAPI";
-import UserStorage from "../../storage/UserStorage";
+import { TextButton } from "../../components/common";
 import { BoardArticle } from "../../types/Board";
 
 export default function (): JSX.Element {
   switch (0) {
     default:
-      return Mybookmark();
+      return Bookmark();
   }
 }
 
-function Mybookmark(): JSX.Element {
-  const [bookmark, setBookmark] = React.useState<BoardArticle[]>([]);
-  const [pages, setPages] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+function Bookmark(): JSX.Element {
+  const [boardId, setBoardId] = useState<number[]>([]);
+  const [effectCount, setEffectCount] = useState<number>(1);
+  const [bookmark, setBookmark] = useState<BoardArticle[]>([]);
+  const [getBookmarkCount, setGetBookmarkCount] = useState<number>(-1);
   const navigation = useNavigation();
 
-  const userID = useSelector(UserStorage.userProfileSelector)!.id;
-
-  // useEffect(() => {
-  //   GetAPI(`/profile/board?page=${pages}&recordSize=${5}&targetUserId=${userID}`).then(res => {
-  //     if (res.success === false) {
-  //       console.log(res.errors);
-  //       return;
-  //     } else {
-  //       setbookmarks([...bookmarks, ...res.data.list]);
-  //       // if (res.data.pagination.existNextPage === false) {
-  //       //   setStop(true);
-  //       // }
-  //     }
-  //   });
-  // }, [pages]);
-
-  useEffect(() => {
+  const extractBoardIds = async () => {
     GetAPI("/bookmark/my-list").then(res => {
       if (res.success === false) {
         console.log(res.errors);
         return;
       } else {
-        setBookmark([...bookmark, ...res.data]);
+        const boardIds = res.data.map(item => item.boardId);
+        setBoardId(boardIds);
       }
     });
+    setEffectCount(effectCount + 1);
+  };
+
+  //첫번쨰
+  useEffect(() => {
+    extractBoardIds();
+    setEffectCount(effectCount + 1);
+    setGetBookmarkCount(getBookmarkCount + 1);
   }, []);
+
+  //두번쨰
+  useEffect(() => {
+    if (effectCount === 2) {
+      GetAPI(`/board/${boardId[getBookmarkCount]}`).then(res => {
+        if (res.success === false) {
+          console.log(res.errors);
+          return;
+        } else {
+          setBookmark([...bookmark, res.data.board]);
+        }
+      });
+    }
+    if (getBookmarkCount < boardId.length - 1) setGetBookmarkCount(getBookmarkCount + 1);
+  }, [getBookmarkCount]);
 
   const detailContent = (boards: BoardArticle) => {
     console.log(bookmark);
@@ -56,47 +66,47 @@ function Mybookmark(): JSX.Element {
   return (
     <>
       <ScrollView scrollEventThrottle={16}>
+        <TextButton
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onPress={() => {
+            console.log(bookmark);
+          }}
+        >
+          asads
+        </TextButton>
         {bookmark.map(bookmark => (
           <>
             <Pressable onPress={() => detailContent(bookmark)}>
               <View style={styles.container}>
                 <View style={styles.head}>
-                  <Text style={styles.title}>{bookmark.boardTitle}</Text>
+                  <Text>{bookmark.typeId}</Text>
                 </View>
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    marginTop: 5,
+                    marginTop: 10,
+                    marginBottom: 10,
                   }}
                 >
-                  <View style={styles.time}>
-                    <Text>{bookmark.type}</Text>
-                  </View>
-                  <View style={styles.time}>
-                    <Text>{dateToString(bookmark.created_at)}</Text>
+                  <View>
+                    <Text style={styles.title}>{bookmark.title}</Text>
                   </View>
                 </View>
 
                 <View style={styles.head}>
-                  {bookmark.likeCnt > 0 ? (
-                    <>
-                      <Feather name="thumbs-up" size={13} color="tomato" />
-                      <Text style={styles.good}>&#9; {bookmark.likeCnt}</Text>
-                    </>
-                  ) : bookmark.commentCnt == 0 ? (
-                    <View style={{ flex: 1 }}></View>
-                  ) : null}
-                  {bookmark.commentCnt > 0 ? (
-                    <>
-                      <FontAwesome name="comment-o" size={13} color="blue" />
-                      <Text style={styles.comment}>&#9; {bookmark.commentCnt}</Text>
-                    </>
-                  ) : null}
+                  <Feather name="thumbs-up" size={13} color="tomato" />
+                  <Text style={styles.good}>&#9; {bookmark.likeCnt}</Text>
+                  <View style={{ flex: 1 }}></View>
+                  <FontAwesome name="comment-o" size={13} color="blue" />
+                  <Text style={styles.comment}>&#9; {bookmark.commentCnt}</Text>
                   <Text style={{ justifyContent: "flex-end", fontSize: 10 }}></Text>
+                  <Text style={styles.time}>{dateToString(bookmark.createdAt)}</Text>
                 </View>
               </View>
             </Pressable>
+            <View style={{ borderBottomWidth: 1, borderColor: "#e8eaec", height: 0 }}></View>
           </>
         ))}
       </ScrollView>

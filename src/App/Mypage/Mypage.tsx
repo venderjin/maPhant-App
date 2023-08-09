@@ -186,15 +186,12 @@ export default function MyPage() {
         {
           title: "회원정보 수정",
           onclick: () => {
-            // navigation.navigate("PasswordCheck");
-            navigation.navigate("PasswordCheck");
+            navigation.navigate("PasswordCheck" as never);
           },
-          // description: "다른 기기를 추가하거나 삭제합니다.",
           href: "1",
         },
         {
           title: "로그아웃",
-          // description: "장치를 로그아웃하여 새 계정으로 전환합니다.",
           onclick: () => {
             setVisibleLogoutModal(true);
           },
@@ -217,7 +214,9 @@ export default function MyPage() {
         },
         {
           title: "내가 쓴 댓글",
-          // description: "알림음을 설정합니다.",
+          onclick: () => {
+            navigation.navigate("Mycomment" as never);
+          },
           href: "4",
         },
         {
