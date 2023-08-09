@@ -1,6 +1,7 @@
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { isEqual } from "lodash";
+import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { deleteChat, receiveChatrooms } from "../../Api/member/FindUser";
@@ -36,20 +37,27 @@ const Mail: React.FC = () => {
   const [chatList, setChatList] = useState<MessageList[]>([]);
   const navigation = useNavigation<NavigationProps>();
   const del = (id: number) => {
-    //삭제는 되는데 삭제된 방이 다시 생성이 안됨 이거는 백엔드에서 해줘야하는 것 같음
     deleteChat(id);
   };
   const searchUser = () => {
     navigation.navigate("SearchUser" as never);
   };
-  useEffect(() => {
-    receiveChatrooms()
-      .then(res => {
-        // 리스트에 대화방 정보 담음
-        setChatList(res.data);
-      })
-      .catch(e => console.info(e));
+  //useCallback을 사용하면 의존성이 변경되는 경우(chatList 변경되는 경우 인듯?), 이전에 기억하고 있던 함수 자체와 비교해서 다른 경우 리랜더
+  // 원래 object 끼리 ==, === 연산자 결과는 무조건 false인데 useCallback을 사용하면 동등성을 보장할 수 있음
+  const fetchChatRooms = useCallback(async () => {
+    try {
+      await receiveChatrooms().then(res => {
+        if (res.success) setChatList(res.data);
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }, [chatList]);
+
+  useEffect(() => {
+    fetchChatRooms();
+  }, [fetchChatRooms]);
+
   return (
     <Container style={{ flex: 1 }}>
       <View style={styles.header}>
@@ -68,7 +76,6 @@ const Mail: React.FC = () => {
                   navigation.navigate("Chatroom", {
                     id: mail.other_id,
                     nickname: mail.other_nickname,
-                    // 이렇게 roomId를 넘겨줘야함
                     roomId: parseInt(mail.id),
                   });
                 }}
