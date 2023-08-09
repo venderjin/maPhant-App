@@ -80,4 +80,9 @@ type SortType = {
   name: string;
 };
 
-export type { BoardArticle, BoardPost, BoardType, HotBoard, SortType };
+type ReportType = {
+  id: number;
+  name: string;
+};
+
+export type { BoardArticle, BoardPost, BoardType, HotBoard, ReportType, SortType };

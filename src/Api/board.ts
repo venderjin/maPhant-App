@@ -76,6 +76,14 @@ function searchArticle(content: string, boardType_id: number) {
 function bookMarkArticle(board_id: number) {
   return PostAPI(`/bookmark/${board_id}`);
 }
+const listReportType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/report/list`);
+function ReportPost(board_id: number, reportType_id: number) {
+  return PostAPI(`/board/report?boardId=${board_id}&reportId=${reportType_id}`, {
+    board_id,
+    reportType_id,
+  });
+}
+
 export {
   boardDelete,
   boardEdit,
@@ -88,5 +96,7 @@ export {
   listBoardType,
   listHotBoard,
   listHotBoardTotal,
+  listReportType,
+  ReportPost,
   searchArticle,
 };
