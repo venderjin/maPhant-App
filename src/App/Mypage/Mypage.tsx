@@ -83,9 +83,9 @@ function Section({ item }: { item: sectionItem }) {
             {index !== last_idx && (
               <View
                 style={{
-                  marginHorizontal: 4,
+                  marginHorizontal: 0,
                   height: 1,
-                  backgroundColor: "#f9f9f9",
+                  backgroundColor: "#aaa",
                   marginVertical: 10,
                 }}
               />
@@ -103,6 +103,7 @@ const MyView = () => {
 
   return (
     <View style={styles.view}>
+      {/* <View style={{ paddingTop: 100 }}> */}
       <View style={styles.info}>
         <View style={styles.userPic}>
           <Myimg></Myimg>
@@ -338,6 +339,7 @@ export default function MyPage() {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "white",
     paddingHorizontal: 16,
     paddingVertical: 30,
     marginTop: 18,
@@ -345,14 +347,14 @@ const styles = StyleSheet.create({
   view: {
     flex: 1,
     marginTop: 18,
-    backgroundColor: "white",
+    backgroundColor: "#D8E1EC",
     borderRadius: 8,
     paddingHorizontal: 20,
     paddingVertical: 20,
   },
   profileView: {
     marginTop: 18,
-    backgroundColor: "white",
+    backgroundColor: "#D8E1EC",
     borderRadius: 8,
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -375,20 +377,18 @@ const styles = StyleSheet.create({
   info: {
     flex: 1,
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-end",
   },
   userPic: {
-    flex: 1,
+    flex: 0.4,
     paddingHorizontal: 5,
+    alignItems: "center",
   },
   userinfoContainer: {
-    flex: 1,
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
+    flex: 0.6,
   },
   paddingVertical: {
     paddingVertical: 5,
     alignItems: "flex-end",
-    justifyContent: "flex-end",
   },
 });
