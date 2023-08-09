@@ -1,7 +1,16 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { ColorValue, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ColorValue,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSelector } from "react-redux";
 
 import { DeleteAPI } from "../../Api/fetchAPI";
@@ -125,6 +134,18 @@ const MyView = () => {
               {category !== null ? `${category?.majorName}` : "학과 선택안됨"}
             </Text>
           </View>
+        </View>
+      </View>
+      <View style={styles.introTxtContainer}>
+        <View style={styles.introTxt}>
+          <Text>
+            여기에 소개글 불러와야함 머라고 쓰지 겁나 길게 써도 가능할 수 있도록 조정해야함
+          </Text>
+        </View>
+        <View style={styles.introTxtBtn}>
+          <TouchableOpacity style={styles.introTxtBtn}>
+            <Text style={styles.introTxtBtnTxt}>소개글</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -388,7 +409,30 @@ const styles = StyleSheet.create({
     flex: 0.6,
   },
   paddingVertical: {
+    paddingHorizontal: 10,
     paddingVertical: 5,
     alignItems: "flex-end",
+    // backgroundColor: "skyblue",
+  },
+  introTxtContainer: {
+    marginTop: 10,
+    padding: 10,
+    borderTopColor: "#aaa",
+    borderTopWidth: 1,
+    flexDirection: "row",
+  },
+  introTxtBtn: {
+    backgroundColor: "#E0E0E0",
+    flex: 0.2,
+    marginHorizontal: 5,
+    borderColor: "black",
+    borderWidth: 1,
+  },
+  introTxtBtnTxt: {
+    fontSize: 18,
+    color: "#666666",
+  },
+  introTxt: {
+    flex: 0.8,
   },
 });
