@@ -4,11 +4,12 @@ import React, { useState } from "react";
 import { ColorValue, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { DeleteAPI, GetAPI } from "../../Api/fetchAPI";
+import { DeleteAPI } from "../../Api/fetchAPI";
 import { Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
 import { UserData } from "../../types/User";
+import Myimg from "./Myimg";
 
 type sectionItem = {
   title?: string;
@@ -103,25 +104,19 @@ const MyView = () => {
   return (
     <View style={styles.view}>
       <View style={styles.info}>
-        <View>
-          <Text>프로필사진</Text>
+        <View style={styles.userPic}>
+          <Myimg></Myimg>
         </View>
-        <View>
+        <View style={styles.userinfoContainer}>
           <Text style={styles.nickName}>{profile.nickname}</Text>
-          <View
-            style={{
-              justifyContent: "flex-end",
-              backgroundColor: "skyblue",
-            }}
-          >
-            <Text>{profile.name} / </Text>
-            <Text>{profile.role} - </Text>
-            <Text>
-              {category !== null
-                ? `${category.categoryName} (${category?.majorName})`
-                : "학과·계열 선택안됨"}
-            </Text>
-          </View>
+          <Text>
+            {profile.role} - {profile.name}
+          </Text>
+          <Text>
+            {category !== null
+              ? `${category.categoryName} - (${category?.majorName})`
+              : "학과·계열 선택안됨"}
+          </Text>
         </View>
       </View>
     </View>
@@ -341,11 +336,12 @@ const styles = StyleSheet.create({
     marginTop: 18,
   },
   view: {
+    flex: 1,
     marginTop: 18,
     backgroundColor: "white",
     borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
   profileView: {
     marginTop: 18,
@@ -365,9 +361,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   info: {
-    width: "100%",
-    height: "40%",
+    flex: 1,
     flexDirection: "column",
-    backgroundColor: "orange",
+    alignItems: "center",
+  },
+  userPic: {
+    flex: 0.7,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  userinfoContainer: {
+    flex: 0.3,
+    alignItems: "center",
+    justifyContent: "flex-end",
+    backgroundColor: "skyblue",
   },
 });
