@@ -2,8 +2,10 @@ import { Feather, FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { GetAPI } from "../../Api/fetchAPI";
+import UserStorage from "../../storage/UserStorage";
 import { BoardArticle } from "../../types/Board";
 
 export default function (): JSX.Element {
@@ -19,8 +21,10 @@ function MyPost(): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
+  const userID = useSelector(UserStorage.userProfileSelector)!.id;
+
   useEffect(() => {
-    GetAPI(`/profile/board?page=${pages}&recordSize=${5}`).then(res => {
+    GetAPI(`/profile/board?page=${pages}&recordSize=${5}&targetUserId=${userID}`).then(res => {
       if (res.success === false) {
         console.log(res.errors);
         return;

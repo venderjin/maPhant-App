@@ -6,6 +6,7 @@ import Toast from "react-native-root-toast";
 import { useSelector } from "react-redux";
 
 import { PostAPI } from "../../Api/fetchAPI";
+import EditUser from "../../Api/member/EditUser";
 import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
 import UserAPI from "../../Api/memberAPI";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
@@ -61,68 +62,6 @@ const ProfileModify: React.FC = () => {
   const [modifyingNicknameModal, setModyfyingNicknameModal] = useState(false);
   const [modifyingPhoneNumModal, setModyfyingPhoneNumModal] = useState(false);
   const [modifyingFieldModal, setModyfyingFieldModal] = useState(false);
-
-  const changePassword = () => {
-    if (password !== confirmPassword) {
-      alert("비밀번호가 일치하지 않습니다.");
-    } else {
-      PostAPI("/user/changeinfo/password", {
-        email: profile?.email,
-        newPassword: password,
-        newPasswordCheck: confirmPassword,
-      }).then(res => {
-        if (res.success == true) {
-          console.log(res.success);
-        } else {
-          console.log(res.errors);
-        }
-      });
-    }
-  };
-
-  const changeNickname = () => {
-    PostAPI("/user/changeinfo/nickname", {
-      email: profile?.email,
-      nickname: nickname,
-    }).then(res => {
-      if (res.success == true) {
-        console.log(res.success);
-      } else {
-        console.log(res.errors);
-      }
-      UserAPI.getProfile().then(res => {
-        UserStorage.setUserProfile(res.data);
-      });
-    });
-  };
-
-  const changePhNum = () => {
-    PostAPI("/user/changeinfo/phnum", {
-      email: profile?.email,
-      phNum: phoneNumber,
-    }).then(res => {
-      if (res.success == true) {
-        console.log(res.success);
-      } else {
-        console.log(res.errors);
-        alert("번호 형식을 확인해주세요. \n ex) 010-0000-0000");
-      }
-    });
-  };
-
-  const addField = () => {
-    PostAPI("/user/changeinfo/categorymajor", {
-      category: category?.categoryName,
-      major: category?.majorName,
-    }).then(res => {
-      if (res.success == true) {
-        console.log(res.success);
-      } else {
-        console.log(res.errors);
-        alert("계열 / 전공을 확인해주세요 (중복선택 불가능)");
-      }
-    });
-  };
 
   const navigation = useNavigation<NavigationProps>();
 
@@ -228,7 +167,7 @@ const ProfileModify: React.FC = () => {
                     <TextButton
                       style={styles.modalConfirmBtn}
                       onPress={() => {
-                        // 수정된 비밀번호 server 전송
+                        EditUser.changePassword(password, confirmPassword);
                       }}
                     >
                       수정
@@ -289,7 +228,7 @@ const ProfileModify: React.FC = () => {
                     <TextButton
                       style={styles.modalConfirmBtn}
                       onPress={() => {
-                        // 수정된 닉네임 server 전송
+                        EditUser.changeNickname(nickname);
                       }}
                     >
                       수정
@@ -363,7 +302,7 @@ const ProfileModify: React.FC = () => {
                     <TextButton
                       style={styles.modalConfirmBtn}
                       onPress={() => {
-                        // 수정된 핸드폰번호 server 전송
+                        EditUser.changePhNum(phoneNumber);
                       }}
                     >
                       수정
