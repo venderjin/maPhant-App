@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { KeyboardAvoidingView, Text, Platform } from "react-native";
 import { ScrollView } from "react-native";
 import { useWindowDimensions } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 
 import { chartLists, sendContent } from "../../Api/member/FindUser";
 import { Container, ImageBox, Input, TextButton } from "../../components/common";
@@ -12,7 +12,7 @@ import { NavigationProps } from "../../Navigator/Routes";
 import { ReceiveList } from "../../types/DM";
 const Chatroom: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
-  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollViewRef = useRef<FlatList<ReceiveList>>(null);
 
   const windowWidth = useWindowDimensions().width; // window 가로 길이s
   // SearchUser.tsx에서 입력한 유저의 id, nickname을 가져오기 위해 사용한 것
@@ -23,25 +23,8 @@ const Chatroom: React.FC = () => {
   const scrollToBottom = () => {
     //스크롤
     if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: true });
+      scrollViewRef.current.scrollToEnd({ animated: false });
     }
-  };
-  useEffect(() => {
-    scrollToBottom();
-  }, []);
-  const send = async () => {
-    // 전송 버튼 눌렸을때 실행되는 함수
-    sendContent(params.id, content) //postApi 로 id ,content 보냄
-      .then(res => {
-        //성공하면 return 시켜라
-        if (res.success) {
-          fetchChatLists(params.roomId);
-          scrollToBottom();
-        }
-        console.log("send성공", res.data);
-      })
-      .catch(e => console.error("send에러", e));
-    setContent("");
   };
 
   const fetchChatLists = async (roomId: number) => {
@@ -54,6 +37,20 @@ const Chatroom: React.FC = () => {
         }
       })
       .catch(e => console.error("fetchChatLists에러", e));
+  };
+  const send = async () => {
+    // 전송 버튼 눌렸을때 실행되는 함수
+    sendContent(params.id, content) //postApi 로 id ,content 보냄
+      .then(res => {
+        //성공하면 return 시켜라
+        if (res.success) {
+          fetchChatLists(params.roomId);
+        }
+        console.log("send성공", res.data);
+      })
+      .catch(e => console.error("send에러", e));
+    setContent("");
+    scrollToBottom();
   };
 
   useEffect(() => {
@@ -74,10 +71,10 @@ const Chatroom: React.FC = () => {
     return currentTime;
   }
 
-  function OtherUserChat({ message }: { message: ReceiveList }) {
+  function OtherUserChat({ item }: { item: ReceiveList }) {
     return (
       <Container style={{ paddingVertical: 0 }}>
-        <Container key={message.id} style={{ padding: 10 }}>
+        <Container style={{ padding: 10 }}>
           <Text>{params.nickname}</Text>
           <Container style={{ flexDirection: "row", alignItems: "flex-end" }}>
             <Container
@@ -89,21 +86,21 @@ const Chatroom: React.FC = () => {
                 flexShrink: 1,
               }}
             >
-              <Text>{message.content}</Text>
+              <Text>{item.content}</Text>
             </Container>
-            <Text style={{ marginLeft: 5 }}>{getCurrentTime(new Date(message.time))}</Text>
+            <Text style={{ marginLeft: 5 }}>{getCurrentTime(new Date(item.time))}</Text>
           </Container>
         </Container>
       </Container>
     );
   }
-  function UserChat({ message }: { message: ReceiveList }) {
+  function UserChat({ item }: { item: ReceiveList }) {
     return (
       <Container style={{ paddingVertical: 0 }}>
-        <Container key={message.id} style={{ padding: 10, alignItems: "flex-end" }}>
+        <Container style={{ padding: 10, alignItems: "flex-end" }}>
           <Text>ME</Text>
           <Container style={{ flexDirection: "row", alignItems: "flex-end" }}>
-            <Text style={{ marginRight: 5 }}>{getCurrentTime(new Date(message.time))}</Text>
+            <Text style={{ marginRight: 5 }}>{getCurrentTime(new Date(item.time))}</Text>
             <Container
               style={{
                 backgroundColor: "#5299EB",
@@ -113,13 +110,21 @@ const Chatroom: React.FC = () => {
                 flexShrink: 1,
               }}
             >
-              <Text style={{ color: "white" }}>{message.content}</Text>
+              <Text style={{ color: "white" }}>{item.content}</Text>
             </Container>
           </Container>
         </Container>
       </Container>
     );
   }
+  const renderItem = ({ item }: { item: ReceiveList }) => {
+    if (item.time && item.is_me) {
+      return <UserChat item={item} />;
+    } else {
+      return <OtherUserChat item={item} />;
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -144,15 +149,12 @@ const Chatroom: React.FC = () => {
           </Text>
         </Container>
         <Container style={{ flex: 10 }}>
-          <ScrollView ref={scrollViewRef}>
-            {receiveContent.map(message =>
-              message.time && message.is_me ? (
-                <UserChat key={message.id} message={message} />
-              ) : (
-                <OtherUserChat key={message.id} message={message} />
-              ),
-            )}
-          </ScrollView>
+          <FlatList
+            ref={scrollViewRef}
+            data={receiveContent}
+            renderItem={renderItem}
+            keyExtractor={item => item.id.toString()}
+          />
         </Container>
         <Container // 채팅입력창
           paddingHorizontal={0}
