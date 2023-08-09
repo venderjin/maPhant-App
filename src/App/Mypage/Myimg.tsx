@@ -3,17 +3,20 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 const Myimg: React.FC = () => {
-  const testTxt: string = "hi";
   return (
     <View style={styles.profileImgContainer}>
-      <FontAwesome name="user-circle-o" size={100} color="#CBD7E6" />
+      <FontAwesome name="user-circle-o" size={100} color="white">
+        {/* <View style={{ flex: 0.5, backgroundColor: "red" }}>
+          <Text>hi</Text>
+        </View> */}
+      </FontAwesome>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   profileImgContainer: {
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
 });
 export default Myimg;
