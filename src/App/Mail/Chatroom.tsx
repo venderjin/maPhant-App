@@ -1,6 +1,6 @@
 import { StackActions, useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
-import { KeyboardAvoidingView, Text, Platform } from "react-native";
+import { KeyboardAvoidingView, Platform, Text } from "react-native";
 import { ScrollView } from "react-native";
 import { useWindowDimensions } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
@@ -19,7 +19,6 @@ const Chatroom: React.FC = () => {
   const params = route.params as MailFormParams;
   const [receiveContent, setReceiveContent] = useState<ReceiveList[]>([]);
   const [content, setContent] = useState("");
-
   const fetchChatLists = async (roomId: number) => {
     //대화내용 받아오는거 같음
     chartLists(roomId) //그 대화내용의 방 id
@@ -33,22 +32,23 @@ const Chatroom: React.FC = () => {
   };
   const send = async () => {
     // 전송 버튼 눌렸을때 실행되는 함수
-    sendContent(params.id, content) //postApi 로 id ,content 보냄
+    await sendContent(params.id, content) //postApi 로 id ,content 보냄
       .then(res => {
         //성공하면 return 시켜라
         if (res.success) {
+          // 채팅방 처음 만들 때 방 아이디 찾아줌
+          if (params.roomId === 0) params.roomId = res.data?.room_id;
           fetchChatLists(params.roomId);
         }
-        console.log("send성공", res.data);
+        // 메세지 보낼 때 채팅방 번호 알아서 이걸 넣어 줘야함
+        console.log("send성공");
       })
       .catch(e => console.error("send에러", e));
     setContent("");
   };
 
   useEffect(() => {
-    if (params.roomId) {
-      fetchChatLists(params.roomId);
-    }
+    if (params.roomId) fetchChatLists(params.roomId);
   }, [params.roomId]);
   console.log("징징");
 
