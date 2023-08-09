@@ -13,14 +13,13 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 
+import { PostAPI } from "../../Api/fetchAPI";
 import DeleteAPI from "../../Api/member/DeleteUser";
 import { Input, Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
 import { UserData } from "../../types/User";
 import Myimg from "./Myimg";
-import { PostAPI } from "../../Api/fetchAPI";
-import { set } from "react-native-reanimated";
 
 type sectionItem = {
   title?: string;

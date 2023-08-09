@@ -11,105 +11,94 @@ import { BoardArticle } from "../../types/Board";
 export default function (): JSX.Element {
   switch (0) {
     default:
-      return MyPost();
+      return Mybookmark();
   }
 }
 
-function MyPost(): JSX.Element {
-  const [posts, setPosts] = React.useState<BoardArticle[]>([]);
-  const [endPage, setEndPage] = React.useState<number>(0);
-  const [pages, setPages] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isComplete, setIsComplete] = useState<boolean>(false);
+function Mybookmark(): JSX.Element {
+  const [bookmark, setBookmark] = React.useState<BoardArticle[]>([]);
+  const [pages, setPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   const userID = useSelector(UserStorage.userProfileSelector)!.id;
 
+  // useEffect(() => {
+  //   GetAPI(`/profile/board?page=${pages}&recordSize=${5}&targetUserId=${userID}`).then(res => {
+  //     if (res.success === false) {
+  //       console.log(res.errors);
+  //       return;
+  //     } else {
+  //       setbookmarks([...bookmarks, ...res.data.list]);
+  //       // if (res.data.pagination.existNextPage === false) {
+  //       //   setStop(true);
+  //       // }
+  //     }
+  //   });
+  // }, [pages]);
+
   useEffect(() => {
-    GetAPI(`/profile/board?page=${pages}&recordSize=${5}&targetUserId=${userID}`).then(res => {
+    GetAPI("/bookmark/my-list").then(res => {
       if (res.success === false) {
         console.log(res.errors);
         return;
       } else {
-        setPosts([...posts, ...res.data.list]);
-        setEndPage(res.data.pagination.endPage);
+        setBookmark([...bookmark, ...res.data]);
       }
     });
-  }, [pages]);
-
-  const loadMorePosts = async () => {
-    if (!isLoading) {
-      setIsLoading(true);
-
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      if (pages === endPage) {
-        setIsComplete(true);
-      } else if (pages < endPage) {
-        setPages(pages + 1);
-      }
-      setIsLoading(false);
-    }
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function handleScroll(event: any) {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    const contentHeight = event.nativeEvent.contentSize.height;
-    const scrollViewHeight = event.nativeEvent.layoutMeasurement.height;
-
-    if (offsetY + scrollViewHeight >= contentHeight - 20) {
-      loadMorePosts();
-    }
-  }
+  }, []);
 
   const detailContent = (boards: BoardArticle) => {
-    console.log(posts);
-    navigation.navigate("QnAdetail", { posts: boards });
+    console.log(bookmark);
+    navigation.navigate("QnAdetail", { bookmark: boards });
   };
 
   return (
     <>
-      <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>
-        {posts.map(post => (
+      <ScrollView scrollEventThrottle={16}>
+        {bookmark.map(bookmark => (
           <>
-            <Pressable onPress={() => detailContent(post)}>
+            <Pressable onPress={() => detailContent(bookmark)}>
               <View style={styles.container}>
                 <View style={styles.head}>
-                  <Text>{post.type}</Text>
+                  <Text style={styles.title}>{bookmark.boardTitle}</Text>
                 </View>
                 <View
                   style={{
-                    marginTop: 10,
-                    marginBottom: 10,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginTop: 5,
                   }}
                 >
-                  <View>
-                    <Text style={styles.title}>{post.title}</Text>
+                  <View style={styles.time}>
+                    <Text>{bookmark.type}</Text>
+                  </View>
+                  <View style={styles.time}>
+                    <Text>{dateToString(bookmark.created_at)}</Text>
                   </View>
                 </View>
 
                 <View style={styles.head}>
-                  <Feather name="thumbs-up" size={13} color="tomato" />
-                  <Text style={styles.good}>&#9; {post.like_cnt}</Text>
-                  <View style={{ flex: 1 }}></View>
-                  <FontAwesome name="comment-o" size={13} color="blue" />
-                  <Text style={styles.comment}>&#9; {post.comment_cnt}</Text>
+                  {bookmark.likeCnt > 0 ? (
+                    <>
+                      <Feather name="thumbs-up" size={13} color="tomato" />
+                      <Text style={styles.good}>&#9; {bookmark.likeCnt}</Text>
+                    </>
+                  ) : bookmark.commentCnt == 0 ? (
+                    <View style={{ flex: 1 }}></View>
+                  ) : null}
+                  {bookmark.commentCnt > 0 ? (
+                    <>
+                      <FontAwesome name="comment-o" size={13} color="blue" />
+                      <Text style={styles.comment}>&#9; {bookmark.commentCnt}</Text>
+                    </>
+                  ) : null}
                   <Text style={{ justifyContent: "flex-end", fontSize: 10 }}></Text>
-                  <Text style={styles.time}>{dateToString(post.created_at)}</Text>
                 </View>
               </View>
             </Pressable>
-            <View style={{ borderBottomWidth: 1, borderColor: "#e8eaec", height: 0 }}></View>
           </>
         ))}
-        {(isLoading || isComplete) && (
-          <View style={styles.loadingContainer}>
-            <Text style={styles.loadingText}>
-              {isLoading ? "로딩 중..." : "이전 글이 없습니다."}
-            </Text>
-          </View>
-        )}
       </ScrollView>
     </>
   );
@@ -180,14 +169,5 @@ const styles = StyleSheet.create({
   comment: {
     flex: 9,
     fontSize: 10,
-  },
-  loadingContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    height: 50,
-  },
-  loadingText: {
-    fontSize: 16,
-    color: "gray",
   },
 });
