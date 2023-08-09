@@ -1,5 +1,5 @@
 import { Feather, FontAwesome } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -17,19 +17,22 @@ export default function (): JSX.Element {
 
 function MyPost(): JSX.Element {
   const [posts, setPosts] = React.useState<BoardArticle[]>([]);
-  const [pages, setPages] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [endPage, setEndPage] = React.useState<number>(0);
+  const [pages, setPages] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isComplete, setIsComplete] = useState<boolean>(false);
   const navigation = useNavigation();
 
   const userID = useSelector(UserStorage.userProfileSelector)!.id;
 
   useEffect(() => {
-    GetAPI(`/profile/board?page=${pages}&recordSize=${20}&targetUserId=${userID}`).then(res => {
+    GetAPI(`/profile/board?page=${pages}&recordSize=${5}&targetUserId=${userID}`).then(res => {
       if (res.success === false) {
         console.log(res.errors);
         return;
       } else {
         setPosts([...posts, ...res.data.list]);
+        setEndPage(res.data.pagination.endPage);
         // if (res.data.pagination.existNextPage === false) {
         //   setStop(true);
         // }
@@ -37,13 +40,23 @@ function MyPost(): JSX.Element {
     });
   }, [pages]);
 
-  const loadMorePosts = () => {
+  const loadMorePosts = async () => {
     if (!isLoading) {
       setIsLoading(true);
-      setPages(pages + 1);
-      return;
+
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      if (pages === endPage) {
+        setIsComplete(true);
+      } else if (pages < endPage) {
+        setPages(pages + 1);
+      }
+
+      // setTimeout(() => {
+      //   setIsLoading(false);
+      // }, 1000);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,44 +83,40 @@ function MyPost(): JSX.Element {
             <Pressable onPress={() => detailContent(post)}>
               <View style={styles.container}>
                 <View style={styles.head}>
-                  <Text style={styles.title}>{post.title}</Text>
+                  <Text>{post.type}</Text>
                 </View>
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
                     marginTop: 10,
+                    marginBottom: 10,
                   }}
                 >
-                  <View style={styles.time}>
-                    <Text>{post.type}</Text>
-                  </View>
-                  <View style={styles.time}>
-                    <Text>{dateToString(post.created_at)}</Text>
+                  <View>
+                    <Text style={styles.title}>{post.title}</Text>
                   </View>
                 </View>
 
                 <View style={styles.head}>
-                  {post.like_cnt > 0 ? (
-                    <>
-                      <Feather name="thumbs-up" size={13} color="tomato" />
-                      <Text style={styles.good}>&#9; {post.like_cnt}</Text>
-                    </>
-                  ) : post.commentCnt == 0 ? (
-                    <View style={{ flex: 1 }}></View>
-                  ) : null}
-                  {post.comment_cnt > 0 ? (
-                    <>
-                      <FontAwesome name="comment-o" size={13} color="blue" />
-                      <Text style={styles.comment}>&#9; {post.comment_cnt}</Text>
-                    </>
-                  ) : null}
+                  <Feather name="thumbs-up" size={13} color="tomato" />
+                  <Text style={styles.good}>&#9; {post.like_cnt}</Text>
+                  <View style={{ flex: 1 }}></View>
+                  <FontAwesome name="comment-o" size={13} color="blue" />
+                  <Text style={styles.comment}>&#9; {post.comment_cnt}</Text>
                   <Text style={{ justifyContent: "flex-end", fontSize: 10 }}></Text>
+                  <Text style={styles.time}>{dateToString(post.created_at)}</Text>
                 </View>
               </View>
             </Pressable>
+            <View style={{ borderBottomWidth: 1, borderColor: "#e8eaec", height: 0 }}></View>
           </>
         ))}
+        {(isLoading || isComplete) && (
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>
+              {isLoading ? "로딩 중..." : "이전 글이 없습니다."}
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </>
   );
@@ -178,5 +187,14 @@ const styles = StyleSheet.create({
   comment: {
     flex: 9,
     fontSize: 10,
+  },
+  loadingContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: 50,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: "gray",
   },
 });
