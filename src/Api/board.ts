@@ -1,3 +1,4 @@
+import { HotBoard } from "../types/Board";
 import { dataResponse, DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
 const listArticle = (
@@ -36,6 +37,16 @@ function boardPost(
   });
 }
 
+const listHotBoardTotal = (page: number, recordSize: number): Promise<dataResponse> =>
+  GetAPI(`/board/hot?page=${page}&recordSize=${recordSize}`);
+
+const listHotBoard = (
+  boardType_id: number,
+  page: number,
+  recordSize: number,
+): Promise<dataResponse<{ list: HotBoard[] }>> =>
+  GetAPI(`/board/hot?boardTypeId=${boardType_id}&page=${page}&recordSize=${recordSize}`);
+
 function boardEdit(id: number, title: string, body: string, isHide: number) {
   return PutAPI(`/board/update`, {
     id,
@@ -51,26 +62,31 @@ const boardDelete = (board_id: number): Promise<dataResponse> =>
 const getArticle = (board_id: number): Promise<dataResponse> =>
   GetAPI<dataResponse>(`/board/${board_id}`);
 
-function insertLikePost(board_id: string) {
-  return GetAPI(`/board/like/${board_id}`);
+function insertLikePost(board_id: number) {
+  return PostAPI(`/board/like/${board_id}`);
 }
 
-function deleteLikeBoard(board_id: string) {
+function deleteLikeBoard(board_id: number) {
   return DeleteAPI(`/board/like/${board_id}`);
 }
 
-function searchArticle() {
-  return GetAPI(`/board/search`);
+function searchArticle(content: string, boardType_id: number) {
+  return GetAPI(`/board/search?content=${content}&boardTypeId=${boardType_id}`);
 }
-
+function bookMarkArticle(board_id: number) {
+  return PostAPI(`/bookmark/${board_id}`);
+}
 export {
   boardDelete,
   boardEdit,
   boardPost,
+  bookMarkArticle,
   deleteLikeBoard,
   getArticle,
   insertLikePost,
   listArticle,
   listBoardType,
+  listHotBoard,
+  listHotBoardTotal,
   searchArticle,
 };

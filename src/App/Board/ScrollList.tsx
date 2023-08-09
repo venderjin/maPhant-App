@@ -1,12 +1,13 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import { BoardArticle, BoardType } from "../../types/Board";
+import { BoardArticle, BoardType, HotBoard } from "../../types/Board";
+import { dateFormat } from "./QAdetail";
 
 export default function ({
   post,
   boardType,
 }: {
-  post: BoardArticle;
+  post: BoardArticle | HotBoard;
   boardType: BoardType;
 }): JSX.Element {
   switch (boardType) {
@@ -14,7 +15,7 @@ export default function ({
       return ScrollList(post);
   }
 }
-function ScrollList(post: BoardArticle): JSX.Element {
+function ScrollList(post: BoardArticle | HotBoard): JSX.Element {
   return (
     <TouchableOpacity style={styles.button}>
       <View style={styles.hBody}>
@@ -23,7 +24,7 @@ function ScrollList(post: BoardArticle): JSX.Element {
       </View>
       <View style={styles.bottom}>
         <Text style={styles.userName}>{post.userNickname}</Text>
-        <Text style={styles.created}>{post.createdAt}</Text>
+        <Text style={styles.created}>{dateFormat(post.createdAt)}</Text>
       </View>
     </TouchableOpacity>
   );

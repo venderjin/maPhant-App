@@ -31,7 +31,7 @@ type BoardPost = {
     isHide: number;
     isComplete: number;
     isAnonymous: number;
-    createdAt: string;
+    createdAt: Date;
     modifiedAt?: Date;
     commentCnt: number;
     likeCnt: number;
@@ -43,14 +43,30 @@ type BoardPost = {
 type BoardArticle = {
   boardId: number;
   title: string;
-  createdAt: string;
-  modifiedAt: string;
+  createdAt: Date;
+  modifiedAt: Date;
   userNickname: string;
   commentCnt: number;
   likeCnt: number;
   isAnonymous: number;
   isHide: number;
   isLike: number | null;
+};
+
+type HotBoard = {
+  boardId: number;
+  title: string;
+  userId: number;
+  userNickname: string;
+  typeId: number;
+  type: string;
+  commentCnt: number;
+  likeCnt: number;
+  isAnonymous: number;
+  isHide: number;
+  isLike?: boolean;
+  createdAt: Date;
+  modifiedAt?: Date;
 };
 
 type BoardType = {
@@ -64,4 +80,4 @@ type SortType = {
   name: string;
 };
 
-export type { BoardArticle, BoardPost, BoardType, SortType };
+export type { BoardArticle, BoardPost, BoardType, HotBoard, SortType };

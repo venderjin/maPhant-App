@@ -3,7 +3,14 @@ import React, { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { boardDelete, boardEdit, getArticle } from "../../Api/board";
+import {
+  boardDelete,
+  boardEdit,
+  bookMarkArticle,
+  deleteLikeBoard,
+  getArticle,
+  insertLikePost,
+} from "../../Api/board";
 import { Container, IconButton, TextButton } from "../../components/common";
 import UserStorage from "../../storage/UserStorage";
 import { BoardArticle, BoardPost } from "../../types/Board";
@@ -24,7 +31,7 @@ const data = [
   { id: 3, name: "지망이", date: " 2023.03,12" },
 ];
 
-export const dateFormat = (date: Date): string => {
+export const dateTimeFormat = (date: Date): string => {
   const createdAtDate = new Date(date);
   const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
     year: "numeric",
@@ -36,12 +43,22 @@ export const dateFormat = (date: Date): string => {
   });
   return formattedDateTime;
 };
+export const dateFormat = (date: Date): string => {
+  const createdAtDate = new Date(date);
+  const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  return formattedDateTime;
+};
 const QAdetail = () => {
   const params = useRoute().params as { boardData: BoardArticle };
   const boardData = params?.boardData;
   const [post, setPost] = useState({ board: {} } as BoardPost);
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
   const navigation = useNavigation<NavigationProp<NavigationProps>>();
+  const [likeCnt, setLikeCnt] = useState(post.board.likeCnt);
 
   const handleDelete = async (board_id: number) => {
     try {
@@ -53,7 +70,7 @@ const QAdetail = () => {
     }
   };
   // console.log(boardData)
-  // console.log(post);
+  console.log(post);
   const handleUpdate = async () => {
     try {
       const response = await boardEdit(
@@ -77,6 +94,9 @@ const QAdetail = () => {
       .catch();
   }, []);
 
+  useEffect(() => {
+    setLikeCnt(post.board.likeCnt);
+  }, [post]);
   function alert() {
     Alert.alert("삭제", "삭제하시겠습니까?", [
       {
@@ -92,6 +112,38 @@ const QAdetail = () => {
     ]);
   }
 
+  const handleLike = async (board_id: number) => {
+    try {
+      const response = await insertLikePost(board_id);
+      post.board.isLike = true;
+      console.warn(likeCnt);
+      setLikeCnt(likeCnt + 1);
+      console.log("추천 성공", response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+  const likeDelete = async (board_id: number) => {
+    try {
+      const response = await deleteLikeBoard(board_id);
+      post.board.isLike = false;
+      setLikeCnt(likeCnt - 1);
+      console.log("취소", response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+  const handleBookmark = async (board_id: number) => {
+    try {
+      const response = await bookMarkArticle(board_id);
+      Alert.alert("북마크 추가 되었습니다.");
+      console.log(response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+
+  // const report =
   return (
     <Container style={styles.container}>
       <View style={styles.qainfoBox}>
@@ -131,11 +183,21 @@ const QAdetail = () => {
         </View>
 
         <View style={styles.cbutBox}>
-          <IconButton name="thumbs-o-up" color="skyblue" onPress={() => console.log("추천")}>
-            추천
+          <IconButton
+            name="thumbs-o-up"
+            color="skyblue"
+            onPress={() => {
+              post.board.isLike ? likeDelete(boardData.boardId) : handleLike(boardData.boardId);
+            }}
+          >
+            {likeCnt === 0 ? "추천" : likeCnt}
           </IconButton>
-          <IconButton name="star-o" color="orange" onPress={() => console.log("스크랩")}>
-            스크랩
+          <IconButton
+            name="star-o"
+            color="orange"
+            onPress={() => handleBookmark(boardData.boardId)}
+          >
+            북마크
           </IconButton>
           <IconButton name="exclamation-circle" color="red" onPress={() => console.log("신고")}>
             신고
