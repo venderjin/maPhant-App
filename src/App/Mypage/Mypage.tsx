@@ -111,9 +111,11 @@ const MyView = () => {
   const profile = useSelector(UserStorage.userProfileSelector)! as UserData;
   const category = useSelector(UserStorage.userCategorySelector);
 
+  const [visibleIntroModal, setVisibleIntoModal] = useState(false);
+  const [introduceTxt, setIntroduceTxt] = useState("");
+
   return (
     <View style={styles.view}>
-      {/* <View style={{ paddingTop: 100 }}> */}
       <View style={styles.info}>
         <View style={styles.userPic}>
           <Myimg></Myimg>
@@ -138,23 +140,68 @@ const MyView = () => {
         </View>
       </View>
       <View style={styles.introTxtContainer}>
-        <View style={styles.introTxt}>
-          <Text>
-            여기에 소개글 불러와야함 머라고 쓰지 겁나 길게 써도 가능할 수 있도록 조정해야함
+        <TouchableOpacity style={styles.introTxtBtn}>
+          <Text
+            style={styles.introTxt}
+            onPress={() => {
+              setVisibleIntoModal(true);
+            }}
+          >
+            {introduceTxt !== "" ? `${introduceTxt}` : "소개글을 입력해주세요"}
           </Text>
-        </View>
-        <View style={styles.introTxtBtn}>
-          <TouchableOpacity style={styles.introTxtBtn}>
-            <Text style={styles.introTxtBtnTxt}>소개글</Text>
-          </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
       </View>
+      <Modal animationType="fade" transparent={true} visible={visibleIntroModal}>
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <Spacer size={5} />
+            <View style={{ alignItems: "center" }}>
+              <Text style={styles.Moaltext}>소개글을 수정해주세요</Text>
+            </View>
+            <Spacer size={10} />
+            <View>
+              <Input
+                style={styles.modalInput}
+                paddingHorizontal={20}
+                borderRadius={30}
+                placeholder="소개글"
+                onChangeText={text => setIntroduceTxt(text)}
+                // value={phoneNumber}
+                // keyboardType="numbers-and-punctuation"
+                // inputMode="tel"
+              ></Input>
+              <Spacer size={10} />
+            </View>
+            <Spacer size={20} />
+            <View style={styles.modalBtnDirection}>
+              <TextButton
+                style={styles.modalConfirmBtn}
+                onPress={() => {
+                  setVisibleIntoModal(false);
+                }}
+              >
+                취소
+              </TextButton>
+              <TextButton
+                style={styles.modalConfirmBtn}
+                onPress={() => {
+                  // EditUser.changePhNum(phoneNumber);
+                }}
+              >
+                수정
+              </TextButton>
+            </View>
+            <Spacer size={5} />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
 export default function MyPage() {
   const [visibleLogoutModal, setVisibleLogoutModal] = useState(false);
+
   const [visibleWithdrawModal, setVisibleWithdrawModal] = useState(false);
   const [visibleAuthentication, setVisibleAuthentication] = useState(false);
   const [checkPassword, setCheckPassword] = useState("");
@@ -505,23 +552,49 @@ const styles = StyleSheet.create({
   },
   introTxtContainer: {
     marginTop: 10,
-    padding: 10,
     borderTopColor: "#aaa",
     borderTopWidth: 1,
     flexDirection: "row",
   },
   introTxtBtn: {
-    backgroundColor: "#E0E0E0",
-    flex: 0.2,
-    marginHorizontal: 5,
-    borderColor: "black",
-    borderWidth: 1,
-  },
-  introTxtBtnTxt: {
-    fontSize: 18,
-    color: "#666666",
+    flex: 1,
+    padding: 10,
   },
   introTxt: {
+    fontSize: 15,
+  },
+  modalInput: {
+    width: "100%",
+    paddingVertical: "5%",
+    backgroundColor: "#D8E1EC",
+  },
+  modalBackground: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContainer: {
     flex: 0.8,
+    borderRadius: 25,
+    backgroundColor: "#ffffff",
+    padding: 15,
+  },
+  modifyingBtn: {
+    width: "25%",
+    justifyContent: "flex-end",
+    paddingLeft: 10,
+  },
+  modalConfirmBtn: {
+    width: "45%",
+  },
+  modalBtnDirection: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  Moaltext: {
+    fontSize: 17,
+    fontWeight: "bold",
   },
 });
