@@ -32,14 +32,15 @@ import { dateFormat, dateTimeFormat } from "./Time";
 const BoardDetail = () => {
   const params = useRoute().params as { boardData: BoardArticle };
   const boardData = params?.boardData;
-  const [post, setPost] = useState({ board: {} } as BoardPost);
-  const user = useSelector(UserStorage.userProfileSelector)! as UserData;
-  const navigation = useNavigation<NavigationProp<NavigationProps>>();
   const [comments, setcomments] = useState<commentType[]>([]);
+  const [replies, setReplies] = useState<{ [commentId: number]: commentType[] | undefined }>({});
+  const [post, setPost] = useState({ board: {} } as BoardPost);
   const [body, setBody] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(0);
   const [checkList, setCheckList] = useState<string[]>([]);
   const [parent_id, setParentId] = useState<number>(0);
+  const user = useSelector(UserStorage.userProfileSelector)! as UserData;
+  const navigation = useNavigation<NavigationProp<NavigationProps>>();
 
   const handleDelete = async (board_id: number) => {
     try {
@@ -88,22 +89,21 @@ const BoardDetail = () => {
     }
   };
 
-  const handleReplyInput = (parent_id: number) => {
-    setParentId(parent_id);
-    setBody("");
-  };
-
-  const handleReplyInsert = async (parent_id: number) => {
+  const handleReplyInput = async (parent_id: number) => {
     try {
-      const response = await commentReply(
-        user.id,
-        post.board.boardId,
-        parent_id,
-        body,
-        isAnonymous,
-      );
+      const response = await commentReply(user.id, post.board.id, parent_id, body, isAnonymous);
       console.log("대댓글 성공", response);
-      setParentId(0);
+
+      setReplies(prevReplies => {
+        const newReplies = {
+          ...prevReplies,
+          [parent_id]: [...(prevReplies[parent_id] || []), response.data],
+        };
+        return newReplies;
+      });
+
+      setBody("");
+      setIsAnonymous(0);
     } catch (error) {
       console.log("대댓글 오류", error);
     }
@@ -127,6 +127,20 @@ const BoardDetail = () => {
     commentArticle(boardData.boardId, 1)
       .then(response => {
         if (response.data) setcomments(response.data as commentType[]);
+
+        const repliesData = response.data as commentType[];
+        const repliesMap: { [commentId: number]: commentType[] } = {};
+
+        repliesData.forEach(reply => {
+          if (reply.parent_id) {
+            if (!repliesMap[reply.parent_id]) {
+              repliesMap[reply.parent_id] = [];
+            }
+            repliesMap[reply.parent_id].push(reply);
+          }
+        });
+
+        setReplies(repliesMap);
       })
       .catch();
   }, []);
@@ -176,14 +190,14 @@ const BoardDetail = () => {
                   </View>
                 </View>
                 {/* {user.nickname === boardData.userNickname && ( */}
-                <View style={styles.buttonBox}>
-                  <TextButton style={styles.button} fontSize={13} onPress={handleUpdate}>
-                    수정
-                  </TextButton>
-                  <TextButton style={styles.button} fontSize={13} onPress={alert}>
-                    삭제
-                  </TextButton>
-                </View>
+                  <View style={styles.buttonBox}>
+                    <TextButton style={styles.button} fontSize={13} onPress={handleUpdate}>
+                      수정
+                    </TextButton>
+                    <TextButton style={styles.button} fontSize={13} onPress={alert}>
+                      삭제
+                    </TextButton>
+                  </View>
                 {/* )} */}
               </View>
               <View style={styles.contextBox}>
@@ -241,7 +255,6 @@ const BoardDetail = () => {
                       삭제
                     </TextButton>
                   </View>
-                  <View></View>
                 </View>
                 <View style={{ paddingHorizontal: 10 }}>
                   <View style={styles.commentContext}>
@@ -254,7 +267,7 @@ const BoardDetail = () => {
                       name="comment"
                       color="skyblue"
                       onPress={() => {
-                        handleReplyInput(comment.id);
+                        setParentId(comment.id);
                       }}
                     >
                       대댓글
@@ -277,6 +290,53 @@ const BoardDetail = () => {
                 </View>
 
                 {parent_id === comment.id && (
+                  <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+                    style={{ padding: 5, borderRadius: 5 }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: 5,
+                      }}
+                    >
+                      <Checkbox
+                        style={{ marginRight: 5 }}
+                        value={checkList.includes("anonymous")}
+                        onValueChange={isChecked => {
+                          check("anonymous", isChecked);
+                          setIsAnonymous(isChecked ? 1 : 0);
+                        }}
+                      ></Checkbox>
+                      <Text>익명</Text>
+                      <Input
+                        style={{
+                          flex: 1,
+                          backgroundColor: "white",
+                          paddingVertical: 15,
+                          paddingHorizontal: 12,
+                          marginRight: 5,
+                        }}
+                        placeholder="대댓글을 작성해 주세요 ..."
+                        value={body}
+                        onChangeText={setBody}
+                      ></Input>
+                      <TextButton
+                        onPress={() => {
+                          handleReplyInput(parent_id);
+                          setParentId(0);
+                          setBody("");
+                        }}
+                      >
+                        작성
+                      </TextButton>
+                    </View>
+                  </KeyboardAvoidingView>
+                )}
+                {comment.id === parent_id && (
                   <View style={styles.replyBox}>
                     <View style={styles.line} />
                     <View style={{ margin: "2%" }}>
@@ -312,20 +372,13 @@ const BoardDetail = () => {
                           </IconButton>
                         </View>
                       </View>
-                    </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 5 }}>
-                      <Input
-                        style={{
-                          flex: 1,
-                          backgroundColor: "white",
-                          paddingVertical: 5,
-                          paddingHorizontal: 12,
-                        }}
-                        placeholder="대댓글을 작성해 주세요 ..."
-                        value={body}
-                        onChangeText={setBody}
-                      />
-                      <TextButton onPress={() => handleReplyInsert(comment.id)}>작성</TextButton>
+                      <View style={styles.commentContext}>
+                        {replies[comment.id]?.map(reply => (
+                          <Text key={reply.id} numberOfLines={3} style={styles.context}>
+                            {reply.body}
+                          </Text>
+                        ))}
+                      </View>
                     </View>
                   </View>
                 )}
