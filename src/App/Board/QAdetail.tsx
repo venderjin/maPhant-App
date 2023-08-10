@@ -20,7 +20,7 @@ import UIStore from "../../storage/UIStore";
 import UserStorage from "../../storage/UserStorage";
 import { BoardArticleBase, BoardPost, ReportType } from "../../types/Board";
 import { UserData } from "../../types/User";
-import { dateFormat } from "./Time";
+import { dateTimeFormat } from "./Time";
 
 const data = [
   {
@@ -232,7 +232,7 @@ const QAdetail = () => {
                 <Text style={styles.nickname}>{post.board.userId}</Text>
               </View>
               <View>
-                <Text style={styles.date}>{dateFormat(post.board.createdAt)}</Text>
+                <Text style={styles.date}>{dateTimeFormat(post.board.createdAt)}</Text>
               </View>
             </View>
             {user.id === post.board.userId && (

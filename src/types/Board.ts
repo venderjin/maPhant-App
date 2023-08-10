@@ -10,6 +10,7 @@ type BoardArticleBase = {
   isLike: boolean;
 };
 
+//게시판 읽기
 type BoardArticle = {
   categoryId: number;
   imageUrl?: string;
@@ -22,6 +23,7 @@ type BoardArticle = {
   boardId: number;
 } & BoardArticleBase;
 
+//글 읽기
 type BoardPost = {
   board: BoardArticle;
   answerList?: BoardArticle[];
