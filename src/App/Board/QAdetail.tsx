@@ -1,4 +1,4 @@
-import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -15,10 +15,12 @@ import {
   ReportPost,
 } from "../../Api/board";
 import { Container, IconButton, Spacer, TextButton } from "../../components/common";
+import { NavigationProps } from "../../Navigator/Routes";
+import UIStore from "../../storage/UIStore";
 import UserStorage from "../../storage/UserStorage";
-import { BoardArticle, BoardPost, ReportType } from "../../types/Board";
-import { NavigationProps } from "../../types/Navigation";
+import { BoardArticleBase, BoardPost, ReportType } from "../../types/Board";
 import { UserData } from "../../types/User";
+import { dateFormat } from "./Time";
 
 const data = [
   {
@@ -34,44 +36,27 @@ const data = [
   { id: 3, name: "지망이", date: " 2023.03,12" },
 ];
 
-export const dateTimeFormat = (date: Date): string => {
-  const createdAtDate = new Date(date);
-  const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-  return formattedDateTime;
-};
-export const dateFormat = (date: Date): string => {
-  const createdAtDate = new Date(date);
-  const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-  return formattedDateTime;
-};
 const QAdetail = () => {
-  const params = useRoute().params as { boardData: BoardArticle };
-  const boardData = params?.boardData;
-  const [post, setPost] = useState({ board: {} } as BoardPost);
+  const params = useRoute().params as { id: number; preRender?: BoardArticleBase };
+  const { id, preRender } = params;
+
+  const [LoadingOverlay, setLoadingOverlay] = useState(false);
+
+  const [post, setPost] = useState({ board: preRender } as BoardPost);
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
-  const navigation = useNavigation<NavigationProp<NavigationProps>>();
-  const [likeCnt, setLikeCnt] = useState(post.board.likeCnt);
+  const navigation = useNavigation<NavigationProps>();
+  const [likeCnt, setLikeCnt] = useState(0);
   const [reportModal, setReportModal] = useState(false);
   const [reportType, setReportType] = React.useState<ReportType[]>([]);
 
   const handleDelete = async (board_id: number) => {
     try {
-      const response = await boardDelete(board_id);
-      navigation.navigate("DetailList" as never);
+      const response = await boardDelete(id);
+      navigation.goBack();
+
       console.log("삭제 성공", response);
     } catch (error) {
-      console.error("삭제 오류", error);
+      alert(error);
     }
   };
   // console.log(boardData)
@@ -79,12 +64,7 @@ const QAdetail = () => {
   console.log(user);
   const handleUpdate = async () => {
     try {
-      const response = await boardEdit(
-        post.board.id,
-        post.board.title,
-        post.board.body,
-        post.board.isHide,
-      );
+      const response = await boardEdit(id, post.board.title, post.board.body, post.board.isHide);
       console.log("수정 가능", response);
       navigation.navigate("editPost", { post: post, boardType: boardData });
     } catch (error) {
@@ -93,16 +73,25 @@ const QAdetail = () => {
   };
 
   useEffect(() => {
-    getArticle(boardData.boardId)
-      .then(data => {
-        if (data.data) setPost(data.data as BoardPost);
-      })
-      .catch();
+    getArticle(id)
+      .then(data => setPost(data.data))
+      .catch(err => Alert.alert(err));
   }, []);
 
-  useEffect(() => {
-    setLikeCnt(post.board.likeCnt);
-  }, [post]);
+  // useEffect(() => {
+  //   if (post.board === undefined && !LoadingOverlay) {
+  //     setLoadingOverlay(true);
+  //     UIStore.showLoadingOverlay();
+  //   }
+  //   if (post.board !== undefined && LoadingOverlay) {
+  //     setLoadingOverlay(false);
+  //     UIStore.hideLoadingOverlay();
+  //   }
+
+  //   if (post.board === undefined) return;
+  //   setLikeCnt(post.board.likeCnt);
+  // }, [post, LoadingOverlay]);
+
   function alert() {
     Alert.alert("삭제", "삭제하시겠습니까?", [
       {
@@ -112,15 +101,15 @@ const QAdetail = () => {
       {
         text: "네",
         onPress: () => {
-          handleDelete(boardData.boardId);
+          handleDelete(id);
         },
       },
     ]);
   }
 
-  const handleLike = async (board_id: number) => {
+  const handleLike = async () => {
     try {
-      const response = await insertLikePost(board_id);
+      const response = await insertLikePost(id);
       post.board.isLike = true;
       console.warn(likeCnt);
       setLikeCnt(likeCnt + 1);
@@ -129,9 +118,9 @@ const QAdetail = () => {
       Alert.alert(error);
     }
   };
-  const likeDelete = async (board_id: number) => {
+  const likeDelete = async () => {
     try {
-      const response = await deleteLikeBoard(board_id);
+      const response = await deleteLikeBoard(id);
       post.board.isLike = false;
       setLikeCnt(likeCnt - 1);
       console.log("취소", response);
@@ -142,7 +131,7 @@ const QAdetail = () => {
 
   const handleBookmark = async (board_id: number) => {
     try {
-      const response = await bookMarkArticle(board_id);
+      const response = await bookMarkArticle(id);
       Alert.alert("북마크 추가 되었습니다.");
       console.log(response);
     } catch (error) {
@@ -158,6 +147,10 @@ const QAdetail = () => {
       Alert.alert(error);
     }
   };
+
+  // if (post.board === undefined) {
+  //   return <></>;
+  // }
 
   useEffect(() => {
     listReportType()
@@ -177,6 +170,10 @@ const QAdetail = () => {
       Alert.alert(error);
     }
   };
+  if (post.board === undefined) {
+    return <></>;
+  }
+
   const ModalWrapper = () => {
     const [selectedReportIndex, setSelectedReportIndex] = React.useState<number>();
 
@@ -209,7 +206,7 @@ const QAdetail = () => {
                   // 수정된 닉네임 server 전송
                   if (selectedReportIndex !== null) {
                     console.log(selectedReportIndex);
-                    handleReport(boardData.boardId, selectedReportIndex);
+                    handleReport(id, selectedReportIndex);
                   }
                 }}
               >
@@ -222,6 +219,8 @@ const QAdetail = () => {
       </Modal>
     );
   };
+
+  // const report =
   return (
     <Container style={styles.container}>
       <ModalWrapper />
@@ -230,7 +229,7 @@ const QAdetail = () => {
           <View style={styles.qaheader}>
             <View>
               <View>
-                <Text style={styles.nickname}>{boardData.userNickname}</Text>
+                <Text style={styles.nickname}>{post.board.userId}</Text>
               </View>
               <View>
                 <Text style={styles.date}>{dateFormat(post.board.createdAt)}</Text>
@@ -266,16 +265,12 @@ const QAdetail = () => {
             name="thumbs-o-up"
             color="skyblue"
             onPress={() => {
-              post.board.isLike ? likeDelete(boardData.boardId) : handleLike(boardData.boardId);
+              post.board.isLike ? likeDelete() : handleLike();
             }}
           >
             {likeCnt === 0 ? "추천" : likeCnt}
           </IconButton>
-          <IconButton
-            name="star-o"
-            color="orange"
-            onPress={() => handleBookmark(boardData.boardId)}
-          >
+          <IconButton name="star-o" color="orange" onPress={() => handleBookmark(id)}>
             북마크
           </IconButton>
           {/* {modal()} */}

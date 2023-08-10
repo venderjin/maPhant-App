@@ -27,39 +27,19 @@ import UserStorage from "../../storage/UserStorage";
 import { BoardArticle, BoardPost, commentType } from "../../types/Board";
 import { NavigationProps } from "../../types/Navigation";
 import { UserData } from "../../types/User";
+import { dateFormat, dateTimeFormat } from "./Time";
 
-export const dateTimeFormat = (date: Date): string => {
-  const createdAtDate = new Date(date);
-  const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-  return formattedDateTime;
-};
-export const dateFormat = (date: Date): string => {
-  const createdAtDate = new Date(date);
-  const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-  return formattedDateTime;
-};
 const BoardDetail = () => {
   const params = useRoute().params as { boardData: BoardArticle };
   const boardData = params?.boardData;
-  const [comments, setcomments] = useState<commentType[]>([]);
   const [post, setPost] = useState({ board: {} } as BoardPost);
+  const user = useSelector(UserStorage.userProfileSelector)! as UserData;
+  const navigation = useNavigation<NavigationProp<NavigationProps>>();
+  const [comments, setcomments] = useState<commentType[]>([]);
   const [body, setBody] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(0);
   const [checkList, setCheckList] = useState<string[]>([]);
   const [parent_id, setParentId] = useState<number>(0);
-  const user = useSelector(UserStorage.userProfileSelector)! as UserData;
-  const navigation = useNavigation<NavigationProp<NavigationProps>>();
 
   const handleDelete = async (board_id: number) => {
     try {
@@ -75,7 +55,7 @@ const BoardDetail = () => {
   const handleUpdate = async () => {
     try {
       const response = await boardEdit(
-        post.board.id,
+        post.board.boardId,
         post.board.title,
         post.board.body,
         post.board.isHide,
@@ -89,7 +69,7 @@ const BoardDetail = () => {
 
   const handlecommentInsert = async () => {
     try {
-      const response = await commentInsert(user.id, post.board.id, body, isAnonymous);
+      const response = await commentInsert(user.id, post.board.boardId, body, isAnonymous);
       console.log("댓글 작성 성공", response);
       setBody("");
       setIsAnonymous(0);
@@ -115,7 +95,13 @@ const BoardDetail = () => {
 
   const handleReplyInsert = async (parent_id: number) => {
     try {
-      const response = await commentReply(user.id, post.board.id, parent_id, body, isAnonymous);
+      const response = await commentReply(
+        user.id,
+        post.board.boardId,
+        parent_id,
+        body,
+        isAnonymous,
+      );
       console.log("대댓글 성공", response);
       setParentId(0);
     } catch (error) {
@@ -182,23 +168,23 @@ const BoardDetail = () => {
             <View>
               <View style={styles.header}>
                 <View>
-                  <View>
+                  {/* <View>
                     <Text style={styles.nickname}>{boardData.userNickname}</Text>
-                  </View>
+                  </View> */}
                   <View>
                     <Text style={styles.date}>{dateTimeFormat(post.board.createdAt)}</Text>
                   </View>
                 </View>
-                {user.nickname === boardData.userNickname && (
-                  <View style={styles.buttonBox}>
-                    <TextButton style={styles.button} fontSize={13} onPress={handleUpdate}>
-                      수정
-                    </TextButton>
-                    <TextButton style={styles.button} fontSize={13} onPress={alert}>
-                      삭제
-                    </TextButton>
-                  </View>
-                )}
+                {/* {user.nickname === boardData.userNickname && ( */}
+                <View style={styles.buttonBox}>
+                  <TextButton style={styles.button} fontSize={13} onPress={handleUpdate}>
+                    수정
+                  </TextButton>
+                  <TextButton style={styles.button} fontSize={13} onPress={alert}>
+                    삭제
+                  </TextButton>
+                </View>
+                {/* )} */}
               </View>
               <View style={styles.contextBox}>
                 <View>

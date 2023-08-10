@@ -38,7 +38,6 @@ const QnABoard: React.FC = () => {
       })
       .catch(err => console.log(err));
   }, []);
-
   return (
     <Container style={styles.container}>
       <View style={styles.total}>
@@ -58,7 +57,7 @@ const QnABoard: React.FC = () => {
         </View>
         <ScrollView horizontal>
           {hotBoard.map(board => (
-            <View key={board.boardId} style={styles.content}>
+            <View key={board.id} style={styles.content}>
               <ScrollList post={board} boardType={boardType} />
             </View>
           ))}

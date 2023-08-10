@@ -42,7 +42,7 @@ const Edit: React.FC = () => {
 
   const handleUpdate = async () => {
     try {
-      const response = await boardEdit(post.board.id, title, body, isHide);
+      const response = await boardEdit(post.board.boardId, title, body, isHide);
       console.log("수정 가능", response);
       navigation.navigate("DetailList", { boardType: boardType });
     } catch (error) {
