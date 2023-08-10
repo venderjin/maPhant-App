@@ -1,5 +1,6 @@
 import QAdetail from "../App/Board/QAdetail";
 import Bookmark from "../App/Mypage/Bookmark";
+import Mycomment from "../App/Mypage/Mycomment";
 import Mypage from "../App/Mypage/Mypage";
 import Mypost from "../App/Mypage/Mypost";
 import PasswordCheck from "../App/Mypage/PasswordCheck";
@@ -32,10 +33,10 @@ const Routes: RouteType[] = [
     name: "Bookmark",
     component: Bookmark,
   },
-  {
-    name: "Mycomment",
-    component: Mycomment,
-  },
+  // {
+  //   name: "Mycomment",
+  //   component: Mycomment,
+  // },
 ];
 
 export type NavigationProp = {

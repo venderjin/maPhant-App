@@ -39,7 +39,7 @@ function Bookmark(): JSX.Element {
   useEffect(() => {
     extractBoardIds().then(async boardIds => {
       const bookmarks: BoardArticle[] = [];
-      for (let i = 0; i < boardIds.length; i++) {
+      for (let i = boardIds.length - 1; i >= 0; i--) {
         await GetAPI(`/board/${boardIds[i]}`).then(res => {
           if (res.success === false) {
             console.log(res.errors);
@@ -55,7 +55,7 @@ function Bookmark(): JSX.Element {
 
   const detailContent = (boards: BoardArticle) => {
     console.log(bookmark);
-    navigation.navigate("QnAdetail", { bookmark: boards });
+    navigation.navigate("QnAdetail", { boardData: bookmark });
   };
 
   return (
@@ -74,7 +74,7 @@ function Bookmark(): JSX.Element {
         </TextButton>
         {bookmark.map(bookmark => (
           <>
-            <Pressable onPress={() => detailContent(bookmark)}>
+            <Pressable key={bookmark.id} onPress={() => detailContent(bookmark)}>
               <View style={styles.container}>
                 <View style={styles.head}>
                   <Text>
