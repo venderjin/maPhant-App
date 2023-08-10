@@ -65,8 +65,6 @@ const QAdetail = () => {
   const [reportModal, setReportModal] = useState(false);
   const [reportType, setReportType] = React.useState<ReportType[]>([]);
 
-  const [test, setTest] = useState(0);
-
   const handleDelete = async (board_id: number) => {
     try {
       const response = await boardDelete(board_id);
