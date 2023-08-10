@@ -86,6 +86,7 @@ function ReportPost(board_id: number, reportType_id: number) {
     reportType_id,
   });
 }
+const listSortCriterion = (): Promise<dataResponse> => GetAPI<dataResponse>(`/board/sortCriterion`);
 
 const commentArticle = (
   board_id: number,
@@ -139,12 +140,12 @@ export {
   boardEdit,
   boardPost,
   bookMarkArticle,
-  DeletebookMarkArticle,
-  deleteLikeBoard,
   commentArticle,
   commentDelete,
   commentInsert,
   commentReply,
+  DeletebookMarkArticle,
+  deleteLikeBoard,
   getArticle,
   insertLikePost,
   listArticle,
@@ -152,6 +153,7 @@ export {
   listHotBoard,
   listHotBoardTotal,
   listReportType,
+  listSortCriterion,
   ReportPost,
   searchArticle,
 };
