@@ -1,3 +1,4 @@
+import { AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
 import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -106,7 +107,16 @@ const Myimg: React.FC = () => {
       <Modal animationType="fade" transparent={true} visible={imgUploadMoal}>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <Spacer size={5} />
+            <TouchableOpacity
+              style={{ alignItems: "flex-end" }}
+              onPress={() => {
+                setImgUploadModal(false);
+              }}
+              hitSlop={{ top: 32, bottom: 32, left: 32, right: 32 }}
+            >
+              <AntDesign name="closecircle" size={20} color="#aaa" />
+            </TouchableOpacity>
+            {/* <Spacer size={5} /> */}
             <View style={{ alignItems: "center" }}>
               <Text style={styles.Moaltext}>프로필 사진을 선택해주세요</Text>
             </View>
@@ -120,26 +130,20 @@ const Myimg: React.FC = () => {
             >
               <Image
                 style={{
-                  width: 200,
-                  height: 200,
-                  borderRadius: 100,
+                  width: 150,
+                  height: 150,
+                  borderRadius: 75,
                   borderColor: "#aaa",
-                  borderWidth: 2,
+                  borderWidth: 5,
                 }}
-                source={{ uri: imageUrl }}
+                source={
+                  defaultImg == true ? require("../../../assets/user.png") : { uri: imageUrl }
+                }
               />
               <Spacer size={10} />
             </View>
             <Spacer size={20} />
             <View style={styles.modalBtnDirection}>
-              <TextButton
-                style={styles.modalConfirmBtn}
-                onPress={() => {
-                  setImgUploadModal(false);
-                }}
-              >
-                취소
-              </TextButton>
               <TextButton
                 style={styles.modalConfirmBtn}
                 onPress={() => {
@@ -175,7 +179,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "green",
   },
   modalConfirmBtn: {
-    flex: 0.25,
+    width: "45%",
   },
   modalBtnDirection: {
     flexDirection: "row",
