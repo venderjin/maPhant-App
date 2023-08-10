@@ -1,4 +1,4 @@
-import { HotBoard } from "../types/Board";
+import { BoardPost, HotBoard } from "../types/Board";
 import { dataResponse, DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
 const listArticle = (
@@ -59,8 +59,8 @@ function boardEdit(id: number, title: string, body: string, isHide: number) {
 const boardDelete = (board_id: number): Promise<dataResponse> =>
   DeleteAPI<dataResponse>(`/board/${board_id}`);
 
-const getArticle = (board_id: number): Promise<dataResponse> =>
-  GetAPI<dataResponse>(`/board/${board_id}`);
+const getArticle = (board_id: number): Promise<dataResponse<BoardPost>> =>
+  GetAPI<dataResponse<BoardPost>>(`/board/${board_id}`);
 
 function insertLikePost(board_id: number) {
   return PostAPI(`/board/like/${board_id}`);

@@ -11,7 +11,7 @@ type statusResponse = {
   errors?: string;
 };
 type dataResponse<T = object> = {
-  data?: T;
+  data: T;
 } & statusResponse;
 
 function fetchAPI<T extends statusResponse>(
