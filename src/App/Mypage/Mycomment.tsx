@@ -11,11 +11,11 @@ import { BoardArticle } from "../../types/Board";
 export default function (): JSX.Element {
   switch (0) {
     default:
-      return MyPost();
+      return Mycomment();
   }
 }
 
-function MyPost(): JSX.Element {
+function Mycomment(): JSX.Element {
   const [posts, setPosts] = React.useState<BoardArticle[]>([]);
   const [endPage, setEndPage] = React.useState<number>(0);
   const [pages, setPages] = useState<number>(1);
@@ -63,9 +63,9 @@ function MyPost(): JSX.Element {
     }
   }
 
-  const detailContent = (posts: BoardArticle) => {
+  const detailContent = (boards: BoardArticle) => {
     console.log(posts);
-    navigation.navigate("QnAdetail", { id: posts.id });
+    navigation.navigate("QnAdetail", { posts: boards });
   };
 
   return (

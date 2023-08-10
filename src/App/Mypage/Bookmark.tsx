@@ -8,6 +8,7 @@ import { set } from "react-native-reanimated";
 import { GetAPI } from "../../Api/fetchAPI";
 import { TextButton } from "../../components/common";
 import { BoardArticle } from "../../types/Board";
+import Index from "../Mail/Index";
 
 export default function (): JSX.Element {
   switch (0) {
@@ -54,25 +55,14 @@ function Bookmark(): JSX.Element {
   }, []);
 
   const detailContent = (boards: BoardArticle) => {
-    console.log(bookmark);
-    navigation.navigate("QnAdetail", { boardData: bookmark });
+    console.log(boards.id);
+    navigation.navigate("QnAdetail", { id: boards.id });
   };
 
   return (
     <>
       <ScrollView scrollEventThrottle={16}>
-        <TextButton
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onPress={() => {
-            console.log(bookmark);
-          }}
-        >
-          asads
-        </TextButton>
-        {bookmark.map(bookmark => (
+        {bookmark.map((bookmark, index) => (
           <>
             <Pressable key={bookmark.id} onPress={() => detailContent(bookmark)}>
               <View style={styles.container}>
