@@ -114,7 +114,6 @@ const Chatroom: React.FC = () => {
       return <OtherUserChat item={item} />;
     }
   };
-  const reversedReceiveContent = [...receiveContent].reverse();
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -140,7 +139,7 @@ const Chatroom: React.FC = () => {
         </Container>
         <Container style={{ flex: 10 }}>
           <FlatList
-            data={reversedReceiveContent}
+            data={receiveContent}
             renderItem={renderItem}
             keyExtractor={item => item.id.toString()}
             inverted={true} //역순 스크롤 ㅜㅜ
