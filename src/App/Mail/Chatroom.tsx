@@ -1,17 +1,71 @@
-import { StyleSheet, Text, View } from "react-native";
-import { ScrollView } from "react-native";
+import { StackActions, useNavigation, useRoute } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import { KeyboardAvoidingView, Platform, Text } from "react-native";
+import { useWindowDimensions } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 
-import { Container, ImageBox, Input, Spacer, TextButton } from "../../components/common";
-
+import { chartLists, sendContent } from "../../Api/member/FindUser";
+import { Container, ImageBox, Input, TextButton } from "../../components/common";
+import { MailFormParams } from "../../Navigator/MailRoute";
+import { NavigationProps } from "../../Navigator/Routes";
+import { ReceiveList } from "../../types/DM";
 const Chatroom: React.FC = () => {
-  // const chatData = { profile: "user", name: "User", time: "10:00 AM", content: "Hello" };
-  // const chatComponents = Array(100).fill(chatData);
+  const navigation = useNavigation<NavigationProps>();
 
-  function UserChat() {
+  const windowWidth = useWindowDimensions().width; // window 가로 길이s
+  // SearchUser.tsx에서 입력한 유저의 id, nickname을 가져오기 위해 사용한 것
+  const route = useRoute();
+  const params = route.params as MailFormParams;
+  const [receiveContent, setReceiveContent] = useState<ReceiveList[]>([]);
+  const [content, setContent] = useState("");
+  const fetchChatLists = async (roomId: number) => {
+    //대화내용 받아오는거 같음
+    chartLists(roomId) //그 대화내용의 방 id
+      .then(res => {
+        if (res.success) {
+          setReceiveContent(res.data?.list);
+          console.log("fetchChatLists 받아옴");
+        }
+      })
+      .catch(e => console.error("fetchChatLists에러", e));
+  };
+  const send = async () => {
+    // 전송 버튼 눌렸을때 실행되는 함수
+    await sendContent(params.id, content) //postApi 로 id ,content 보냄
+      .then(res => {
+        //성공하면 return 시켜라
+        if (res.success) {
+          // 채팅방 처음 만들 때 방 아이디 찾아줌
+          if (params.roomId === 0) params.roomId = res.data?.room_id;
+          fetchChatLists(params.roomId);
+        }
+        // 메세지 보낼 때 채팅방 번호 알아서 이걸 넣어 줘야함
+        console.log("send성공");
+      })
+      .catch(e => console.error("send에러", e));
+    setContent("");
+  };
+
+  useEffect(() => {
+    if (params.roomId) fetchChatLists(params.roomId);
+  }, [params.roomId]);
+  console.log("징징");
+
+  function getCurrentTime(targetDate: Date) {
+    const hours = targetDate.getHours();
+    const minutes = targetDate.getMinutes();
+    // 00 : 00 분으로 표시되게 바꿈
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    const currentTime = `${formattedHours}:${formattedMinutes}`;
+    return currentTime;
+  }
+
+  function OtherUserChat({ item }: { item: ReceiveList }) {
     return (
       <Container style={{ paddingVertical: 0 }}>
         <Container style={{ padding: 10 }}>
-          <Text>Username</Text>
+          <Text>{params.nickname}</Text>
           <Container style={{ flexDirection: "row", alignItems: "flex-end" }}>
             <Container
               style={{
@@ -22,21 +76,21 @@ const Chatroom: React.FC = () => {
                 flexShrink: 1,
               }}
             >
-              <Text>안녕하세요</Text>
+              <Text>{item.content}</Text>
             </Container>
-            <Text style={{ marginLeft: 5 }}>date</Text>
+            <Text style={{ marginLeft: 5 }}>{getCurrentTime(new Date(item.time))}</Text>
           </Container>
         </Container>
       </Container>
     );
   }
-  function OtherUserChat() {
+  function UserChat({ item }: { item: ReceiveList }) {
     return (
       <Container style={{ paddingVertical: 0 }}>
         <Container style={{ padding: 10, alignItems: "flex-end" }}>
-          <Text>Username</Text>
+          <Text>ME</Text>
           <Container style={{ flexDirection: "row", alignItems: "flex-end" }}>
-            <Text style={{ marginRight: 5 }}>date</Text>
+            <Text style={{ marginRight: 5 }}>{getCurrentTime(new Date(item.time))}</Text>
             <Container
               style={{
                 backgroundColor: "#5299EB",
@@ -46,43 +100,76 @@ const Chatroom: React.FC = () => {
                 flexShrink: 1,
               }}
             >
-              <Text style={{ color: "white" }}>안녕하세dfdfsdfdsdfasdfadfadsfasddfasdfasdf요</Text>
+              <Text style={{ color: "white" }}>{item.content}</Text>
             </Container>
           </Container>
         </Container>
       </Container>
     );
   }
+  const renderItem = ({ item }: { item: ReceiveList }) => {
+    if (item.time && item.is_me) {
+      return <UserChat item={item} />;
+    } else {
+      return <OtherUserChat item={item} />;
+    }
+  };
+  const reversedReceiveContent = [...receiveContent].reverse();
   return (
-    <Container style={{ flex: 1, display: "flex" }}>
-      <Container // 채팅방 이름
-        style={{
-          flex: 0.8,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ fontSize: 23, fontWeight: "bold" }}>채팅방이름</Text>
-      </Container>
-      <Container style={{ flex: 10 }}>
-        <ScrollView>
-          <UserChat />
-          <OtherUserChat />
-        </ScrollView>
-      </Container>
-      <Container // 채팅입력창
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          padding: "3%",
-        }}
-      >
-        <Container style={{ flex: 6 }}>
-          <Input placeholder="message" />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 25}
+    >
+      <Container isFullScreen={true} style={{ flex: 1, display: "flex" }}>
+        <Container // 채팅방 이름
+          style={{
+            flex: 0.7,
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexDirection: "row",
+            flexShrink: 1,
+          }}
+        >
+          <TouchableOpacity onPress={() => navigation.dispatch(StackActions.popToTop())}>
+            <ImageBox source={require("../../../assets/arrow-circle.png")} width={35}></ImageBox>
+          </TouchableOpacity>
+          <Text style={{ fontSize: 23, fontWeight: "bold", marginRight: windowWidth / 2 - 66 }}>
+            채팅방이름
+          </Text>
         </Container>
-        <Container style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Container style={{ flex: 10 }}>
+          <FlatList
+            data={reversedReceiveContent}
+            renderItem={renderItem}
+            keyExtractor={item => item.id.toString()}
+            inverted={true} //역순 스크롤 ㅜㅜ
+            // ListHeaderComponent={}
+          />
+        </Container>
+        <Container // 채팅입력창
+          paddingHorizontal={0}
+          style={{
+            flex: 2, // 네비게이션 바 없어지면 1로 바꾸기
+            flexDirection: "row",
+
+            // paddingHorizontal: 10,
+            padding: "3%",
+          }}
+        >
+          <Input
+            multiline={true}
+            style={{ maxHeight: 100, flexShrink: 1, flex: 6 }}
+            placeholder="message"
+            value={content}
+            onChangeText={setContent}
+          />
           <TextButton
+            onPress={() => {
+              send();
+            }}
             style={{
+              flex: 1,
               marginLeft: 10,
               paddingHorizontal: 0,
               paddingVertical: 0,
@@ -93,15 +180,11 @@ const Chatroom: React.FC = () => {
           >
             전송
           </TextButton>
+          {/* </Container> */}
         </Container>
       </Container>
-    </Container>
+    </KeyboardAvoidingView>
   );
 };
-const styles = StyleSheet.create({
-  chatText: {
-    fontSize: 16,
-    marginVertical: 8,
-  },
-});
+
 export default Chatroom;
