@@ -7,6 +7,7 @@ import {
   boardDelete,
   boardEdit,
   bookMarkArticle,
+  DeletebookMarkArticle,
   deleteLikeBoard,
   getArticle,
   insertLikePost,
@@ -77,6 +78,7 @@ const QAdetail = () => {
   };
   // console.log(boardData)
   console.log(post);
+  console.log(user);
   const handleUpdate = async () => {
     try {
       const response = await boardEdit(
@@ -139,10 +141,20 @@ const QAdetail = () => {
       Alert.alert(error);
     }
   };
+
   const handleBookmark = async (board_id: number) => {
     try {
       const response = await bookMarkArticle(board_id);
       Alert.alert("북마크 추가 되었습니다.");
+      console.log(response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+  const DeleteBookmark = async (board_id: number) => {
+    try {
+      const response = await DeletebookMarkArticle(board_id);
+      Alert.alert("북마크 삭제 되었습니다.");
       console.log(response);
     } catch (error) {
       Alert.alert(error);
@@ -226,7 +238,7 @@ const QAdetail = () => {
                 <Text style={styles.date}>{dateFormat(post.board.createdAt)}</Text>
               </View>
             </View>
-            {user.nickname === boardData.userNickname && (
+            {user.id === post.board.userId && (
               <View style={styles.qaButtonBox}>
                 <TextButton
                   style={styles.button}

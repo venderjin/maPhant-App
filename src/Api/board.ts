@@ -76,6 +76,9 @@ function searchArticle(content: string, boardType_id: number) {
 function bookMarkArticle(board_id: number) {
   return PostAPI(`/bookmark/${board_id}`);
 }
+function DeletebookMarkArticle(board_id: number) {
+  return DeleteAPI(`/bookmark/${board_id}`);
+}
 const listReportType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/report/list`);
 function ReportPost(board_id: number, reportType_id: number) {
   return PostAPI(`/board/report?boardId=${board_id}&reportId=${reportType_id}`, {
@@ -136,11 +139,12 @@ export {
   boardEdit,
   boardPost,
   bookMarkArticle,
+  DeletebookMarkArticle,
+  deleteLikeBoard,
   commentArticle,
   commentDelete,
   commentInsert,
   commentReply,
-  deleteLikeBoard,
   getArticle,
   insertLikePost,
   listArticle,
