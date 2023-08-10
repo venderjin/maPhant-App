@@ -1,4 +1,4 @@
-import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
 import React, { useEffect, useState } from "react";
 import {
@@ -23,9 +23,9 @@ import {
   getArticle,
 } from "../../Api/board";
 import { Container, IconButton, Input, TextButton } from "../../components/common";
+import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
 import { BoardArticleBase, BoardPost, commentType } from "../../types/Board";
-import { NavigationProps } from "../../types/Navigation";
 import { UserData } from "../../types/User";
 import { dateFormat, dateTimeFormat } from "./Time";
 
@@ -33,33 +33,36 @@ const BoardDetail = () => {
   const params = useRoute().params as { id: number; preRender?: BoardArticleBase };
   const { id, preRender } = params;
 
-  const [LoadingOverlay, setLoadingOverlay] = useState(false);
-
   const [comments, setcomments] = useState<commentType[]>([]);
   const [replies, setReplies] = useState<{ [commentId: number]: commentType[] | undefined }>({});
-  const [post, setPost] = useState({ board: preRender } as BoardPost);
+  const [post, setPost] = useState({ board: {} } as BoardPost);
+  // const [post, setPost] = useState({ board: preRender } as BoardPost);
   const [body, setBody] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(0);
   const [checkList, setCheckList] = useState<string[]>([]);
   const [parent_id, setParentId] = useState<number>(0);
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
-  const navigation = useNavigation<NavigationProp<NavigationProps>>();
+  const navigation = useNavigation<NavigationProps>();
 
   const handleDelete = async (board_id: number) => {
     try {
-      const response = await boardDelete(id);
-      navigation.goBack();
-
+      const response = await boardDelete(board_id);
+      navigation.navigate("DetailList" as never);
       console.log("삭제 성공", response);
     } catch (error) {
-      alert(error);
+      console.error("삭제 오류", error);
     }
   };
   // console.log(boardData)
   // console.log(post);
   const handleUpdate = async () => {
     try {
-      const response = await boardEdit(id, post.board.title, post.board.body, post.board.isHide);
+      const response = await boardEdit(
+        post.board.boardId,
+        post.board.title,
+        post.board.body,
+        post.board.isHide,
+      );
       console.log("수정 가능", response);
       navigation.navigate("editPost", { post: post, boardType: boardData });
     } catch (error) {
@@ -70,7 +73,7 @@ const BoardDetail = () => {
   const handlecommentInsert = async () => {
     try {
       const response = await commentInsert(user.id, id, body, isAnonymous);
-      console.log(response);
+      console.log("댓글 작성 성공", response);
       setBody("");
       setIsAnonymous(0);
       Keyboard.dismiss();
@@ -82,7 +85,7 @@ const BoardDetail = () => {
   const handleCommentDelete = async (id: number) => {
     try {
       const response = await commentDelete(id);
-      console.log(response);
+      console.log("댓글 삭제 성공", response);
     } catch (error) {
       console.log("댓글 삭제 오류", error);
     }
@@ -91,7 +94,7 @@ const BoardDetail = () => {
   const handleReplyInput = async (parent_id: number) => {
     try {
       const response = await commentReply(user.id, id, parent_id, body, isAnonymous);
-      console.log(response);
+      console.log("대댓글 성공", response);
 
       setReplies(prevReplies => {
         const newReplies = {
@@ -147,28 +150,28 @@ const BoardDetail = () => {
   function alert() {
     Alert.alert("삭제", "삭제하시겠습니까?", [
       {
-        text: "아니오",
-        style: "cancel",
-      },
-      {
         text: "네",
         onPress: () => {
           handleDelete(id);
         },
+      },
+      {
+        text: "아니오",
+        style: "cancel",
       },
     ]);
   }
   function alertComment(id: number) {
     Alert.alert("삭제", "삭제하시겠습니까?", [
       {
-        text: "아니오",
-        style: "cancel",
-      },
-      {
         text: "네",
         onPress: () => {
           handleCommentDelete(id);
         },
+      },
+      {
+        text: "아니오",
+        style: "cancel",
       },
     ]);
   }
@@ -181,23 +184,23 @@ const BoardDetail = () => {
             <View>
               <View style={styles.header}>
                 <View>
-                  <View>
-                    <Text style={styles.nickname}>{post.board.userId}</Text>
-                  </View>
+                  {/* <View>
+                    <Text style={styles.nickname}>{boardData.userNickname}</Text>
+                  </View> */}
                   <View>
                     <Text style={styles.date}>{dateTimeFormat(post.board.createdAt)}</Text>
                   </View>
                 </View>
-                {user.id === post.board.userId && (
-                  <View style={styles.buttonBox}>
-                    <TextButton style={styles.button} fontSize={13} onPress={handleUpdate}>
-                      수정
-                    </TextButton>
-                    <TextButton style={styles.button} fontSize={13} onPress={alert}>
-                      삭제
-                    </TextButton>
-                  </View>
-                )}
+                {/* {user.nickname === boardData.userNickname && ( */}
+                <View style={styles.buttonBox}>
+                  <TextButton style={styles.button} fontSize={13} onPress={handleUpdate}>
+                    수정
+                  </TextButton>
+                  <TextButton style={styles.button} fontSize={13} onPress={alert}>
+                    삭제
+                  </TextButton>
+                </View>
+                {/* )} */}
               </View>
               <View style={styles.contextBox}>
                 <View>
@@ -336,6 +339,8 @@ const BoardDetail = () => {
                   </KeyboardAvoidingView>
                 )}
                 {parent_id > 0 ? (
+                  <></>
+                ) : (
                   comment.id === parent_id && (
                     <View style={styles.replyBox}>
                       <View style={styles.line} />
@@ -382,8 +387,6 @@ const BoardDetail = () => {
                       </View>
                     </View>
                   )
-                ) : (
-                  <></>
                 )}
               </View>
             </View>
