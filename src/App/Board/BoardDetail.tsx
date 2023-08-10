@@ -24,17 +24,20 @@ import {
 } from "../../Api/board";
 import { Container, IconButton, Input, TextButton } from "../../components/common";
 import UserStorage from "../../storage/UserStorage";
-import { BoardArticle, BoardPost, commentType } from "../../types/Board";
+import { BoardArticleBase, BoardPost, commentType } from "../../types/Board";
 import { NavigationProps } from "../../types/Navigation";
 import { UserData } from "../../types/User";
 import { dateFormat, dateTimeFormat } from "./Time";
 
 const BoardDetail = () => {
-  const params = useRoute().params as { boardData: BoardArticle };
-  const boardData = params?.boardData;
+  const params = useRoute().params as { id: number; preRender?: BoardArticleBase };
+  const { id, preRender } = params;
+
+  const [LoadingOverlay, setLoadingOverlay] = useState(false);
+
   const [comments, setcomments] = useState<commentType[]>([]);
   const [replies, setReplies] = useState<{ [commentId: number]: commentType[] | undefined }>({});
-  const [post, setPost] = useState({ board: {} } as BoardPost);
+  const [post, setPost] = useState({ board: preRender } as BoardPost);
   const [body, setBody] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(0);
   const [checkList, setCheckList] = useState<string[]>([]);
@@ -44,23 +47,19 @@ const BoardDetail = () => {
 
   const handleDelete = async (board_id: number) => {
     try {
-      const response = await boardDelete(board_id);
-      navigation.navigate("DetailList" as never);
+      const response = await boardDelete(id);
+      navigation.goBack();
+
       console.log("삭제 성공", response);
     } catch (error) {
-      console.error("삭제 오류", error);
+      alert(error);
     }
   };
   // console.log(boardData)
   // console.log(post);
   const handleUpdate = async () => {
     try {
-      const response = await boardEdit(
-        post.board.boardId,
-        post.board.title,
-        post.board.body,
-        post.board.isHide,
-      );
+      const response = await boardEdit(id, post.board.title, post.board.body, post.board.isHide);
       console.log("수정 가능", response);
       navigation.navigate("editPost", { post: post, boardType: boardData });
     } catch (error) {
@@ -70,8 +69,8 @@ const BoardDetail = () => {
 
   const handlecommentInsert = async () => {
     try {
-      const response = await commentInsert(user.id, post.board.boardId, body, isAnonymous);
-      console.log("댓글 작성 성공", response);
+      const response = await commentInsert(user.id, id, body, isAnonymous);
+      console.log(response);
       setBody("");
       setIsAnonymous(0);
       Keyboard.dismiss();
@@ -83,7 +82,7 @@ const BoardDetail = () => {
   const handleCommentDelete = async (id: number) => {
     try {
       const response = await commentDelete(id);
-      console.log("댓글 삭제 성공", response);
+      console.log(response);
     } catch (error) {
       console.log("댓글 삭제 오류", error);
     }
@@ -91,8 +90,8 @@ const BoardDetail = () => {
 
   const handleReplyInput = async (parent_id: number) => {
     try {
-      const response = await commentReply(user.id, post.board.id, parent_id, body, isAnonymous);
-      console.log("대댓글 성공", response);
+      const response = await commentReply(user.id, id, parent_id, body, isAnonymous);
+      console.log(response);
 
       setReplies(prevReplies => {
         const newReplies = {
@@ -118,13 +117,13 @@ const BoardDetail = () => {
   };
 
   useEffect(() => {
-    getArticle(boardData.boardId)
+    getArticle(id)
       .then(data => {
         if (data.data) setPost(data.data as BoardPost);
       })
       .catch();
 
-    commentArticle(boardData.boardId, 1)
+    commentArticle(id, 1)
       .then(response => {
         if (response.data) setcomments(response.data as commentType[]);
 
@@ -148,28 +147,28 @@ const BoardDetail = () => {
   function alert() {
     Alert.alert("삭제", "삭제하시겠습니까?", [
       {
-        text: "네",
-        onPress: () => {
-          handleDelete(boardData.boardId);
-        },
-      },
-      {
         text: "아니오",
         style: "cancel",
+      },
+      {
+        text: "네",
+        onPress: () => {
+          handleDelete(id);
+        },
       },
     ]);
   }
   function alertComment(id: number) {
     Alert.alert("삭제", "삭제하시겠습니까?", [
       {
+        text: "아니오",
+        style: "cancel",
+      },
+      {
         text: "네",
         onPress: () => {
           handleCommentDelete(id);
         },
-      },
-      {
-        text: "아니오",
-        style: "cancel",
       },
     ]);
   }
@@ -182,14 +181,14 @@ const BoardDetail = () => {
             <View>
               <View style={styles.header}>
                 <View>
-                  {/* <View>
-                    <Text style={styles.nickname}>{boardData.userNickname}</Text>
-                  </View> */}
+                  <View>
+                    <Text style={styles.nickname}>{post.board.userId}</Text>
+                  </View>
                   <View>
                     <Text style={styles.date}>{dateTimeFormat(post.board.createdAt)}</Text>
                   </View>
                 </View>
-                {/* {user.nickname === boardData.userNickname && ( */}
+                {user.id === post.board.userId && (
                   <View style={styles.buttonBox}>
                     <TextButton style={styles.button} fontSize={13} onPress={handleUpdate}>
                       수정
@@ -198,7 +197,7 @@ const BoardDetail = () => {
                       삭제
                     </TextButton>
                   </View>
-                {/* )} */}
+                )}
               </View>
               <View style={styles.contextBox}>
                 <View>
@@ -336,51 +335,55 @@ const BoardDetail = () => {
                     </View>
                   </KeyboardAvoidingView>
                 )}
-                {comment.id === parent_id && (
-                  <View style={styles.replyBox}>
-                    <View style={styles.line} />
-                    <View style={{ margin: "2%" }}>
-                      <View style={styles.commentHeader}>
-                        <View style={{ flexDirection: "column" }}>
-                          <Text style={styles.commentName}>{comment.nickname}</Text>
-                          <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
+                {parent_id > 0 ? (
+                  comment.id === parent_id && (
+                    <View style={styles.replyBox}>
+                      <View style={styles.line} />
+                      <View style={{ margin: "2%" }}>
+                        <View style={styles.commentHeader}>
+                          <View style={{ flexDirection: "column" }}>
+                            <Text style={styles.commentName}>{comment.nickname}</Text>
+                            <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
+                          </View>
+                          <View style={styles.cbutBox}>
+                            <IconButton
+                              name="thumbs-o-up"
+                              color="skyblue"
+                              onPress={() => console.log("추천")}
+                            >
+                              추천
+                            </IconButton>
+                            <IconButton
+                              name="exclamation-circle"
+                              color="red"
+                              onPress={() => console.log("신고")}
+                            >
+                              신고
+                            </IconButton>
+                            <IconButton name="" color="skyblue" onPress={() => console.log("수정")}>
+                              수정
+                            </IconButton>
+                            <IconButton
+                              name=""
+                              color="red"
+                              onPress={() => handleCommentDelete(parent_id)}
+                            >
+                              삭제
+                            </IconButton>
+                          </View>
                         </View>
-                        <View style={styles.cbutBox}>
-                          <IconButton
-                            name="thumbs-o-up"
-                            color="skyblue"
-                            onPress={() => console.log("추천")}
-                          >
-                            추천
-                          </IconButton>
-                          <IconButton
-                            name="exclamation-circle"
-                            color="red"
-                            onPress={() => console.log("신고")}
-                          >
-                            신고
-                          </IconButton>
-                          <IconButton name="" color="skyblue" onPress={() => console.log("수정")}>
-                            수정
-                          </IconButton>
-                          <IconButton
-                            name=""
-                            color="red"
-                            onPress={() => handleCommentDelete(parent_id)}
-                          >
-                            삭제
-                          </IconButton>
+                        <View style={styles.commentContext}>
+                          {replies[comment.id]?.map(reply => (
+                            <Text key={reply.id} numberOfLines={3} style={styles.context}>
+                              {reply.body}
+                            </Text>
+                          ))}
                         </View>
-                      </View>
-                      <View style={styles.commentContext}>
-                        {replies[comment.id]?.map(reply => (
-                          <Text key={reply.id} numberOfLines={3} style={styles.context}>
-                            {reply.body}
-                          </Text>
-                        ))}
                       </View>
                     </View>
-                  </View>
+                  )
+                ) : (
+                  <></>
                 )}
               </View>
             </View>
