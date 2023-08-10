@@ -94,9 +94,11 @@ const Myimg: React.FC = () => {
       >
         <Image
           style={{
-            width: 100,
-            height: 100,
-            borderRadius: 50,
+            width: 120,
+            height: 120,
+            borderRadius: 60,
+            borderColor: "#aaa",
+            borderWidth: 2,
           }}
           source={defaultImg == true ? require("../../../assets/user.png") : { uri: imageUrl }}
         />
@@ -111,11 +113,7 @@ const Myimg: React.FC = () => {
             <Spacer size={20} />
             <View
               style={{
-                // backgroundColor: "skyblue",
                 flexDirection: "row",
-                borderColor: "#aaa",
-                borderWidth: 2,
-                borderRadius: 30,
                 alignItems: "center",
                 justifyContent: "center",
               }}
@@ -124,9 +122,11 @@ const Myimg: React.FC = () => {
                 style={{
                   width: 200,
                   height: 200,
+                  borderRadius: 100,
+                  borderColor: "#aaa",
+                  borderWidth: 2,
                 }}
                 source={{ uri: imageUrl }}
-                // {category !== null ? `${category.categoryName}` : "계열 선택안됨"}
               />
               <Spacer size={10} />
             </View>
