@@ -20,43 +20,38 @@ function Bookmark(): JSX.Element {
   const [boardId, setBoardId] = useState<number[]>([]);
   const [effectCount, setEffectCount] = useState<number>(1);
   const [bookmark, setBookmark] = useState<BoardArticle[]>([]);
-  const [getBookmarkCount, setGetBookmarkCount] = useState<number>(-1);
+  const [getBookmarkCount, setGetBookmarkCount] = useState<number>(0);
   const navigation = useNavigation();
 
-  const extractBoardIds = async () => {
-    GetAPI("/bookmark/my-list").then(res => {
+  const extractBoardIds = () => {
+    return GetAPI("/bookmark/my-list").then(res => {
       if (res.success === false) {
         console.log(res.errors);
         return;
       } else {
         const boardIds = res.data.map(item => item.boardId);
         setBoardId(boardIds);
+        return Promise.resolve(boardIds);
       }
     });
-    setEffectCount(effectCount + 1);
   };
 
-  //첫번쨰
   useEffect(() => {
-    extractBoardIds();
-    setEffectCount(effectCount + 1);
-    setGetBookmarkCount(getBookmarkCount + 1);
+    extractBoardIds().then(async boardIds => {
+      const bookmarks: BoardArticle[] = [];
+      for (let i = 0; i < boardIds.length; i++) {
+        await GetAPI(`/board/${boardIds[i]}`).then(res => {
+          if (res.success === false) {
+            console.log(res.errors);
+            return;
+          } else {
+            bookmarks.push(res.data.board);
+          }
+        });
+      }
+      setBookmark(bookmarks);
+    });
   }, []);
-
-  //두번쨰
-  useEffect(() => {
-    if (effectCount === 2) {
-      GetAPI(`/board/${boardId[getBookmarkCount]}`).then(res => {
-        if (res.success === false) {
-          console.log(res.errors);
-          return;
-        } else {
-          setBookmark([...bookmark, res.data.board]);
-        }
-      });
-    }
-    if (getBookmarkCount < boardId.length - 1) setGetBookmarkCount(getBookmarkCount + 1);
-  }, [getBookmarkCount]);
 
   const detailContent = (boards: BoardArticle) => {
     console.log(bookmark);
@@ -82,7 +77,26 @@ function Bookmark(): JSX.Element {
             <Pressable onPress={() => detailContent(bookmark)}>
               <View style={styles.container}>
                 <View style={styles.head}>
-                  <Text>{bookmark.typeId}</Text>
+                  <Text>
+                    {(() => {
+                      switch (bookmark.typeId) {
+                        case 1:
+                          return "자유 게시판";
+                        case 2:
+                          return "질문 게시판";
+                        case 3:
+                          return "지식 게시판";
+                        case 4:
+                          return "취업/진로 게시판";
+                        case 5:
+                          return "홍보 게시판";
+                        case 6:
+                          return "취미 게시판";
+                        default:
+                          return "알 수 없는 게시판 유형";
+                      }
+                    })()}
+                  </Text>
                 </View>
                 <View
                   style={{
