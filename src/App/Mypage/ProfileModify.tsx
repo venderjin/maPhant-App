@@ -5,10 +5,8 @@ import { Modal, ScrollView, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-root-toast";
 import { useSelector } from "react-redux";
 
-import { PostAPI } from "../../Api/fetchAPI";
 import EditUser from "../../Api/member/EditUser";
 import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
-import UserAPI from "../../Api/memberAPI";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
 import SearchByFilter from "../../components/Input/SearchByFilter";
 import { NavigationProps } from "../../Navigator/Routes";
@@ -284,8 +282,8 @@ const ProfileModify: React.FC = () => {
                       placeholder="phoneNumber"
                       onChangeText={text => setPhoneNumber(text)}
                       value={phoneNumber}
-                      keyboardType="numbers-and-punctuation"
-                      inputMode="tel"
+                      // keyboardType="numbers-and-punctuation"
+                      // inputMode="tel"
                     ></Input>
                     <Spacer size={10} />
                   </View>
