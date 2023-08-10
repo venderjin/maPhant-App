@@ -1,7 +1,7 @@
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { GetAPI } from "../../Api/fetchAPI";
@@ -106,7 +106,13 @@ function MyPost(): JSX.Element {
         {(isLoading || isComplete) && (
           <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>
-              {isLoading ? "로딩 중..." : "이전 글이 없습니다."}
+              {isLoading ? (
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                  <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+              ) : (
+                "이전 글이 없습니다."
+              )}
             </Text>
           </View>
         )}
