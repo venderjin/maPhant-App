@@ -1,75 +1,44 @@
-type BoardPost = {
-  board: {
-    id: number;
-    parentId: number;
-    categoryId: number;
-    userId: number;
-    typeId: string;
-    title: string;
-    body: string;
-    state: string;
-    isHide: number;
-    isComplete: number;
-    isAnonymous: number;
-    createdAt: Date;
-    modifiedAt?: Date;
-    commentCnt: number;
-    likeCnt: number;
-    reportCnt: number;
-    imageUrl?: string;
-    isLike: boolean;
-  };
-  answerList?: {
-    id: number;
-    parentId: number;
-    categoryId: number;
-    userId: number;
-    typeId: string;
-    title: string;
-    body: string;
-    state: string;
-    isHide: number;
-    isComplete: number;
-    isAnonymous: number;
-    createdAt: Date;
-    modifiedAt?: Date;
-    commentCnt: number;
-    likeCnt: number;
-    reportCnt: number;
-    imageUrl?: string;
-  };
+type BoardArticleBase = {
+  title: string;
+  body: string;
+  likeCnt: number;
+  commentCnt: number;
+  createdAt: string;
+  modifiedAt: string;
+  isAnonymous: number;
+  isHide: number;
+  isLike: boolean;
 };
 
 type BoardArticle = {
-  type: string;
-  created_at: string;
+  categoryId: number;
+  imageUrl?: string;
+  isComplete: number;
+  parentId: number;
+  reportCnt: number;
+  state: string;
+  typeId: string;
+  userId: number;
   boardId: number;
-  title: string;
-  createdAt: Date;
-  modifiedAt: Date;
-  userNickname: string;
-  commentCnt: number;
-  likeCnt: number;
-  isAnonymous: number;
-  isHide: number;
-  isLike: number | null;
+} & BoardArticleBase;
+
+type BoardPost = {
+  board: BoardArticle;
+  answerList?: BoardArticle[];
 };
+
+type BoardListItem = {
+  boardId: number;
+  userNickname: string;
+} & BoardArticleBase;
 
 type HotBoard = {
   boardId: number;
-  title: string;
   userId: number;
   userNickname: string;
   typeId: number;
   type: string;
-  commentCnt: number;
-  likeCnt: number;
-  isAnonymous: number;
-  isHide: number;
-  isLike?: boolean;
-  createdAt: Date;
-  modifiedAt?: Date;
-};
+} & BoardArticleBase;
 
 type BoardType = {
   id: number;
@@ -95,9 +64,19 @@ type commentType = {
   parent_id: number;
   body: string;
   is_anonymous: number;
-  created_at: Date;
+  created_at: string;
   like_cnt: number;
   comment_id: number;
 };
 
-export type { BoardArticle, BoardPost, BoardType, commentType, HotBoard, ReportType, SortType };
+export type {
+  BoardArticle,
+  BoardArticleBase,
+  BoardListItem,
+  BoardPost,
+  BoardType,
+  commentType,
+  HotBoard,
+  ReportType,
+  SortType,
+};

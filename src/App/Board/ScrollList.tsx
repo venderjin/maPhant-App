@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { BoardArticle, BoardType, HotBoard } from "../../types/Board";
-import { dateFormat } from "./QAdetail";
+import { dateFormat } from "./Time";
 
 export default function ({
   post,
@@ -23,7 +23,7 @@ function ScrollList(post: BoardArticle | HotBoard): JSX.Element {
         {/* <Text style={styles.comment}>{post.content}</Text> */}
       </View>
       <View style={styles.bottom}>
-        <Text style={styles.userName}>{post.userNickname}</Text>
+        <Text style={styles.userName}>{post.userId}</Text>
         <Text style={styles.created}>{dateFormat(post.createdAt)}</Text>
       </View>
     </TouchableOpacity>

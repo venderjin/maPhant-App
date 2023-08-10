@@ -1,4 +1,4 @@
-import { HotBoard } from "../types/Board";
+import { BoardPost, HotBoard } from "../types/Board";
 import { dataResponse, DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
 const listArticle = (
@@ -59,8 +59,8 @@ function boardEdit(id: number, title: string, body: string, isHide: number) {
 const boardDelete = (board_id: number): Promise<dataResponse> =>
   DeleteAPI<dataResponse>(`/board/${board_id}`);
 
-const getArticle = (board_id: number): Promise<dataResponse> =>
-  GetAPI<dataResponse>(`/board/${board_id}`);
+const getArticle = (board_id: number): Promise<dataResponse<BoardPost>> =>
+  GetAPI<dataResponse<BoardPost>>(`/board/${board_id}`);
 
 function insertLikePost(board_id: number) {
   return PostAPI(`/board/like/${board_id}`);
@@ -86,6 +86,7 @@ function ReportPost(board_id: number, reportType_id: number) {
     reportType_id,
   });
 }
+const listSortCriterion = (): Promise<dataResponse> => GetAPI<dataResponse>(`/board/sortCriterion`);
 
 const commentArticle = (
   board_id: number,
@@ -139,12 +140,12 @@ export {
   boardEdit,
   boardPost,
   bookMarkArticle,
-  DeletebookMarkArticle,
-  deleteLikeBoard,
   commentArticle,
   commentDelete,
   commentInsert,
   commentReply,
+  DeletebookMarkArticle,
+  deleteLikeBoard,
   getArticle,
   insertLikePost,
   listArticle,
@@ -152,6 +153,7 @@ export {
   listHotBoard,
   listHotBoardTotal,
   listReportType,
+  listSortCriterion,
   ReportPost,
   searchArticle,
 };
