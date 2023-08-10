@@ -1,7 +1,9 @@
 import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
+import Checkbox from "expo-checkbox";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -11,35 +13,23 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 
-import { boardDelete, boardEdit, getArticle } from "../../Api/board";
+import {
+  boardDelete,
+  boardEdit,
+  commentArticle,
+  commentDelete,
+  commentInsert,
+  commentReply,
+  getArticle,
+} from "../../Api/board";
 import { Container, IconButton, Input, TextButton } from "../../components/common";
 import UserStorage from "../../storage/UserStorage";
-import { BoardArticle, BoardPost } from "../../types/Board";
+import { BoardArticle, BoardPost, commentType } from "../../types/Board";
 import { NavigationProps } from "../../types/Navigation";
 import { UserData } from "../../types/User";
 
-const data = [
-  {
-    id: 1,
-    name: "jingjing",
-    date: "2023.05.08",
-  },
-  {
-    id: 2,
-    name: "ahdjfad",
-    date: "2024.12.22",
-  },
-  { id: 3, name: "지망이", date: " 2023.03.12" },
-];
-
-const BoardDetail = () => {
-  const params = useRoute().params as { boardData: BoardArticle };
-  const boardData = params?.boardData;
-  const [post, setPost] = useState({ board: {} } as BoardPost);
-  const user = useSelector(UserStorage.userProfileSelector)! as UserData;
-  const navigation = useNavigation<NavigationProp<NavigationProps>>();
-
-  const createdAtDate = new Date(post.board.createdAt);
+export const dateTimeFormat = (date: Date): string => {
+  const createdAtDate = new Date(date);
   const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
     year: "numeric",
     month: "2-digit",
@@ -48,6 +38,28 @@ const BoardDetail = () => {
     minute: "2-digit",
     second: "2-digit",
   });
+  return formattedDateTime;
+};
+export const dateFormat = (date: Date): string => {
+  const createdAtDate = new Date(date);
+  const formattedDateTime = createdAtDate.toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  return formattedDateTime;
+};
+const BoardDetail = () => {
+  const params = useRoute().params as { boardData: BoardArticle };
+  const boardData = params?.boardData;
+  const [comments, setcomments] = useState<commentType[]>([]);
+  const [post, setPost] = useState({ board: {} } as BoardPost);
+  const [body, setBody] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(0);
+  const [checkList, setCheckList] = useState<string[]>([]);
+  const [parent_id, setParentId] = useState<number>(0);
+  const user = useSelector(UserStorage.userProfileSelector)! as UserData;
+  const navigation = useNavigation<NavigationProp<NavigationProps>>();
 
   const handleDelete = async (board_id: number) => {
     try {
@@ -75,10 +87,60 @@ const BoardDetail = () => {
     }
   };
 
+  const handlecommentInsert = async () => {
+    try {
+      const response = await commentInsert(user.id, post.board.id, body, isAnonymous);
+      console.log("댓글 작성 성공", response);
+      setBody("");
+      setIsAnonymous(0);
+      Keyboard.dismiss();
+    } catch (error) {
+      console.log("댓글 작성 오류", error);
+    }
+  };
+
+  const handleCommentDelete = async (id: number) => {
+    try {
+      const response = await commentDelete(id);
+      console.log("댓글 삭제 성공", response);
+    } catch (error) {
+      console.log("댓글 삭제 오류", error);
+    }
+  };
+
+  const handleReplyInput = (parent_id: number) => {
+    setParentId(parent_id);
+    setBody("");
+  };
+
+  const handleReplyInsert = async (parent_id: number) => {
+    try {
+      const response = await commentReply(user.id, post.board.id, parent_id, body, isAnonymous);
+      console.log("대댓글 성공", response);
+      setParentId(0);
+    } catch (error) {
+      console.log("대댓글 오류", error);
+    }
+  };
+
+  const check = (name: string, isChecked: boolean) => {
+    if (isChecked) {
+      setCheckList([...checkList, name]);
+    } else {
+      setCheckList(checkList.filter(choice => choice !== name));
+    }
+  };
+
   useEffect(() => {
     getArticle(boardData.boardId)
       .then(data => {
         if (data.data) setPost(data.data as BoardPost);
+      })
+      .catch();
+
+    commentArticle(boardData.boardId, 1)
+      .then(response => {
+        if (response.data) setcomments(response.data as commentType[]);
       })
       .catch();
   }, []);
@@ -89,6 +151,20 @@ const BoardDetail = () => {
         text: "네",
         onPress: () => {
           handleDelete(boardData.boardId);
+        },
+      },
+      {
+        text: "아니오",
+        style: "cancel",
+      },
+    ]);
+  }
+  function alertComment(id: number) {
+    Alert.alert("삭제", "삭제하시겠습니까?", [
+      {
+        text: "네",
+        onPress: () => {
+          handleCommentDelete(id);
         },
       },
       {
@@ -110,7 +186,7 @@ const BoardDetail = () => {
                     <Text style={styles.nickname}>{boardData.userNickname}</Text>
                   </View>
                   <View>
-                    <Text style={styles.date}>{formattedDateTime}</Text>
+                    <Text style={styles.date}>{dateTimeFormat(post.board.createdAt)}</Text>
                   </View>
                 </View>
                 {user.nickname === boardData.userNickname && (
@@ -146,8 +222,8 @@ const BoardDetail = () => {
               </IconButton>
             </View>
           </View>
-          {data.map(answer => (
-            <View style={styles.commentBox} key={answer.id}>
+          {comments.map(comment => (
+            <View style={styles.commentBox} key={comment.id}>
               <View style={styles.line} />
               <View style={{ flex: 1, margin: "3%" }}>
                 <View style={styles.commentHeader}>
@@ -158,8 +234,8 @@ const BoardDetail = () => {
                       justifyContent: "flex-start",
                     }}
                   >
-                    <Text style={styles.commentName}>{answer.name}</Text>
-                    <Text style={styles.commentDate}>{answer.date}</Text>
+                    <Text style={styles.commentName}>{comment.nickname}</Text>
+                    <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
                   </View>
                   <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}>
                     <TextButton
@@ -172,7 +248,9 @@ const BoardDetail = () => {
                     <TextButton
                       style={styles.button}
                       fontSize={13}
-                      onPress={() => console.log("삭제")}
+                      onPress={() => {
+                        alertComment(comment.id);
+                      }}
                     >
                       삭제
                     </TextButton>
@@ -182,14 +260,16 @@ const BoardDetail = () => {
                 <View style={{ paddingHorizontal: 10 }}>
                   <View style={styles.commentContext}>
                     <Text numberOfLines={3} style={styles.context}>
-                      내용dfadsfadsdfasdfasdfasdfefhidfhiwhjhuuadjfabdsjfuehjvjabdsuvheujadbvjbadsjvbjdsbhbah
+                      {comment.body}
                     </Text>
                   </View>
                   <View style={styles.cbutBox}>
                     <IconButton
                       name="comment"
                       color="skyblue"
-                      onPress={() => console.log("대댓글")}
+                      onPress={() => {
+                        handleReplyInput(comment.id);
+                      }}
                     >
                       대댓글
                     </IconButton>
@@ -210,45 +290,59 @@ const BoardDetail = () => {
                   </View>
                 </View>
 
-                <View style={styles.replyBox}>
-                  <View style={styles.line} />
-                  <View style={{ margin: "2%" }}>
-                    <View style={styles.commentHeader}>
-                      <View style={{ flexDirection: "column" }}>
-                        <Text style={styles.commentName}>{answer.name}</Text>
-                        <Text style={styles.commentDate}>{answer.date}</Text>
+                {parent_id === comment.id && (
+                  <View style={styles.replyBox}>
+                    <View style={styles.line} />
+                    <View style={{ margin: "2%" }}>
+                      <View style={styles.commentHeader}>
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.commentName}>{comment.nickname}</Text>
+                          <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
+                        </View>
+                        <View style={styles.cbutBox}>
+                          <IconButton
+                            name="thumbs-o-up"
+                            color="skyblue"
+                            onPress={() => console.log("추천")}
+                          >
+                            추천
+                          </IconButton>
+                          <IconButton
+                            name="exclamation-circle"
+                            color="red"
+                            onPress={() => console.log("신고")}
+                          >
+                            신고
+                          </IconButton>
+                          <IconButton name="" color="skyblue" onPress={() => console.log("수정")}>
+                            수정
+                          </IconButton>
+                          <IconButton
+                            name=""
+                            color="red"
+                            onPress={() => handleCommentDelete(parent_id)}
+                          >
+                            삭제
+                          </IconButton>
+                        </View>
                       </View>
-                      <View style={styles.cbutBox}>
-                        <IconButton
-                          name="thumbs-o-up"
-                          color="skyblue"
-                          onPress={() => console.log("추천")}
-                        >
-                          추천
-                        </IconButton>
-                        <IconButton
-                          name="exclamation-circle"
-                          color="red"
-                          onPress={() => console.log("신고")}
-                        >
-                          신고
-                        </IconButton>
-                        <IconButton name="" color="skyblue" onPress={() => console.log("수정")}>
-                          수정
-                        </IconButton>
-                        <IconButton name="" color="red" onPress={() => console.log("삭제")}>
-                          삭제
-                        </IconButton>
-                      </View>
-                      <View></View>
                     </View>
-                    <View style={styles.commentContext}>
-                      <Text style={styles.context}>
-                        내용dfadsfadsdfasdfasdfasdfefhidfhiwhjhuuadjfabdsjfuehjvjabdsuvheujadbvjbadsjvbjdsbhbah
-                      </Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 5 }}>
+                      <Input
+                        style={{
+                          flex: 1,
+                          backgroundColor: "white",
+                          paddingVertical: 5,
+                          paddingHorizontal: 12,
+                        }}
+                        placeholder="대댓글을 작성해 주세요 ..."
+                        value={body}
+                        onChangeText={setBody}
+                      />
+                      <TextButton onPress={() => handleReplyInsert(comment.id)}>작성</TextButton>
                     </View>
                   </View>
-                </View>
+                )}
               </View>
             </View>
           ))}
@@ -267,6 +361,15 @@ const BoardDetail = () => {
             marginBottom: 5,
           }}
         >
+          <Checkbox
+            style={{ marginRight: 5 }}
+            value={checkList.includes("anonymous")}
+            onValueChange={isChecked => {
+              check("anonymous", isChecked);
+              setIsAnonymous(isChecked ? 1 : 0);
+            }}
+          ></Checkbox>
+          <Text>익명</Text>
           <Input
             style={{
               flex: 1,
@@ -276,8 +379,16 @@ const BoardDetail = () => {
               marginRight: 5,
             }}
             placeholder="댓글을 작성해 주세요 ..."
+            value={body}
+            onChangeText={setBody}
           ></Input>
-          <TextButton>작성</TextButton>
+          <TextButton
+            onPress={() => {
+              handlecommentInsert();
+            }}
+          >
+            작성
+          </TextButton>
         </View>
       </KeyboardAvoidingView>
     </>

@@ -1,19 +1,22 @@
 import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import {
   boardDelete,
   boardEdit,
   bookMarkArticle,
+  DeletebookMarkArticle,
   deleteLikeBoard,
   getArticle,
   insertLikePost,
+  listReportType,
+  ReportPost,
 } from "../../Api/board";
-import { Container, IconButton, TextButton } from "../../components/common";
+import { Container, IconButton, Spacer, TextButton } from "../../components/common";
 import UserStorage from "../../storage/UserStorage";
-import { BoardArticle, BoardPost } from "../../types/Board";
+import { BoardArticle, BoardPost, ReportType } from "../../types/Board";
 import { NavigationProps } from "../../types/Navigation";
 import { UserData } from "../../types/User";
 
@@ -59,6 +62,8 @@ const QAdetail = () => {
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
   const navigation = useNavigation<NavigationProp<NavigationProps>>();
   const [likeCnt, setLikeCnt] = useState(post.board.likeCnt);
+  const [reportModal, setReportModal] = useState(false);
+  const [reportType, setReportType] = React.useState<ReportType[]>([]);
 
   const handleDelete = async (board_id: number) => {
     try {
@@ -71,6 +76,7 @@ const QAdetail = () => {
   };
   // console.log(boardData)
   console.log(post);
+  console.log(user);
   const handleUpdate = async () => {
     try {
       const response = await boardEdit(
@@ -133,6 +139,7 @@ const QAdetail = () => {
       Alert.alert(error);
     }
   };
+
   const handleBookmark = async (board_id: number) => {
     try {
       const response = await bookMarkArticle(board_id);
@@ -142,10 +149,82 @@ const QAdetail = () => {
       Alert.alert(error);
     }
   };
+  const DeleteBookmark = async (board_id: number) => {
+    try {
+      const response = await DeletebookMarkArticle(board_id);
+      Alert.alert("북마크 삭제 되었습니다.");
+      console.log(response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
 
-  // const report =
+  useEffect(() => {
+    listReportType()
+      .then(data => {
+        setReportType(data.data as ReportType[]);
+        console.log(data.data);
+      })
+      .catch(err => console.log(err));
+  }, []);
+
+  const handleReport = async (board_id: number, reportType_id: number) => {
+    try {
+      const response = await ReportPost(board_id, reportType_id);
+      Alert.alert("신고되었습니다.");
+      console.log(response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+  const ModalWrapper = () => {
+    const [selectedReportIndex, setSelectedReportIndex] = React.useState<number>();
+
+    return (
+      <Modal animationType="fade" transparent={true} visible={reportModal}>
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            {reportType.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  setSelectedReportIndex(index);
+                }}
+                style={[
+                  styles.reportItem,
+                  selectedReportIndex === index && styles.selectedReportItem,
+                  // 선택된 항목의 경우 스타일 적용
+                ]}
+              >
+                <Text style={styles.reportContent}>{item.name}</Text>
+              </TouchableOpacity>
+            ))}
+            <View style={styles.modalBtnDirection}>
+              <TextButton style={styles.modalConfirmBtn} onPress={() => setReportModal(false)}>
+                취소
+              </TextButton>
+              <TextButton
+                style={styles.modalConfirmBtn}
+                onPress={() => {
+                  // 수정된 닉네임 server 전송
+                  if (selectedReportIndex !== null) {
+                    console.log(selectedReportIndex);
+                    handleReport(boardData.boardId, selectedReportIndex);
+                  }
+                }}
+              >
+                수정
+              </TextButton>
+            </View>
+            <Spacer size={5} />
+          </View>
+        </View>
+      </Modal>
+    );
+  };
   return (
     <Container style={styles.container}>
+      <ModalWrapper />
       <View style={styles.qainfoBox}>
         <View>
           <View style={styles.qaheader}>
@@ -157,7 +236,7 @@ const QAdetail = () => {
                 <Text style={styles.date}>{dateFormat(post.board.createdAt)}</Text>
               </View>
             </View>
-            {user.nickname === boardData.userNickname && (
+            {user.id === post.board.userId && (
               <View style={styles.qaButtonBox}>
                 <TextButton
                   style={styles.button}
@@ -199,9 +278,17 @@ const QAdetail = () => {
           >
             북마크
           </IconButton>
-          <IconButton name="exclamation-circle" color="red" onPress={() => console.log("신고")}>
+          {/* {modal()} */}
+          <IconButton
+            name="exclamation-circle"
+            color="red"
+            onPress={() => {
+              setReportModal(true);
+            }}
+          >
             신고
           </IconButton>
+
           <IconButton name="comment-o" color="purple" onPress={() => console.log("답변")}>
             답변
           </IconButton>
@@ -343,6 +430,42 @@ const styles = StyleSheet.create({
   // },
   scroll: {
     height: "30%",
+  },
+  modalBackground: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContainer: {
+    flex: 0.8,
+    borderRadius: 25,
+    backgroundColor: "#ffffff",
+    padding: 15,
+  },
+  modalInput: {
+    width: "100%",
+    paddingVertical: "5%",
+    backgroundColor: "#D8E1EC",
+  },
+  modalBtnDirection: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  modalConfirmBtn: {
+    width: "45%",
+  },
+  reportContent: {
+    // backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  reportItem: {
+    padding: 8,
+  },
+  selectedReportItem: {
+    backgroundColor: "#5299EB",
   },
 });
 

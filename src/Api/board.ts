@@ -76,17 +76,82 @@ function searchArticle(content: string, boardType_id: number) {
 function bookMarkArticle(board_id: number) {
   return PostAPI(`/bookmark/${board_id}`);
 }
+function DeletebookMarkArticle(board_id: number) {
+  return DeleteAPI(`/bookmark/${board_id}`);
+}
+const listReportType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/report/list`);
+function ReportPost(board_id: number, reportType_id: number) {
+  return PostAPI(`/board/report?boardId=${board_id}&reportId=${reportType_id}`, {
+    board_id,
+    reportType_id,
+  });
+}
+
+const commentArticle = (
+  board_id: number,
+  page: number,
+  // pageSize: number,
+): Promise<dataResponse> => GetAPI<dataResponse>(`/comment/list/${board_id}?page=${page}`);
+
+const commentInsert = (
+  // id: number,
+  user_id: number,
+  board_id: number,
+  body: string,
+  is_anonymous: number,
+  // created_at: Date,
+  // modified_at: Date,
+  // like_cnt: number,
+  // state: number,
+): Promise<dataResponse> =>
+  PostAPI<dataResponse>(`/comment/insert`, {
+    // id,
+    user_id,
+    board_id,
+    body,
+    is_anonymous,
+    // created_at,
+    // modified_at,
+    // like_cnt,
+    // state,
+  });
+
+const commentDelete = (id: number): Promise<dataResponse> =>
+  DeleteAPI<dataResponse>(`/comment/${id}`);
+
+const commentReply = (
+  user_id: number,
+  board_id: number,
+  parent_id: number,
+  body: string,
+  is_anonymous: number,
+): Promise<dataResponse> =>
+  PostAPI<dataResponse>(`/comment/reply`, {
+    user_id,
+    board_id,
+    parent_id,
+    body,
+    is_anonymous,
+  });
+
 export {
   boardDelete,
   boardEdit,
   boardPost,
   bookMarkArticle,
+  DeletebookMarkArticle,
   deleteLikeBoard,
+  commentArticle,
+  commentDelete,
+  commentInsert,
+  commentReply,
   getArticle,
   insertLikePost,
   listArticle,
   listBoardType,
   listHotBoard,
   listHotBoardTotal,
+  listReportType,
+  ReportPost,
   searchArticle,
 };

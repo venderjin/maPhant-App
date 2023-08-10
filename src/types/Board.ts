@@ -82,4 +82,22 @@ type SortType = {
   name: string;
 };
 
-export type { BoardArticle, BoardPost, BoardType, HotBoard, SortType };
+type ReportType = {
+  id: number;
+  name: string;
+};
+
+type commentType = {
+  id: number;
+  user_id: number;
+  nickname: string;
+  board_id: number;
+  parent_id: number;
+  body: string;
+  is_anonymous: number;
+  created_at: Date;
+  like_cnt: number;
+  comment_id: number;
+};
+
+export type { BoardArticle, BoardPost, BoardType, commentType, HotBoard, ReportType, SortType };
