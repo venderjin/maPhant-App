@@ -84,11 +84,62 @@ function ReportPost(board_id: number, reportType_id: number) {
   });
 }
 
+const commentArticle = (
+  board_id: number,
+  page: number,
+  // pageSize: number,
+): Promise<dataResponse> => GetAPI<dataResponse>(`/comment/list/${board_id}?page=${page}`);
+
+const commentInsert = (
+  // id: number,
+  user_id: number,
+  board_id: number,
+  body: string,
+  is_anonymous: number,
+  // created_at: Date,
+  // modified_at: Date,
+  // like_cnt: number,
+  // state: number,
+): Promise<dataResponse> =>
+  PostAPI<dataResponse>(`/comment/insert`, {
+    // id,
+    user_id,
+    board_id,
+    body,
+    is_anonymous,
+    // created_at,
+    // modified_at,
+    // like_cnt,
+    // state,
+  });
+
+const commentDelete = (id: number): Promise<dataResponse> =>
+  DeleteAPI<dataResponse>(`/comment/${id}`);
+
+const commentReply = (
+  user_id: number,
+  board_id: number,
+  parent_id: number,
+  body: string,
+  is_anonymous: number,
+): Promise<dataResponse> =>
+  PostAPI<dataResponse>(`/comment/reply`, {
+    user_id,
+    board_id,
+    parent_id,
+    body,
+    is_anonymous,
+  });
+
 export {
   boardDelete,
   boardEdit,
   boardPost,
   bookMarkArticle,
+  commentArticle,
+  commentDelete,
+  commentInsert,
+  commentReply,
   deleteLikeBoard,
   getArticle,
   insertLikePost,
