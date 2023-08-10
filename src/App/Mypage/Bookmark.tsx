@@ -2,13 +2,9 @@ import { Feather, FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-import { set } from "react-native-reanimated";
 
 import { GetAPI } from "../../Api/fetchAPI";
-import { TextButton } from "../../components/common";
 import { BoardArticle } from "../../types/Board";
-import Index from "../Mail/Index";
 
 export default function (): JSX.Element {
   switch (0) {
@@ -18,10 +14,7 @@ export default function (): JSX.Element {
 }
 
 function Bookmark(): JSX.Element {
-  const [boardId, setBoardId] = useState<number[]>([]);
-  const [effectCount, setEffectCount] = useState<number>(1);
   const [bookmark, setBookmark] = useState<BoardArticle[]>([]);
-  const [getBookmarkCount, setGetBookmarkCount] = useState<number>(0);
   const navigation = useNavigation();
 
   const extractBoardIds = () => {
@@ -31,7 +24,6 @@ function Bookmark(): JSX.Element {
         return;
       } else {
         const boardIds = res.data.map(item => item.boardId);
-        setBoardId(boardIds);
         return Promise.resolve(boardIds);
       }
     });
