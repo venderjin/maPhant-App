@@ -158,7 +158,7 @@ const MyView = () => {
             <View style={{ alignItems: "center" }}>
               <Text style={styles.Moaltext}>소개글을 수정해주세요</Text>
             </View>
-            <Spacer size={10} />
+            <Spacer size={20} />
             <View>
               <Input
                 style={styles.modalInput}
@@ -262,7 +262,7 @@ export default function MyPage() {
         {
           title: "내가 쓴 댓글",
           onclick: () => {
-            navigation.navigate("Mycomment" as never);
+            // navigation.navigate("Mycomment" as never);
           },
           href: "4",
         },
@@ -534,7 +534,7 @@ const styles = StyleSheet.create({
   info: {
     flex: 1,
     flexDirection: "row",
-    alignItems: "flex-end",
+    alignItems: "center",
   },
   userPic: {
     flex: 0.4,
