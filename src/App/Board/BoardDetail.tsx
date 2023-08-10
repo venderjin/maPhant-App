@@ -1,4 +1,4 @@
-import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
 import React, { useEffect, useState } from "react";
 import {
@@ -23,24 +23,26 @@ import {
   getArticle,
 } from "../../Api/board";
 import { Container, IconButton, Input, TextButton } from "../../components/common";
+import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
-import { BoardArticle, BoardPost, commentType } from "../../types/Board";
-import { NavigationProps } from "../../types/Navigation";
+import { BoardArticleBase, BoardPost, commentType } from "../../types/Board";
 import { UserData } from "../../types/User";
 import { dateFormat, dateTimeFormat } from "./Time";
 
 const BoardDetail = () => {
-  const params = useRoute().params as { boardData: BoardArticle };
-  const boardData = params?.boardData;
+  const params = useRoute().params as { id: number; preRender?: BoardArticleBase };
+  const { id, preRender } = params;
+
   const [comments, setcomments] = useState<commentType[]>([]);
   const [replies, setReplies] = useState<{ [commentId: number]: commentType[] | undefined }>({});
   const [post, setPost] = useState({ board: {} } as BoardPost);
+  // const [post, setPost] = useState({ board: preRender } as BoardPost);
   const [body, setBody] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(0);
   const [checkList, setCheckList] = useState<string[]>([]);
   const [parent_id, setParentId] = useState<number>(0);
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
-  const navigation = useNavigation<NavigationProp<NavigationProps>>();
+  const navigation = useNavigation<NavigationProps>();
 
   const handleDelete = async (board_id: number) => {
     try {
@@ -70,7 +72,7 @@ const BoardDetail = () => {
 
   const handlecommentInsert = async () => {
     try {
-      const response = await commentInsert(user.id, post.board.boardId, body, isAnonymous);
+      const response = await commentInsert(user.id, id, body, isAnonymous);
       console.log("댓글 작성 성공", response);
       setBody("");
       setIsAnonymous(0);
@@ -91,7 +93,7 @@ const BoardDetail = () => {
 
   const handleReplyInput = async (parent_id: number) => {
     try {
-      const response = await commentReply(user.id, post.board.id, parent_id, body, isAnonymous);
+      const response = await commentReply(user.id, id, parent_id, body, isAnonymous);
       console.log("대댓글 성공", response);
 
       setReplies(prevReplies => {
@@ -118,13 +120,13 @@ const BoardDetail = () => {
   };
 
   useEffect(() => {
-    getArticle(boardData.boardId)
+    getArticle(id)
       .then(data => {
         if (data.data) setPost(data.data as BoardPost);
       })
       .catch();
 
-    commentArticle(boardData.boardId, 1)
+    commentArticle(id, 1)
       .then(response => {
         if (response.data) setcomments(response.data as commentType[]);
 
@@ -150,7 +152,7 @@ const BoardDetail = () => {
       {
         text: "네",
         onPress: () => {
-          handleDelete(boardData.boardId);
+          handleDelete(id);
         },
       },
       {
@@ -190,14 +192,14 @@ const BoardDetail = () => {
                   </View>
                 </View>
                 {/* {user.nickname === boardData.userNickname && ( */}
-                  <View style={styles.buttonBox}>
-                    <TextButton style={styles.button} fontSize={13} onPress={handleUpdate}>
-                      수정
-                    </TextButton>
-                    <TextButton style={styles.button} fontSize={13} onPress={alert}>
-                      삭제
-                    </TextButton>
-                  </View>
+                <View style={styles.buttonBox}>
+                  <TextButton style={styles.button} fontSize={13} onPress={handleUpdate}>
+                    수정
+                  </TextButton>
+                  <TextButton style={styles.button} fontSize={13} onPress={alert}>
+                    삭제
+                  </TextButton>
+                </View>
                 {/* )} */}
               </View>
               <View style={styles.contextBox}>
@@ -336,51 +338,55 @@ const BoardDetail = () => {
                     </View>
                   </KeyboardAvoidingView>
                 )}
-                {comment.id === parent_id && (
-                  <View style={styles.replyBox}>
-                    <View style={styles.line} />
-                    <View style={{ margin: "2%" }}>
-                      <View style={styles.commentHeader}>
-                        <View style={{ flexDirection: "column" }}>
-                          <Text style={styles.commentName}>{comment.nickname}</Text>
-                          <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
+                {parent_id > 0 ? (
+                  <></>
+                ) : (
+                  comment.id === parent_id && (
+                    <View style={styles.replyBox}>
+                      <View style={styles.line} />
+                      <View style={{ margin: "2%" }}>
+                        <View style={styles.commentHeader}>
+                          <View style={{ flexDirection: "column" }}>
+                            <Text style={styles.commentName}>{comment.nickname}</Text>
+                            <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
+                          </View>
+                          <View style={styles.cbutBox}>
+                            <IconButton
+                              name="thumbs-o-up"
+                              color="skyblue"
+                              onPress={() => console.log("추천")}
+                            >
+                              추천
+                            </IconButton>
+                            <IconButton
+                              name="exclamation-circle"
+                              color="red"
+                              onPress={() => console.log("신고")}
+                            >
+                              신고
+                            </IconButton>
+                            <IconButton name="" color="skyblue" onPress={() => console.log("수정")}>
+                              수정
+                            </IconButton>
+                            <IconButton
+                              name=""
+                              color="red"
+                              onPress={() => handleCommentDelete(parent_id)}
+                            >
+                              삭제
+                            </IconButton>
+                          </View>
                         </View>
-                        <View style={styles.cbutBox}>
-                          <IconButton
-                            name="thumbs-o-up"
-                            color="skyblue"
-                            onPress={() => console.log("추천")}
-                          >
-                            추천
-                          </IconButton>
-                          <IconButton
-                            name="exclamation-circle"
-                            color="red"
-                            onPress={() => console.log("신고")}
-                          >
-                            신고
-                          </IconButton>
-                          <IconButton name="" color="skyblue" onPress={() => console.log("수정")}>
-                            수정
-                          </IconButton>
-                          <IconButton
-                            name=""
-                            color="red"
-                            onPress={() => handleCommentDelete(parent_id)}
-                          >
-                            삭제
-                          </IconButton>
+                        <View style={styles.commentContext}>
+                          {replies[comment.id]?.map(reply => (
+                            <Text key={reply.id} numberOfLines={3} style={styles.context}>
+                              {reply.body}
+                            </Text>
+                          ))}
                         </View>
-                      </View>
-                      <View style={styles.commentContext}>
-                        {replies[comment.id]?.map(reply => (
-                          <Text key={reply.id} numberOfLines={3} style={styles.context}>
-                            {reply.body}
-                          </Text>
-                        ))}
                       </View>
                     </View>
-                  </View>
+                  )
                 )}
               </View>
             </View>
