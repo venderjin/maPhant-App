@@ -1,7 +1,6 @@
 import { StackActions, useNavigation, useRoute } from "@react-navigation/native";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, Text } from "react-native";
-import { ScrollView } from "react-native";
 import { useWindowDimensions } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 
@@ -53,7 +52,6 @@ const Chatroom: React.FC = () => {
   console.log("징징");
 
   function getCurrentTime(targetDate: Date) {
-    //시간
     const hours = targetDate.getHours();
     const minutes = targetDate.getMinutes();
     // 00 : 00 분으로 표시되게 바꿈
@@ -159,7 +157,6 @@ const Chatroom: React.FC = () => {
             padding: "3%",
           }}
         >
-          {/* <Container style={{ flex: 6 }}> */}
           <Input
             multiline={true}
             style={{ maxHeight: 100, flexShrink: 1, flex: 6 }}
@@ -167,15 +164,6 @@ const Chatroom: React.FC = () => {
             value={content}
             onChangeText={setContent}
           />
-          {/* </Container> */}
-          {/* <Container
-          style={{
-            backgroundColor: "pink",
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        > */}
           <TextButton
             onPress={() => {
               send();

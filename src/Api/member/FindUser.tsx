@@ -19,9 +19,9 @@ function receiveChatrooms() {
 function deleteChat(id: number) {
   return DeleteAPI(`/room/${id}`);
 }
-
+//cursor랑 limit 이건 어떻게 설정해줘야할지 몰라서 일단 때려박음
 function chartLists(id: number | undefined) {
-  return GetAPI(`/room/${id}?cursor=0&limit=100`);
+  return GetAPI(`/room/${id}?cursor=0&limit=50`);
 }
 
 export { chartLists, deleteChat, receiveChatrooms, SearchNickname, sendContent };
