@@ -91,8 +91,9 @@ const listSortCriterion = (): Promise<dataResponse> => GetAPI<dataResponse>(`/bo
 const commentArticle = (
   board_id: number,
   page: number,
-  // pageSize: number,
-): Promise<dataResponse> => GetAPI<dataResponse>(`/comment/list/${board_id}?page=${page}`);
+  recordSize: number,
+): Promise<dataResponse> =>
+  GetAPI<dataResponse>(`/comment/list/${board_id}?page=${page}&recordSize=${recordSize}`);
 
 const commentInsert = (
   // id: number,
