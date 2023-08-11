@@ -19,6 +19,8 @@ import {
   commentArticle,
   commentDelete,
   commentInsert,
+  commentLike,
+  commentLikeCnt,
   commentReply,
   getArticle,
 } from "../../Api/board";
@@ -43,6 +45,7 @@ const BoardDetail = () => {
   const [checkList, setCheckList] = useState<string[]>([]);
   const [parent_id, setParentId] = useState<number>(0);
   const [checked, setChecked] = useState<boolean>(false);
+  const [likeCnt, setLikeCnt] = useState<number>(0);
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
   const navigation = useNavigation<NavigationProps>();
 
@@ -92,7 +95,7 @@ const BoardDetail = () => {
     try {
       const response = await commentReply(user.id, id, parent_id, body, isAnonymous);
       console.log(response);
-      console.error(user.id, id, parent_id, body, isAnonymous);
+      console.log(user.id, id, parent_id, replyBody, isAnonymous);
 
       setReplies(prevReplies => {
         const newReplies = {
@@ -101,7 +104,7 @@ const BoardDetail = () => {
         };
         return newReplies;
       });
-      setReplyBody(""); // Clear the reply body after sending the reply
+      setReplyBody("");
       setIsAnonymous(0);
     } catch (error) {
       console.log("대댓글 오류", error);
@@ -123,6 +126,7 @@ const BoardDetail = () => {
       })
       .catch();
   }, []);
+
   useEffect(() => {
     commentArticle(id, 1, 5)
       .then(response => {
@@ -144,6 +148,24 @@ const BoardDetail = () => {
       })
       .catch();
   }, []);
+
+  // const handleCommentLike = (comment_id: number, likeCnt: number) => {
+  //   commentLike(user.id, comment_id)
+  //     .then(res => {
+  //       console.log(res.data);
+  //       setLikeCnt(likeCnt);
+  //     })
+  //     .catch();
+  // };
+
+  // const getCommentLikeCnt = (comment_id: number) => {
+  //   commentLikeCnt(comment_id)
+  //     .then(res => {
+  //       console.log(res.data);
+  //       setLikeCnt(res.data);
+  //     })
+  //     .catch();
+  // };
 
   function alert() {
     Alert.alert("삭제", "삭제하시겠습니까?", [
@@ -211,7 +233,7 @@ const BoardDetail = () => {
             </View>
 
             <View style={styles.cbutBox}>
-              <IconButton name="thumbs-o-up" color="skyblue" onPress={() => console.log("추천")}>
+              <IconButton name="thumbs-o-up" color="skyblue" onPress={() => handl}>
                 추천
               </IconButton>
               <IconButton name="star-o" color="orange" onPress={() => console.log("스크랩")}>
@@ -277,9 +299,16 @@ const BoardDetail = () => {
                     <IconButton
                       name="thumbs-o-up"
                       color="skyblue"
-                      onPress={() => console.log("추천")}
+                      onPress={() => {
+                        commentLike(user.id, comment.id)
+                          .then(res => {
+                            console.log(res.data);
+                            setLikeCnt(comment.like_cnt);
+                          })
+                          .catch();
+                      }}
                     >
-                      추천
+                      {comment.like_cnt === 0 ? "추천" : comment.like_cnt}
                     </IconButton>
                     <IconButton
                       name="exclamation-circle"
