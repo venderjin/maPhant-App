@@ -1,4 +1,4 @@
-import { BoardPost, HotBoard } from "../types/Board";
+import { BoardPost, HotBoard, commentType } from "../types/Board";
 import { dataResponse, DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
 const listArticle = (
@@ -92,8 +92,8 @@ const commentArticle = (
   board_id: number,
   page: number,
   recordSize: number,
-): Promise<dataResponse> =>
-  GetAPI<dataResponse>(`/comment/list/${board_id}?page=${page}&recordSize=${recordSize}`);
+): Promise<dataResponse<{ list: commentType[] }>> =>
+  GetAPI(`/comment/list/${board_id}?page=${page}&recordSize=${recordSize}`);
 
 const commentInsert = (
   // id: number,

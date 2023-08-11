@@ -33,7 +33,7 @@ const BoardDetail = () => {
   const params = useRoute().params as { id: number; preRender?: BoardArticleBase };
   const { id, preRender } = params;
 
-  const [comments, setcomments] = useState<commentType[]>([]);
+  const [comments, setComments] = useState<commentType[]>([]);
   const [replies, setReplies] = useState<{ [commentId: number]: commentType[] | undefined }>({});
   const [post, setPost] = useState({ board: {} } as BoardPost);
   // const [post, setPost] = useState({ board: preRender } as BoardPost);
@@ -48,23 +48,18 @@ const BoardDetail = () => {
 
   const handleDelete = async (board_id: number) => {
     try {
-      const response = await boardDelete(board_id);
-      navigation.navigate("DetailList" as never);
+      const response = await boardDelete(id);
+      navigation.goBack();
+
       console.log("삭제 성공", response);
     } catch (error) {
-      console.error("삭제 오류", error);
+      alert(error);
     }
   };
   // console.log(boardData)
-  // console.log(post);
   const handleUpdate = async () => {
     try {
-      const response = await boardEdit(
-        post.board.boardId,
-        post.board.title,
-        post.board.body,
-        post.board.isHide,
-      );
+      const response = await boardEdit(id, post.board.title, post.board.body, post.board.isHide);
       console.log("수정 가능", response);
       navigation.navigate("editPost", { post: post, boardType: boardData });
     } catch (error) {
@@ -106,7 +101,7 @@ const BoardDetail = () => {
         };
         return newReplies;
       });
-      setReplyBody("");
+      setReplyBody(""); // Clear the reply body after sending the reply
       setIsAnonymous(0);
     } catch (error) {
       console.log("대댓글 오류", error);
@@ -124,15 +119,16 @@ const BoardDetail = () => {
   useEffect(() => {
     getArticle(id)
       .then(data => {
-        if (data.data) setPost(data.data as BoardPost);
+        setPost(data.data as BoardPost);
       })
       .catch();
-
-    commentArticle(id, 1)
+  }, []);
+  useEffect(() => {
+    commentArticle(id, 1, 5)
       .then(response => {
-        if (response.data) setcomments(response.data as commentType[]);
+        setComments(response.data.list as commentType[]);
 
-        const repliesData = response.data as commentType[];
+        const repliesData = response.data.list as commentType[];
         const repliesMap: { [commentId: number]: commentType[] } = {};
 
         repliesData.forEach(reply => {
@@ -241,6 +237,7 @@ const BoardDetail = () => {
                     <Text style={styles.commentName}>{comment.nickname}</Text>
                     <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
                   </View>
+
                   <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}>
                     <TextButton
                       style={styles.button}
