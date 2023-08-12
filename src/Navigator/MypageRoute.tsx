@@ -33,10 +33,10 @@ const Routes: RouteType[] = [
     name: "Bookmark",
     component: Bookmark,
   },
-  // {
-  //   name: "Mycomment",
-  //   component: Mycomment,
-  // },
+  {
+    name: "Mycomment",
+    component: Mycomment,
+  },
 ];
 
 export type NavigationProp = {

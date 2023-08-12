@@ -17,7 +17,7 @@ export default function MypageIndex() {
       <Stack.Screen name="Mypost" component={Routes[3].component} />
       <Stack.Screen name="QnAdetail" component={Routes[4].component} />
       <Stack.Screen name="Bookmark" component={Routes[5].component} />
-      {/* <Stack.Screen name="Mycomment" component={Routes[6].component} /> */}
+      <Stack.Screen name="Mycomment" component={Routes[6].component} />
     </Stack.Navigator>
   );
 }
