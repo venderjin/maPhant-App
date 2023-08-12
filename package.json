@@ -50,7 +50,8 @@
     "react-native-svg": "13.4.0",
     "react-native-toast": "^1.0.1",
     "react-redux": "^8.1.2",
-    "yup": "^1.2.0"
+    "yup": "^1.2.0",
+    "expo-image-picker": "~14.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

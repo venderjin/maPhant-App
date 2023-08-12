@@ -233,7 +233,7 @@ const TextButton: React.FC<TextButtonProps> = props => {
     children,
     backgroundColor = "#5299EB",
     fontSize = 16,
-    fontColor,
+    fontColor = "white",
     widthFull = false,
     paddingHorizontal = 20,
     paddingVertical = 15,
