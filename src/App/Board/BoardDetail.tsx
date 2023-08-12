@@ -15,12 +15,10 @@ import { useSelector } from "react-redux";
 
 import {
   boardDelete,
-  boardEdit,
   commentArticle,
   commentDelete,
   commentInsert,
   commentLike,
-  commentLikeCnt,
   commentReply,
   getArticle,
 } from "../../Api/board";
@@ -48,6 +46,7 @@ const BoardDetail = () => {
   const [likeCnt, setLikeCnt] = useState<number>(0);
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
   const navigation = useNavigation<NavigationProps>();
+  const [commentLength, setCommentLength] = useState<number>(0);
 
   const handleDelete = async (board_id: number) => {
     try {
@@ -60,15 +59,6 @@ const BoardDetail = () => {
     }
   };
   // console.log(boardData)
-  const handleUpdate = async () => {
-    try {
-      const response = await boardEdit(id, post.board.title, post.board.body, post.board.isHide);
-      console.log("수정 가능", response);
-      navigation.navigate("editPost", { post: post, boardType: boardData });
-    } catch (error) {
-      console.error("수정 오류", error);
-    }
-  };
 
   const handlecommentInsert = async () => {
     try {
@@ -76,6 +66,7 @@ const BoardDetail = () => {
       console.log("댓글 작성 성공", response);
       setBody("");
       setIsAnonymous(0);
+      setCommentLength(commentLength + 1);
       Keyboard.dismiss();
     } catch (error) {
       console.log("댓글 작성 오류", error);
@@ -131,6 +122,7 @@ const BoardDetail = () => {
     commentArticle(id, 1, 5)
       .then(response => {
         setComments(response.data.list as commentType[]);
+        setCommentLength(comments.length);
 
         const repliesData = response.data.list as commentType[];
         const repliesMap: { [commentId: number]: commentType[] } = {};
@@ -147,16 +139,16 @@ const BoardDetail = () => {
         setReplies(repliesMap);
       })
       .catch();
-  }, []);
+  }, [likeCnt, commentLength]);
 
-  // const handleCommentLike = (comment_id: number, likeCnt: number) => {
-  //   commentLike(user.id, comment_id)
-  //     .then(res => {
-  //       console.log(res.data);
-  //       setLikeCnt(likeCnt);
-  //     })
-  //     .catch();
-  // };
+  const handleCommentLike = (comment_id: number, likeCnt: number) => {
+    commentLike(user.id, comment_id)
+      .then(res => {
+        console.log(res.data);
+        setLikeCnt(likeCnt);
+      })
+      .catch();
+  };
 
   // const getCommentLikeCnt = (comment_id: number) => {
   //   commentLikeCnt(comment_id)
@@ -204,14 +196,14 @@ const BoardDetail = () => {
             <View>
               <View style={styles.header}>
                 <View>
-                  <View>
+                  {/* <View>
                     <Text style={styles.nickname}>{post.board.userId}</Text>
-                  </View>
+                  </View> */}
                   <View>
                     <Text style={styles.date}>{dateTimeFormat(post.board.createdAt)}</Text>
                   </View>
                 </View>
-                {user.id === post.board.userId && (
+                {/* {user.id === post.board.userId && (
                   <View style={styles.buttonBox}>
                     <TextButton style={styles.button} fontSize={13} onPress={handleUpdate}>
                       수정
@@ -220,7 +212,7 @@ const BoardDetail = () => {
                       삭제
                     </TextButton>
                   </View>
-                )}
+                )} */}
               </View>
               <View style={styles.contextBox}>
                 <View>
@@ -233,7 +225,7 @@ const BoardDetail = () => {
             </View>
 
             <View style={styles.cbutBox}>
-              <IconButton name="thumbs-o-up" color="skyblue" onPress={() => handl}>
+              <IconButton name="thumbs-o-up" color="skyblue" onPress={() => console.log("추천")}>
                 추천
               </IconButton>
               <IconButton name="star-o" color="orange" onPress={() => console.log("스크랩")}>
@@ -264,13 +256,7 @@ const BoardDetail = () => {
                     <TextButton
                       style={styles.button}
                       fontSize={13}
-                      onPress={() => console.log("수정")}
-                    >
-                      수정
-                    </TextButton>
-                    <TextButton
-                      style={styles.button}
-                      fontSize={13}
+                      fontColor={"#000"}
                       onPress={() => {
                         alertComment(comment.id);
                       }}
@@ -300,12 +286,7 @@ const BoardDetail = () => {
                       name="thumbs-o-up"
                       color="skyblue"
                       onPress={() => {
-                        commentLike(user.id, comment.id)
-                          .then(res => {
-                            console.log(res.data);
-                            setLikeCnt(comment.like_cnt);
-                          })
-                          .catch();
+                        handleCommentLike(comment.id, comment.like_cnt);
                       }}
                     >
                       {comment.like_cnt === 0 ? "추천" : comment.like_cnt}
@@ -343,9 +324,6 @@ const BoardDetail = () => {
                             onPress={() => console.log("신고")}
                           >
                             신고
-                          </IconButton>
-                          <IconButton name="" color="skyblue" onPress={() => console.log("수정")}>
-                            수정
                           </IconButton>
                           <IconButton
                             name=""
