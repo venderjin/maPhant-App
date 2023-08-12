@@ -1,4 +1,4 @@
-import { BoardPost, HotBoard } from "../types/Board";
+import { BoardPost, commentType, HotBoard } from "../types/Board";
 import { dataResponse, DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
 const listArticle = (
@@ -91,34 +91,28 @@ const listSortCriterion = (): Promise<dataResponse> => GetAPI<dataResponse>(`/bo
 const commentArticle = (
   board_id: number,
   page: number,
-  // pageSize: number,
-): Promise<dataResponse> => GetAPI<dataResponse>(`/comment/list/${board_id}?page=${page}`);
+  recordSize: number,
+): Promise<dataResponse<{ list: commentType[] }>> =>
+  GetAPI(`/comment/list/${board_id}?page=${page}&recordSize=${recordSize}`);
 
 const commentInsert = (
-  // id: number,
   user_id: number,
   board_id: number,
   body: string,
   is_anonymous: number,
-  // created_at: Date,
-  // modified_at: Date,
-  // like_cnt: number,
-  // state: number,
 ): Promise<dataResponse> =>
   PostAPI<dataResponse>(`/comment/insert`, {
-    // id,
     user_id,
     board_id,
     body,
     is_anonymous,
-    // created_at,
-    // modified_at,
-    // like_cnt,
-    // state,
   });
 
 const commentDelete = (id: number): Promise<dataResponse> =>
   DeleteAPI<dataResponse>(`/comment/${id}`);
+
+const commentUpdate = (id: number, body: string): Promise<dataResponse> =>
+  PostAPI(`/comment/update`, { id, body });
 
 const commentReply = (
   user_id: number,
@@ -135,6 +129,12 @@ const commentReply = (
     is_anonymous,
   });
 
+const commentLike = (userId: number, commentId: number): Promise<dataResponse> =>
+  PostAPI<dataResponse>(`/comment/like`, { userId, commentId });
+
+const commentLikeCnt = (comment_id: number): Promise<dataResponse> =>
+  GetAPI<dataResponse>(`/comment/cnt-like/${comment_id}`);
+
 export {
   boardDelete,
   boardEdit,
@@ -143,7 +143,10 @@ export {
   commentArticle,
   commentDelete,
   commentInsert,
+  commentLike,
+  commentLikeCnt,
   commentReply,
+  commentUpdate,
   DeletebookMarkArticle,
   deleteLikeBoard,
   getArticle,

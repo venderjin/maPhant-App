@@ -19,6 +19,8 @@ import {
   commentArticle,
   commentDelete,
   commentInsert,
+  commentLike,
+  commentLikeCnt,
   commentReply,
   getArticle,
 } from "../../Api/board";
@@ -33,36 +35,34 @@ const BoardDetail = () => {
   const params = useRoute().params as { id: number; preRender?: BoardArticleBase };
   const { id, preRender } = params;
 
-  const [comments, setcomments] = useState<commentType[]>([]);
+  const [comments, setComments] = useState<commentType[]>([]);
   const [replies, setReplies] = useState<{ [commentId: number]: commentType[] | undefined }>({});
   const [post, setPost] = useState({ board: {} } as BoardPost);
   // const [post, setPost] = useState({ board: preRender } as BoardPost);
   const [body, setBody] = useState("");
+  const [replyBody, setReplyBody] = useState<string>("");
   const [isAnonymous, setIsAnonymous] = useState(0);
   const [checkList, setCheckList] = useState<string[]>([]);
   const [parent_id, setParentId] = useState<number>(0);
+  const [checked, setChecked] = useState<boolean>(false);
+  const [likeCnt, setLikeCnt] = useState<number>(0);
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
   const navigation = useNavigation<NavigationProps>();
 
   const handleDelete = async (board_id: number) => {
     try {
-      const response = await boardDelete(board_id);
-      navigation.navigate("DetailList" as never);
+      const response = await boardDelete(id);
+      navigation.goBack();
+
       console.log("삭제 성공", response);
     } catch (error) {
-      console.error("삭제 오류", error);
+      alert(error);
     }
   };
   // console.log(boardData)
-  // console.log(post);
   const handleUpdate = async () => {
     try {
-      const response = await boardEdit(
-        post.board.boardId,
-        post.board.title,
-        post.board.body,
-        post.board.isHide,
-      );
+      const response = await boardEdit(id, post.board.title, post.board.body, post.board.isHide);
       console.log("수정 가능", response);
       navigation.navigate("editPost", { post: post, boardType: boardData });
     } catch (error) {
@@ -85,16 +85,17 @@ const BoardDetail = () => {
   const handleCommentDelete = async (id: number) => {
     try {
       const response = await commentDelete(id);
-      console.log("댓글 삭제 성공", response);
+      console.log(response);
     } catch (error) {
       console.log("댓글 삭제 오류", error);
     }
   };
 
-  const handleReplyInput = async (parent_id: number) => {
+  const handleReplyInput = async (parent_id: number, body: string) => {
     try {
       const response = await commentReply(user.id, id, parent_id, body, isAnonymous);
-      console.log("대댓글 성공", response);
+      console.log(response);
+      console.log(user.id, id, parent_id, replyBody, isAnonymous);
 
       setReplies(prevReplies => {
         const newReplies = {
@@ -103,8 +104,7 @@ const BoardDetail = () => {
         };
         return newReplies;
       });
-
-      setBody("");
+      setReplyBody("");
       setIsAnonymous(0);
     } catch (error) {
       console.log("대댓글 오류", error);
@@ -122,15 +122,17 @@ const BoardDetail = () => {
   useEffect(() => {
     getArticle(id)
       .then(data => {
-        if (data.data) setPost(data.data as BoardPost);
+        setPost(data.data as BoardPost);
       })
       .catch();
+  }, []);
 
-    commentArticle(id, 1)
+  useEffect(() => {
+    commentArticle(id, 1, 5)
       .then(response => {
-        if (response.data) setcomments(response.data as commentType[]);
+        setComments(response.data.list as commentType[]);
 
-        const repliesData = response.data as commentType[];
+        const repliesData = response.data.list as commentType[];
         const repliesMap: { [commentId: number]: commentType[] } = {};
 
         repliesData.forEach(reply => {
@@ -146,6 +148,24 @@ const BoardDetail = () => {
       })
       .catch();
   }, []);
+
+  // const handleCommentLike = (comment_id: number, likeCnt: number) => {
+  //   commentLike(user.id, comment_id)
+  //     .then(res => {
+  //       console.log(res.data);
+  //       setLikeCnt(likeCnt);
+  //     })
+  //     .catch();
+  // };
+
+  // const getCommentLikeCnt = (comment_id: number) => {
+  //   commentLikeCnt(comment_id)
+  //     .then(res => {
+  //       console.log(res.data);
+  //       setLikeCnt(res.data);
+  //     })
+  //     .catch();
+  // };
 
   function alert() {
     Alert.alert("삭제", "삭제하시겠습니까?", [
@@ -184,23 +204,23 @@ const BoardDetail = () => {
             <View>
               <View style={styles.header}>
                 <View>
-                  {/* <View>
-                    <Text style={styles.nickname}>{boardData.userNickname}</Text>
-                  </View> */}
+                  <View>
+                    <Text style={styles.nickname}>{post.board.userId}</Text>
+                  </View>
                   <View>
                     <Text style={styles.date}>{dateTimeFormat(post.board.createdAt)}</Text>
                   </View>
                 </View>
-                {/* {user.nickname === boardData.userNickname && ( */}
-                <View style={styles.buttonBox}>
-                  <TextButton style={styles.button} fontSize={13} onPress={handleUpdate}>
-                    수정
-                  </TextButton>
-                  <TextButton style={styles.button} fontSize={13} onPress={alert}>
-                    삭제
-                  </TextButton>
-                </View>
-                {/* )} */}
+                {user.id === post.board.userId && (
+                  <View style={styles.buttonBox}>
+                    <TextButton style={styles.button} fontSize={13} onPress={handleUpdate}>
+                      수정
+                    </TextButton>
+                    <TextButton style={styles.button} fontSize={13} onPress={alert}>
+                      삭제
+                    </TextButton>
+                  </View>
+                )}
               </View>
               <View style={styles.contextBox}>
                 <View>
@@ -213,7 +233,7 @@ const BoardDetail = () => {
             </View>
 
             <View style={styles.cbutBox}>
-              <IconButton name="thumbs-o-up" color="skyblue" onPress={() => console.log("추천")}>
+              <IconButton name="thumbs-o-up" color="skyblue" onPress={() => handl}>
                 추천
               </IconButton>
               <IconButton name="star-o" color="orange" onPress={() => console.log("스크랩")}>
@@ -239,6 +259,7 @@ const BoardDetail = () => {
                     <Text style={styles.commentName}>{comment.nickname}</Text>
                     <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
                   </View>
+
                   <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}>
                     <TextButton
                       style={styles.button}
@@ -270,6 +291,7 @@ const BoardDetail = () => {
                       color="skyblue"
                       onPress={() => {
                         setParentId(comment.id);
+                        setChecked(!checked);
                       }}
                     >
                       대댓글
@@ -277,9 +299,16 @@ const BoardDetail = () => {
                     <IconButton
                       name="thumbs-o-up"
                       color="skyblue"
-                      onPress={() => console.log("추천")}
+                      onPress={() => {
+                        commentLike(user.id, comment.id)
+                          .then(res => {
+                            console.log(res.data);
+                            setLikeCnt(comment.like_cnt);
+                          })
+                          .catch();
+                      }}
                     >
-                      추천
+                      {comment.like_cnt === 0 ? "추천" : comment.like_cnt}
                     </IconButton>
                     <IconButton
                       name="exclamation-circle"
@@ -292,101 +321,50 @@ const BoardDetail = () => {
                 </View>
 
                 {parent_id === comment.id && (
-                  <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-                    style={{ padding: 5, borderRadius: 5 }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: 5,
-                      }}
-                    >
-                      <Checkbox
-                        style={{ marginRight: 5 }}
-                        value={checkList.includes("anonymous")}
-                        onValueChange={isChecked => {
-                          check("anonymous", isChecked);
-                          setIsAnonymous(isChecked ? 1 : 0);
-                        }}
-                      ></Checkbox>
-                      <Text>익명</Text>
-                      <Input
-                        style={{
-                          flex: 1,
-                          backgroundColor: "white",
-                          paddingVertical: 15,
-                          paddingHorizontal: 12,
-                          marginRight: 5,
-                        }}
-                        placeholder="대댓글을 작성해 주세요 ..."
-                        value={body}
-                        onChangeText={setBody}
-                      ></Input>
-                      <TextButton
-                        onPress={() => {
-                          handleReplyInput(parent_id);
-                          setParentId(0);
-                          setBody("");
-                        }}
-                      >
-                        작성
-                      </TextButton>
-                    </View>
-                  </KeyboardAvoidingView>
-                )}
-                {parent_id > 0 ? (
-                  <></>
-                ) : (
-                  comment.id === parent_id && (
-                    <View style={styles.replyBox}>
-                      <View style={styles.line} />
-                      <View style={{ margin: "2%" }}>
-                        <View style={styles.commentHeader}>
-                          <View style={{ flexDirection: "column" }}>
-                            <Text style={styles.commentName}>{comment.nickname}</Text>
-                            <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
-                          </View>
-                          <View style={styles.cbutBox}>
-                            <IconButton
-                              name="thumbs-o-up"
-                              color="skyblue"
-                              onPress={() => console.log("추천")}
-                            >
-                              추천
-                            </IconButton>
-                            <IconButton
-                              name="exclamation-circle"
-                              color="red"
-                              onPress={() => console.log("신고")}
-                            >
-                              신고
-                            </IconButton>
-                            <IconButton name="" color="skyblue" onPress={() => console.log("수정")}>
-                              수정
-                            </IconButton>
-                            <IconButton
-                              name=""
-                              color="red"
-                              onPress={() => handleCommentDelete(parent_id)}
-                            >
-                              삭제
-                            </IconButton>
-                          </View>
+                  <View style={styles.replyBox}>
+                    <View style={styles.line} />
+                    <View style={{ margin: "2%" }}>
+                      <View style={styles.commentHeader}>
+                        <View style={{ flexDirection: "column" }}>
+                          <Text style={styles.commentName}>{comment.nickname}</Text>
+                          <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
                         </View>
-                        <View style={styles.commentContext}>
-                          {replies[comment.id]?.map(reply => (
-                            <Text key={reply.id} numberOfLines={3} style={styles.context}>
-                              {reply.body}
-                            </Text>
-                          ))}
+                        <View style={styles.cbutBox}>
+                          <IconButton
+                            name="thumbs-o-up"
+                            color="skyblue"
+                            onPress={() => console.log("추천")}
+                          >
+                            추천
+                          </IconButton>
+                          <IconButton
+                            name="exclamation-circle"
+                            color="red"
+                            onPress={() => console.log("신고")}
+                          >
+                            신고
+                          </IconButton>
+                          <IconButton name="" color="skyblue" onPress={() => console.log("수정")}>
+                            수정
+                          </IconButton>
+                          <IconButton
+                            name=""
+                            color="red"
+                            onPress={() => handleCommentDelete(parent_id)}
+                          >
+                            삭제
+                          </IconButton>
                         </View>
                       </View>
+                      <View style={styles.commentContext}>
+                        {replies[comment.id]?.map(reply => (
+                          <Text key={reply.id} numberOfLines={3} style={styles.context}>
+                            {reply.body}
+                          </Text>
+                        ))}
+                      </View>
                     </View>
-                  )
+                  </View>
                 )}
               </View>
             </View>
@@ -423,13 +401,13 @@ const BoardDetail = () => {
               paddingHorizontal: 12,
               marginRight: 5,
             }}
-            placeholder="댓글을 작성해 주세요 ..."
-            value={body}
-            onChangeText={setBody}
+            placeholder={checked ? "대댓글을 작성해 주세요 ..." : "댓글을 작성해 주세요 ..."}
+            value={checked ? replyBody : body}
+            onChangeText={checked ? setReplyBody : setBody}
           ></Input>
           <TextButton
             onPress={() => {
-              handlecommentInsert();
+              checked ? handleReplyInput(parent_id, replyBody) : handlecommentInsert();
             }}
           >
             작성
