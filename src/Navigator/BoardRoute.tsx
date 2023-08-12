@@ -1,3 +1,4 @@
+import BoardDetail from "../App/Board/BoardDetail";
 import BoardList, { BoardType } from "../App/Board/BoardList";
 import Edit from "../App/Board/editPost";
 import DetailList from "../App/Board/List";
@@ -25,8 +26,8 @@ const Routes: RouteType[] = [
     component: QAdetail,
   },
   {
-    name: "qa_answer",
-    component: QA_answer,
+    name: "BoardDetail",
+    component: BoardDetail,
   },
   {
     name: "Post",
