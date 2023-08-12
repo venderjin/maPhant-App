@@ -57,7 +57,7 @@ const QnABoard: React.FC = () => {
         </View>
         <ScrollView horizontal>
           {hotBoard.map(board => (
-            <View key={board.id} style={styles.content}>
+            <View key={board.boardId} style={styles.content}>
               <ScrollList post={board} boardType={boardType} />
             </View>
           ))}
