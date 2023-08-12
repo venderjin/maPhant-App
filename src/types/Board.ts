@@ -68,7 +68,7 @@ type commentType = {
   is_anonymous: number;
   created_at: string;
   like_cnt: number;
-  comment_id: number; //대댓글
+  comment_id: number;
   time: string;
 };
 

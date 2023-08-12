@@ -96,13 +96,11 @@ const commentArticle = (
   GetAPI(`/comment/list/${board_id}?page=${page}&recordSize=${recordSize}`);
 
 const commentInsert = (
-  user_id: number,
   board_id: number,
   body: string,
   is_anonymous: number,
 ): Promise<dataResponse> =>
   PostAPI<dataResponse>(`/comment/insert`, {
-    user_id,
     board_id,
     body,
     is_anonymous,
@@ -115,16 +113,14 @@ const commentUpdate = (id: number, body: string): Promise<dataResponse> =>
   PostAPI(`/comment/update`, { id, body });
 
 const commentReply = (
-  user_id: number,
-  board_id: number,
   parent_id: number,
+  board_id: number,
   body: string,
   is_anonymous: number,
 ): Promise<dataResponse> =>
-  PostAPI<dataResponse>(`/comment/reply`, {
-    user_id,
-    board_id,
+  PostAPI<dataResponse>(`/comment/insert`, {
     parent_id,
+    board_id,
     body,
     is_anonymous,
   });
