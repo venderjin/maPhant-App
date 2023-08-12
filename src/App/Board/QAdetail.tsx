@@ -78,19 +78,19 @@ const QAdetail = () => {
       .catch(err => Alert.alert(err));
   }, []);
 
-  // useEffect(() => {
-  //   if (post.board === undefined && !LoadingOverlay) {
-  //     setLoadingOverlay(true);
-  //     UIStore.showLoadingOverlay();
-  //   }
-  //   if (post.board !== undefined && LoadingOverlay) {
-  //     setLoadingOverlay(false);
-  //     UIStore.hideLoadingOverlay();
-  //   }
+  useEffect(() => {
+    if (post.board === undefined && !LoadingOverlay) {
+      setLoadingOverlay(true);
+      UIStore.showLoadingOverlay();
+    }
+    if (post.board !== undefined && LoadingOverlay) {
+      setLoadingOverlay(false);
+      UIStore.hideLoadingOverlay();
+    }
 
-  //   if (post.board === undefined) return;
-  //   setLikeCnt(post.board.likeCnt);
-  // }, [post, LoadingOverlay]);
+    if (post.board === undefined) return;
+    setLikeCnt(post.board.likeCnt);
+  }, [post, LoadingOverlay]);
 
   function alert() {
     Alert.alert("삭제", "삭제하시겠습니까?", [
@@ -235,20 +235,16 @@ const QAdetail = () => {
                 <Text style={styles.date}>{dateTimeFormat(post.board.createdAt)}</Text>
               </View>
             </View>
-            {user.id === post.board.userId && (
-              <View style={styles.qaButtonBox}>
-                <TextButton
-                  style={styles.button}
-                  backgroundColor={"#f2f2f2"}
-                  onPress={handleUpdate}
-                >
-                  수정
-                </TextButton>
-                <TextButton style={styles.button} backgroundColor={"#f2f2f2"} onPress={alert}>
-                  삭제
-                </TextButton>
-              </View>
-            )}
+            {/* {user.id === post.board.userId && ( */}
+            <View style={styles.qaButtonBox}>
+              <TextButton style={styles.button} fontColor={"#000"} onPress={handleUpdate}>
+                수정
+              </TextButton>
+              <TextButton style={styles.button} fontColor={"#000"} onPress={alert}>
+                삭제
+              </TextButton>
+            </View>
+            {/* )} */}
           </View>
           <View style={styles.qacontextBox}>
             <View>
@@ -389,6 +385,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 9,
     paddingHorizontal: 15,
+    backgroundColor: "#f2f2f2",
   },
 
   cbutBox: {

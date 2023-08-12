@@ -49,7 +49,7 @@ const BoardDetail = () => {
   const navigation = useNavigation<NavigationProps>();
   const [commentLength, setCommentLength] = useState<number>(0);
 
-  const handleDelete = async (board_id: number) => {
+  const handleDelete = async () => {
     try {
       const response = await boardDelete(id);
       navigation.goBack();
@@ -98,7 +98,6 @@ const BoardDetail = () => {
     try {
       const response = await commentReply(parent_id, id, body, isAnonymous);
       console.log(response);
-      console.log(parent_id, id, body, isAnonymous);
       setCommentLength(commentLength + 1);
       setReplyBody("");
       setIsAnonymous(0);
@@ -128,10 +127,11 @@ const BoardDetail = () => {
       .then(response => {
         setComments(response.data.list as commentType[]);
         setCommentLength(comments.length);
+        console.log(response.data.list);
         setReplies(comments.filter(comment => comment.parent_id > 0));
       })
       .catch();
-  }, [likeCnt, commentLength]);
+  }, [likeCnt, commentLength, comments.length]);
 
   const handleCommentLike = (comment_id: number, likeCnt: number) => {
     commentLike(user.id, comment_id)
@@ -147,7 +147,7 @@ const BoardDetail = () => {
       {
         text: "네",
         onPress: () => {
-          handleDelete(id);
+          handleDelete();
         },
       },
       {
@@ -179,9 +179,9 @@ const BoardDetail = () => {
             <View>
               <View style={styles.header}>
                 <View>
-                  {/* <View>
+                  <View>
                     <Text style={styles.nickname}>{post.board.userId}</Text>
-                  </View> */}
+                  </View>
                   <View>
                     <Text style={styles.date}>{dateTimeFormat(post.board.createdAt)}</Text>
                   </View>
@@ -189,16 +189,16 @@ const BoardDetail = () => {
                 {/* {user.id === post.board.userId && ( */}
                 <View style={styles.buttonBox}>
                   <TextButton
-                    style={styles.button}
                     fontColor={"#000"}
+                    style={styles.button}
                     fontSize={13}
                     onPress={handleUpdate}
                   >
                     수정
                   </TextButton>
                   <TextButton
-                    style={styles.button}
                     fontColor={"#000"}
+                    style={styles.button}
                     fontSize={13}
                     onPress={alert}
                   >
@@ -265,9 +265,7 @@ const BoardDetail = () => {
                     </View>
                     <View style={{ paddingHorizontal: 10 }}>
                       <View style={styles.commentContext}>
-                        <Text numberOfLines={3} style={styles.context}>
-                          {comment.body}
-                        </Text>
+                        <Text style={styles.context}>{comment.body}</Text>
                       </View>
                       <View style={styles.cbutBox}>
                         <IconButton
@@ -333,7 +331,7 @@ const BoardDetail = () => {
                                   <IconButton
                                     name=""
                                     color="red"
-                                    onPress={() => handleCommentDelete(parent_id)}
+                                    onPress={() => handleCommentDelete(reply.id)}
                                   >
                                     삭제
                                   </IconButton>
