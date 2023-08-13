@@ -11,21 +11,21 @@ import {
   View,
 } from "react-native";
 
-import { listArticle, searchArticle } from "../../Api/board";
+import { listHotBoard, searchArticle } from "../../Api/board";
 import { Container } from "../../components/common";
 import SearchBar from "../../components/Input/searchbar";
-import { BoardArticle, BoardType } from "../../types/Board";
+import { BoardType, HotBoard } from "../../types/Board";
 import { NavigationProps } from "../../types/Navigation";
 import PostSummary from "./PostSummary";
 
-const DetailList: React.FC = () => {
+const HotDetailList: React.FC = () => {
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
-  const [boardData, setboardData] = useState<BoardArticle[]>([]);
+  const [boardData, setboardData] = useState<HotBoard[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation<NavigationProp<NavigationProps>>();
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [searchResults, setSearchResults] = useState<BoardArticle[]>([]);
+  const [searchResults, setSearchResults] = useState<HotBoard[]>([]);
 
   const fetchData = async () => {
     try {
@@ -33,9 +33,9 @@ const DetailList: React.FC = () => {
         setRefreshing(false);
         return;
       }
-      const data = await listArticle(boardType.id, 1, 50, 1);
+      const data = await listHotBoard(boardType.id, 1, 50);
       if (data.data) {
-        setboardData(data.data as BoardArticle[]);
+        setboardData(data.data.list as HotBoard[]);
       }
     } catch (err) {
       console.log(err);
@@ -57,8 +57,8 @@ const DetailList: React.FC = () => {
       return;
     }
     try {
-      const data = await searchArticle(searchText, boardType.id); // Implement your searchArticle function to call the API for search results
-      setSearchResults(data.data as BoardArticle[]);
+      const data = await searchArticle(searchText); // Implement your searchArticle function to call the API for search results
+      setSearchResults(data.data as HotBoard[]);
       console.log(data.data);
     } catch (err) {
       console.log(err);
@@ -74,7 +74,7 @@ const DetailList: React.FC = () => {
     navigation.navigate("Post", { boardType: boardType });
   };
 
-  const detailContent = (board: BoardArticle) => {
+  const detailContent = (board: HotBoard) => {
     navigation.navigate("QnAdetail", { id: board.boardId });
   };
 
@@ -128,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailList;
+export default HotDetailList;

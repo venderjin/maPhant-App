@@ -44,7 +44,7 @@ const Mail: React.FC = () => {
   };
 
   //useCallback을 사용하면 의존성이 변경되는 경우(chatList 변경되는 경우 인듯?), 이전에 기억하고 있던 함수 자체와 비교해서 다른 경우 리랜더
-  // 원래 object 끼리 ==, === 연산자 결과는 무조건 false인데 useCallback을 사용하면 동등성을 보장할 수 있음
+  // 원래 object 끼리 ==, === 연산자  결과는 무조건 false인데 useCallback을 사용하면 동등성을 보장할 수 있음
   const fetchChatRooms = useCallback(async () => {
     try {
       await receiveChatrooms().then(res => {

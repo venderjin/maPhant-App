@@ -34,7 +34,7 @@ const SearchUser: React.FC = () => {
         return validateNickname(value)
           .then(result => {
             if (result.success)
-              // Signup에서 쓴 닉네임 검증 함수라서 success === true 이면 존재하지 않는 별명임
+              // Signup에서  쓴 닉네임 검증 함수라서 success === true 이면 존재하지 않는 별명임
               return testContext.createError({ message: "존재하지 않는 별명입니다." });
             return true;
           })

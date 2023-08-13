@@ -13,7 +13,7 @@ const Chatroom: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
 
   const windowWidth = useWindowDimensions().width; // window 가로 길이s
-  // SearchUser.tsx에서 입력한 유저의 id, nickname을 가져오기 위해 사용한 것
+  // SearchUser.tsx에서 입력한 유저의  id, nickname을 가져오기 위해 사용한 것
   const route = useRoute();
   const params = route.params as MailFormParams;
   const [receiveContent, setReceiveContent] = useState<ReceiveList[]>([]);
@@ -114,7 +114,6 @@ const Chatroom: React.FC = () => {
       return <OtherUserChat item={item} />;
     }
   };
-  const reversedReceiveContent = [...receiveContent].reverse();
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -140,7 +139,7 @@ const Chatroom: React.FC = () => {
         </Container>
         <Container style={{ flex: 10 }}>
           <FlatList
-            data={reversedReceiveContent}
+            data={receiveContent}
             renderItem={renderItem}
             keyExtractor={item => item.id.toString()}
             inverted={true} //역순 스크롤 ㅜㅜ

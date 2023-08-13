@@ -10,8 +10,8 @@ type statusResponse = {
   success: boolean;
   errors?: string;
 };
-type dataResponse = {
-  data?: object;
+type dataResponse<T = object> = {
+  data: T;
 } & statusResponse;
 
 function fetchAPI<T extends statusResponse>(
