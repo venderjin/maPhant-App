@@ -1,5 +1,4 @@
 apply plugin: "com.android.application"
-apply plugin: 'com.google.gms.google-services' // <- Add this line
 apply plugin: "com.facebook.react"
 
 import com.android.build.OutputFile
@@ -193,13 +192,7 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    
-    // 이부분 추가한거임
-    // implementation platform('com.google.firebase:firebase-bom:28.4.1')
-    // implementation 'com.google.firebase:firebase-analytics'
-    // implementation 'com.google.firebase:firebase-auth'
-    // // apply plugin: 'com.android.application'
-    // // apply plugin: 'com.google.gms.google-services'
+
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";
     def isWebpAnimatedEnabled = (findProperty('expo.webp.animated') ?: "") == "true";

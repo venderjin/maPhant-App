@@ -6,7 +6,6 @@ buildscript {
         minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '21')
         compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '33')
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '33')
-        googlePlayServicesVersion = "17.0.0"
         if (findProperty('android.kotlinVersion')) {
             kotlinVersion = findProperty('android.kotlinVersion')
         }
@@ -22,10 +21,6 @@ buildscript {
     dependencies {
         classpath('com.android.tools.build:gradle:7.4.1')
         classpath('com.facebook.react:react-native-gradle-plugin')
-        //이 부분 추가한거임
-        classpath 'com.google.gms:google-services:4.3.15'
-        implementation platform('com.google.firebase:firebase-bom:28.4.1') // Firebase BOM (Bill of Materials)
-        implementation ('com.google.firebase:firebase-database')
     }
 }
 

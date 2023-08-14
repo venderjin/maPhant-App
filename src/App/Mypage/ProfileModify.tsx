@@ -74,7 +74,7 @@ const ProfileModify: React.FC = () => {
     const msg = Object.values(errors)
       .map(val => `${val}`)
       .join("\n");
-    return Toast.show(msg);
+    return msg;
   }, []);
 
   const SearchForm: ISearchForm = {

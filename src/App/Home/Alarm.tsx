@@ -1,5 +1,7 @@
+import messaging from "@react-native-firebase/messaging";
 import { useTheme } from "@react-navigation/native";
-import { Pressable,ScrollView, Text, View } from "react-native";
+import { useCallback, useEffect } from "react";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 import loadDefaultStyles from "../Style/styles/Alarmcss";
 
@@ -84,6 +86,20 @@ const boardData = [
 ];
 
 const Alarm: React.FC = () => {
+  // console.info("에러 안뜨나???");
+  // console.log(messaging().getToken());
+  useEffect(() => {
+    const getFcmToken = async () => {
+      try {
+        const token = await messaging().getToken();
+        console.info(token);
+      } catch (error) {
+        console.error("Error getting FCM token:", error);
+      }
+    };
+    getFcmToken(); // 비동기 함수 호출
+  }, []);
+
   // const [show, setShow] = useState<Boolean>(false);
   // const handlePress = () => {
   //   setShow(true);
