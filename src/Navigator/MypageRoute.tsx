@@ -1,6 +1,7 @@
 import BoardDetail from "../App/Board/BoardDetail";
 import Bookmark from "../App/Mypage/Bookmark";
 import Mycomment from "../App/Mypage/Mycomment";
+import Mylike from "../App/Mypage/Mylike";
 import Mypage from "../App/Mypage/Mypage";
 import Mypost from "../App/Mypage/Mypost";
 import PasswordCheck from "../App/Mypage/PasswordCheck";
@@ -36,6 +37,10 @@ const Routes: RouteType[] = [
   {
     name: "Mycomment",
     component: Mycomment,
+  },
+  {
+    name: "Mylike",
+    component: Mylike,
   },
 ];
 

@@ -280,11 +280,18 @@ export default function MyPage() {
           href: "4",
         },
         {
+          title: "좋아요 한 글",
+          onclick: () => {
+            navigation.navigate("Mylike" as never);
+          },
+          href: "5",
+        },
+        {
           title: "북마크",
           onclick: () => {
             navigation.navigate("Bookmark" as never);
           },
-          href: "5",
+          href: "6",
         },
       ],
     },
