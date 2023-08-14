@@ -34,7 +34,7 @@ function Bookmark(): JSX.Element {
     extractBoardIds().then(async boardIds => {
       const bookmarks: BoardArticle[] = [];
       for (let i = boardIds.length - 1; i >= 0; i--) {
-        await GetAPI(`/board/${boardIds[i]}`).then(res => {
+        await GetAPI(`/board/${boardIds[i]}/`).then(res => {
           if (res.success === false) {
             console.log(res.errors);
             return;
