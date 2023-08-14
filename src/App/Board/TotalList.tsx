@@ -25,7 +25,7 @@ const DetailBoardList = () => {
       {boardData.map(board => (
         <View key={board.boardId} style={styles.body}>
           <Pressable onPress={() => console.log(board.title)}>
-            <Text style={styles.board}>{boardType}</Text>
+            <Text style={styles.board}>{boardType.name}</Text>
             <PostSummary post={board} boardType={boardType} />
           </Pressable>
         </View>
