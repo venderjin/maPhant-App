@@ -1,8 +1,9 @@
-import messaging from "@react-native-firebase/messaging";
 import { useTheme } from "@react-navigation/native";
+import * as Notifications from "expo-notifications";
 import { useCallback, useEffect } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
+import { sendFcm } from "../../Api/member/Fcm";
 import loadDefaultStyles from "../Style/styles/Alarmcss";
 
 const boardData = [
@@ -90,12 +91,11 @@ const Alarm: React.FC = () => {
   // console.log(messaging().getToken());
   useEffect(() => {
     const getFcmToken = async () => {
-      try {
-        const token = await messaging().getToken();
-        console.info(token);
-      } catch (error) {
-        console.error("Error getting FCM token:", error);
-      }
+      const token = (await Notifications.getDevicePushTokenAsync()).data;
+      sendFcm(token);
+      alert(token);
+      console.log(token);
+      return token;
     };
     getFcmToken(); // 비동기 함수 호출
   }, []);

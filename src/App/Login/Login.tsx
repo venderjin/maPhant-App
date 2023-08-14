@@ -1,8 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
+import * as Notifications from "expo-notifications";
 import React, { useState } from "react";
 import { ScrollView, View } from "react-native";
 import Toast from "react-native-root-toast";
 
+import { sendFcm } from "../../Api/member/Fcm";
 import UserAPI from "../../Api/memberAPI";
 import { Container, ImageBox, Input, Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
@@ -23,12 +25,12 @@ const Login: React.FC = () => {
       // Toast.show("비밀번호는 4자리 이상 입니다", { duration: Toast.durations.SHORT });
       return;
     }
-
     UIStore.showLoadingOverlay();
     UserAPI.login(email, password)
       .then(res => {
         UserStorage.setUserToken(res["pubKey"], res["privKey"]).then(() => {
           return UserAPI.getProfile().then(res => {
+            Notifications.getDevicePushTokenAsync().then(res => sendFcm(res.data));
             UserStorage.setUserProfile(res.data);
           });
         });
