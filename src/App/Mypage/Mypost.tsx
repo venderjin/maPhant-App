@@ -65,7 +65,7 @@ function MyPost(): JSX.Element {
 
   const detailContent = (posts: BoardArticle) => {
     console.log(posts);
-    navigation.navigate("QnAdetail", { id: posts.id });
+    navigation.navigate("BoardDetail", { id: posts.id });
   };
 
   return (
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   title: {
-    fontSize: 20,
+    fontSize: 15,
     justifyContent: "flex-start",
     fontWeight: "bold",
   },

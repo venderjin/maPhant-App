@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { GetAPI } from "../../Api/fetchAPI";
+import { DeleteAPI, GetAPI, PostAPI } from "../../Api/fetchAPI";
+import { TextButton } from "../../components/common";
 import UserStorage from "../../storage/UserStorage";
 import { BoardArticle } from "../../types/Board";
 
@@ -16,48 +17,55 @@ export default function (): JSX.Element {
 }
 
 function Mycomment(): JSX.Element {
-  const [comment, setcomment] = useState<BoardArticle[]>([]);
+  const [comment, setComment] = useState<BoardArticle[] & { body: string }[]>([]);
   const [endPage, setEndPage] = React.useState<number>(0);
   const [pages, setPages] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const navigation = useNavigation();
 
   const recordSize: number = 5;
   const userID: number = useSelector(UserStorage.userProfileSelector)!.id;
 
-  const extractBoardIds = () => {
-    return GetAPI(
-      `/profile/comment?page=${pages}&recordSize=${recordSize}&targetUserId=${userID}`,
-    ).then(res => {
-      if (res.success === false) {
-        console.log(res.errors);
-        return;
-      } else {
-        const boardIds = res.data.list.map(item => item.board_id);
-        setEndPage(res.data.pagination.endPage);
-        return Promise.resolve(boardIds);
-      }
-    });
-  };
+  // const extractBoardIdss = () => {
+  //   return GetAPI(
+  //     `/profile/comment?page=${pages}&recordSize=${recordSize}&targetUserId=${userID}`,
+  //   ).then(res => {
+  //     if (res.success === false) {
+  //       console.log(res.errors);
+  //       return;
+  //     } else {
+  //       // const boardIds = res.data.list.map(item => item.board_id);
+  //       // console.log(res.data);
+  //       setEndPage(res.data.pagination.endPage);
+  //       return Promise.resolve(res.data.list);
+  //     }
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   extractBoardIdss().then(async data => {
+  //     const comments: BoardArticle & { body: string }[] = [];
+  //     comments.push(data);
+  //     console.log(comments);
+  //     setComment(comments);
+  //     setIsLoading(false);
+  //   });
+  // }, []);
 
   useEffect(() => {
-    extractBoardIds().then(async boardIds => {
-      const comments: BoardArticle[] = [];
-      for (let i = boardIds.length - 1; i >= 0; i--) {
-        await GetAPI(`/board/${boardIds[i]}`).then(res => {
-          if (res.success === false) {
-            console.log(res.errors);
-            return;
-          } else {
-            comments.push(res.data.board);
-          }
-        });
-      }
-      setcomment(comments);
-      setIsLoading(false);
-    });
-  }, []);
+    GetAPI(`/profile/comment?page=${pages}&recordSize=${recordSize}&targetUserId=${userID}`).then(
+      res => {
+        if (res.success === false) {
+          console.log(res.errors);
+          return;
+        } else {
+          setComment([...comment, ...res.data.list]);
+          setEndPage(res.data.pagination.endPage);
+        }
+      },
+    );
+  }, [pages]);
 
   const loadMorecomments = async () => {
     if (!isLoading) {
@@ -87,7 +95,7 @@ function Mycomment(): JSX.Element {
 
   const detailContent = (comments: BoardArticle) => {
     console.log(comments.board_id);
-    navigation.navigate("QnAdetail", { id: comments.board_id });
+    navigation.navigate("Boardetail", { id: comments.board_id });
   };
 
   return (
@@ -98,8 +106,11 @@ function Mycomment(): JSX.Element {
             <Pressable onPress={() => detailContent(comment)}>
               <View style={styles.container}>
                 <View style={styles.head}>
-                  <Text>{comment.type}</Text>
+                  <View style={{ marginRight: 20 }}>
+                    <Text>{comment.board_type}</Text>
+                  </View>
                 </View>
+
                 <View
                   style={{
                     marginTop: 10,
@@ -107,7 +118,16 @@ function Mycomment(): JSX.Element {
                   }}
                 >
                   <View>
-                    <Text style={styles.title}>{comment.title}</Text>
+                    <Text style={styles.title}>{comment.board_title}</Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    marginBottom: 10,
+                  }}
+                >
+                  <View>
+                    <Text style={styles.comment}>내 댓글 : {comment.body}</Text>
                   </View>
                 </View>
 
@@ -115,8 +135,8 @@ function Mycomment(): JSX.Element {
                   <Feather name="thumbs-up" size={13} color="tomato" />
                   <Text style={styles.good}>&#9; {comment.like_cnt}</Text>
                   <View style={{ flex: 1 }}></View>
-                  <FontAwesome name="comment-o" size={13} color="blue" />
-                  <Text style={styles.comment}>&#9; {comment.comment_cnt}</Text>
+                  {/* <FontAwesome name="comment-o" size={13} color="blue" />
+                  <Text style={styles.comment}>&#9; {comments.comment_cnt}</Text> */}
                   <Text style={{ justifyContent: "flex-end", fontSize: 10 }}></Text>
                   <Text style={styles.time}>{dateToString(comment.created_at)}</Text>
                 </View>
@@ -133,7 +153,7 @@ function Mycomment(): JSX.Element {
                   <ActivityIndicator size="large" color="#0000ff" />
                 </View>
               ) : (
-                "이전 글이 없습니다."
+                "이전 댓글이 없습니다."
               )}
             </Text>
           </View>
@@ -176,12 +196,15 @@ const styles = StyleSheet.create({
   },
   head: {
     flexDirection: "row",
-    justifyContent: "space-between",
   },
   title: {
-    fontSize: 20,
+    fontSize: 15,
     justifyContent: "flex-start",
     fontWeight: "bold",
+  },
+  comment: {
+    fontSize: 10,
+    justifyContent: "flex-start",
   },
   board: {
     fontSize: 10,

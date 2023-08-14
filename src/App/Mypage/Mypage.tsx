@@ -247,7 +247,7 @@ export default function MyPage() {
       ],
     },
     {
-      title: "게시판 설정",
+      title: "내 활동",
       icon: "pencil",
       color: "#5299EB",
 
@@ -262,7 +262,7 @@ export default function MyPage() {
         {
           title: "내가 쓴 댓글",
           onclick: () => {
-            // navigation.navigate("Mycomment" as never);
+            navigation.navigate("Mycomment" as never);
           },
           href: "4",
         },

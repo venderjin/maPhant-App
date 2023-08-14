@@ -50,7 +50,7 @@ function Bookmark(): JSX.Element {
 
   const detailContent = (boards: BoardArticle) => {
     console.log(boards.id);
-    navigation.navigate("QnAdetail", { id: boards.id });
+    navigation.navigate("BoardDetail", { id: boards.id });
   };
 
   return (
@@ -69,17 +69,17 @@ function Bookmark(): JSX.Element {
                     <Text>
                       {(() => {
                         switch (bookmark.typeId) {
-                          case 1:
+                          case "1":
                             return "자유 게시판";
-                          case 2:
+                          case "2":
                             return "질문 게시판";
-                          case 3:
+                          case "3":
                             return "지식 게시판";
-                          case 4:
+                          case "4":
                             return "취업/진로 게시판";
-                          case 5:
+                          case "5":
                             return "홍보 게시판";
-                          case 6:
+                          case "6":
                             return "취미 게시판";
                           default:
                             return "알 수 없는 게시판 유형";
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   title: {
-    fontSize: 20,
+    fontSize: 15,
     justifyContent: "flex-start",
     fontWeight: "bold",
   },

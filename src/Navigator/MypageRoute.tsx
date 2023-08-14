@@ -1,4 +1,4 @@
-import QAdetail from "../App/Board/QAdetail";
+import BoardDetail from "../App/Board/BoardDetail";
 import Bookmark from "../App/Mypage/Bookmark";
 import Mycomment from "../App/Mypage/Mycomment";
 import Mypage from "../App/Mypage/Mypage";
@@ -27,7 +27,7 @@ const Routes: RouteType[] = [
   },
   {
     name: "detail",
-    component: QAdetail,
+    component: BoardDetail,
   },
   {
     name: "Bookmark",
