@@ -24,7 +24,7 @@ function Mycomment(): JSX.Element {
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const navigation = useNavigation();
 
-  const recordSize: number = 5;
+  const recordSize: number = 10;
   const userID: number = useSelector(UserStorage.userProfileSelector)!.id;
 
   useEffect(() => {

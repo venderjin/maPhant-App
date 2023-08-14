@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { GetAPI } from "../../Api/fetchAPI";
+import { TextButton } from "../../components/common";
 import { BoardArticle } from "../../types/Board";
 
 export default function (): JSX.Element {
@@ -20,9 +21,9 @@ function Mylike(): JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const navigation = useNavigation();
-
+  const recordSize: number = 10;
   useEffect(() => {
-    GetAPI(`/profile/like?page=${pages}&recordSize=${2}`).then(res => {
+    GetAPI(`/profile/like?page=${pages}&recordSize=${recordSize}`).then(res => {
       if (res.success === false) {
         console.log(res.errors);
         return;
