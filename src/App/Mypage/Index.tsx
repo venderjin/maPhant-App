@@ -18,6 +18,11 @@ export default function MypageIndex() {
       <Stack.Screen name="QnAdetail" component={Routes[4].component} />
       <Stack.Screen name="Bookmark" component={Routes[5].component} />
       <Stack.Screen name="Mycomment" component={Routes[6].component} />
+      <Stack.Screen
+        name="Profile"
+        component={Routes[7].component}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }

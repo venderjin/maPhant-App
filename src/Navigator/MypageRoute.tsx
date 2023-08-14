@@ -4,6 +4,7 @@ import Mycomment from "../App/Mypage/Mycomment";
 import Mypage from "../App/Mypage/Mypage";
 import Mypost from "../App/Mypage/Mypost";
 import PasswordCheck from "../App/Mypage/PasswordCheck";
+import Profile from "../App/Mypage/Profile";
 import ProfileModify from "../App/Mypage/ProfileModify";
 import { BoardArticle } from "../types/Board";
 import { RouteType } from "../types/Navigation";
@@ -36,6 +37,10 @@ const Routes: RouteType[] = [
   {
     name: "Mycomment",
     component: Mycomment,
+  },
+  {
+    name: "Profile",
+    component: Profile,
   },
 ];
 
