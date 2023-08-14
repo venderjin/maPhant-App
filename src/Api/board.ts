@@ -63,7 +63,7 @@ const boardDelete = (board_id: number): Promise<dataResponse> =>
   DeleteAPI<dataResponse>(`/board/${board_id}/`);
 
 const getArticle = (board_id: number): Promise<dataResponse<BoardPost>> =>
-  GetAPI<dataResponse<BoardPost>>(`/board/${board_id}`);
+  GetAPI<dataResponse<BoardPost>>(`/board/${board_id}/`);
 
 function insertLikePost(board_id: number) {
   return PostAPI(`/board/like/${board_id}/`);
@@ -89,7 +89,16 @@ function ReportPost(board_id: number, reportType_id: number) {
     reportType_id,
   });
 }
-const listSortCriterion = (): Promise<dataResponse> => GetAPI<dataResponse>(`/board/sortCriterion`);
+
+const commentReportType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/report/list`);
+function ReportComment(commentId: number, reportId: number) {
+  return PostAPI(`/comment/report`, {
+    commentId,
+    reportId,
+  });
+}
+
+const listSortCriterion = (): Promise<dataResponse> => GetAPI<dataResponse>(`/board/sortCriterion/`);
 
 const commentArticle = (
   board_id: number,
@@ -146,6 +155,7 @@ export {
   commentLike,
   commentLikeCnt,
   commentReply,
+  commentReportType,
   commentUpdate,
   DeletebookMarkArticle,
   deleteLikeBoard,
@@ -157,6 +167,7 @@ export {
   listHotBoardTotal,
   listReportType,
   listSortCriterion,
+  ReportComment,
   ReportPost,
   searchArticle,
 };
