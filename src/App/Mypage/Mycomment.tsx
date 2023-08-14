@@ -27,32 +27,6 @@ function Mycomment(): JSX.Element {
   const recordSize: number = 5;
   const userID: number = useSelector(UserStorage.userProfileSelector)!.id;
 
-  // const extractBoardIdss = () => {
-  //   return GetAPI(
-  //     `/profile/comment?page=${pages}&recordSize=${recordSize}&targetUserId=${userID}`,
-  //   ).then(res => {
-  //     if (res.success === false) {
-  //       console.log(res.errors);
-  //       return;
-  //     } else {
-  //       // const boardIds = res.data.list.map(item => item.board_id);
-  //       // console.log(res.data);
-  //       setEndPage(res.data.pagination.endPage);
-  //       return Promise.resolve(res.data.list);
-  //     }
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   extractBoardIdss().then(async data => {
-  //     const comments: BoardArticle & { body: string }[] = [];
-  //     comments.push(data);
-  //     console.log(comments);
-  //     setComment(comments);
-  //     setIsLoading(false);
-  //   });
-  // }, []);
-
   useEffect(() => {
     GetAPI(`/profile/comment?page=${pages}&recordSize=${recordSize}&targetUserId=${userID}`).then(
       res => {
