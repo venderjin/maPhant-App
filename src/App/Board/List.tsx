@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#5299EB",
     marginRight: "5%",
     width: 120, // 원하는 너비로 조절
-    height: 1,
+    height: 50,
   },
 });
 
