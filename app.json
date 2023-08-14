@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.tovelop.maphant.ios"
@@ -24,7 +22,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.tovelop.maphant",
-      "googleServicesFile": "./google-service.json"
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
