@@ -27,8 +27,9 @@ const DetailList: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<BoardArticle[]>([]);
   const [sortType, setsortType] = React.useState<SortType[]>([]);
+  const [page, setPage] = React.useState<number>(1);
 
-  const [testType, settestType] = React.useState<number>(1);
+  const [sort, setSort] = React.useState<number>(1);
   useEffect(() => {
     listSortCriterion()
       .then(data => {
@@ -40,7 +41,7 @@ const DetailList: React.FC = () => {
 
   const handleSortChange = (selectedSortId: number) => {
     // 선택된 정렬 유형을 id로 찾습니다.
-    settestType(selectedSortId);
+    setSort(selectedSortId);
   };
 
   const fetchData = async () => {
@@ -49,8 +50,8 @@ const DetailList: React.FC = () => {
         setRefreshing(false);
         return;
       }
-      // const data = await listArticle(boardType.id, 1, 50, 1);
-      const data = await listArticle(boardType.id, 1, 50, testType);
+      // const data = await listArticle(boardType.id, 1, 1, 1);
+      const data = await listArticle(boardType.id, page, 10, sort);
       if (data.data) {
         setboardData(data.data as BoardArticle[]);
       }
@@ -61,6 +62,12 @@ const DetailList: React.FC = () => {
     }
   };
 
+  const pageFunc = async () => {
+    setPage(page + 1);
+    await listArticle(boardType.id, page, 10, sort).then(data => {
+      setboardData(boardData.concat(data.data as BoardArticle[]));
+    });
+  };
   const onRefresh = async () => {
     setRefreshing(true);
     fetchData();
@@ -84,7 +91,7 @@ const DetailList: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [testType]);
+  }, [sort]);
 
   const createBoard = () => {
     console.log("글쓰기 화면으로 바뀌어야함");
@@ -92,7 +99,7 @@ const DetailList: React.FC = () => {
   };
 
   const detailContent = (board: BoardArticle) => {
-    if (boardType.id == 2) {
+    if (boardType.id == 3) {
       navigation.navigate("QnAdetail", { id: board.boardId });
     } else {
       navigation.navigate("BoardDetail", { id: board.boardId });
@@ -111,7 +118,7 @@ const DetailList: React.FC = () => {
               key={sort.id}
               onPress={() => {
                 handleSortChange(sort.id);
-                console.log(testType);
+                console.log(sort);
               }} // 선택된 정렬 유형 id를 핸들러에 전달합니다.
               style={styles.sortKey}
             >
@@ -130,6 +137,7 @@ const DetailList: React.FC = () => {
             </Pressable>
           </View>
         )}
+        onEndReached={() => pageFunc()}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
       <View style={styles.btn}>
@@ -171,7 +179,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#5299EB",
     marginRight: "5%",
     width: 120, // 원하는 너비로 조절
-    height: 50,
+    height: 1,
   },
 });
 
