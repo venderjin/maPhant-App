@@ -1,10 +1,12 @@
+import { AntDesign } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import CheckBox from "expo-checkbox";
+import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useState } from "react";
-import { Text } from "react-native";
+import { Image, ScrollView, Text, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 
-import { boardPost } from "../../Api/board";
+import { boardPost, ImageUpload } from "../../Api/board";
 import { BoardType } from "../../App/Board/BoardList";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
@@ -19,6 +21,9 @@ const Post: React.FC = () => {
   const [checkList, setCheckList] = useState<string[]>([]);
   const [isanonymous, setIsanonymous] = useState(0);
   const [isHide, setIsHide] = useState(0);
+
+  const [requsetpermission, setRequestPermission] = ImagePicker.useCameraPermissions();
+  const [imageUrl, setImageUrl] = useState<string[]>([]);
 
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
@@ -37,15 +42,10 @@ const Post: React.FC = () => {
     }
   };
 
-  const user = useSelector(UserStorage.userProfileSelector)! as UserData;
-  const category = useSelector(UserStorage.userCategorySelector) as UserCategory;
-
   const complete = async () => {
     try {
       const response = await boardPost(
         null,
-        category.categoryId,
-        user.id,
         boardType.id,
         title,
         body,
@@ -72,6 +72,53 @@ const Post: React.FC = () => {
     if (hashtagInput.trim() !== "") {
       updateHashtags();
       setHashtagInput("");
+    }
+  };
+
+  const uploadImage = async () => {
+    console.log("사진 올려지나여");
+    if (!requsetpermission?.granted) {
+      const permission = await setRequestPermission();
+      if (!permission.granted) {
+        return null;
+      }
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: true,
+      quality: 1,
+    });
+
+    //이미지 업로드 취소시
+    if (result.canceled) {
+      return null;
+    }
+    const selectedImages = result.assets.slice(0, 5);
+
+    try {
+      // Call the uploadImageAsync function to upload the selected images
+      await uploadImageAsync(result.assets.uri, selectedImages);
+    } catch (error) {
+      console.error("Image upload error:", error);
+      // Handle the error
+    }
+    setImageUrl(selectedImages.map(image => image.uri));
+
+    console.log("selectedImages", selectedImages);
+    async function uploadImageAsync(uri: string, selectedImages: any) {
+      const formData = new FormData();
+      for (const name in selectedImages) {
+        formData.append(name, selectedImages[name]);
+      }
+      try {
+        // Call the ImageUpload function to upload the selected images
+        const response = await ImageUpload(formData);
+        console.log("Image upload response:", response);
+        // Handle the response as needed
+      } catch (error) {
+        console.error("Image upload error:", error);
+        // Handle the error
+      }
     }
   };
 
@@ -105,6 +152,11 @@ const Post: React.FC = () => {
           </Container>
         </Container>
         <Container style={{ flexDirection: "row" }}>
+          <TouchableOpacity onPress={uploadImage}>
+            <AntDesign name="camerao" size={24} color="black" />
+          </TouchableOpacity>
+        </Container>
+        <Container style={{ flexDirection: "row" }}>
           <TextButton onPress={complete}>완료</TextButton>
         </Container>
       </Container>
@@ -129,12 +181,23 @@ const Post: React.FC = () => {
         ))}
         <Spacer size={20} />
         <Input
-          style={{ height: 500 }}
+          style={{ height: "40%" }}
           placeholder="본문"
           onChangeText={text => setBody(text)}
           value={body}
           multiline={true}
         ></Input>
+        <ScrollView horizontal={true} style={{ flexDirection: "row" }}>
+          <Spacer size={20} />
+          {Array.isArray(imageUrl) &&
+            imageUrl.map((uri, index) => (
+              <Image
+                key={index}
+                source={{ uri: uri }}
+                style={{ width: 200, height: 200, marginRight: 5 }} // 이미지 간 간격을 조절해줍니다.
+              />
+            ))}
+        </ScrollView>
       </Container>
     </Container>
   );

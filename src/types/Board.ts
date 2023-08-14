@@ -15,7 +15,7 @@ type BoardArticle = {
   categoryId: number;
   imageUrl?: string;
   isComplete: number;
-  parentId: number;
+  parentId?: number;
   reportCnt: number;
   state: string;
   typeId: string;
@@ -26,7 +26,7 @@ type BoardArticle = {
 //글 읽기
 type BoardPost = {
   board: BoardArticle;
-  answerList?: BoardArticle[];
+  answerList?: BoardArticle[]; //질문 게시판 답변
 };
 
 type BoardListItem = {
@@ -69,6 +69,7 @@ type commentType = {
   created_at: string;
   like_cnt: number;
   comment_id: number;
+  time: string;
 };
 
 export type {
