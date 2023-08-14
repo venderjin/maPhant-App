@@ -43,13 +43,14 @@ const QAdetail = () => {
   const [LoadingOverlay, setLoadingOverlay] = useState(false);
 
   const [post, setPost] = useState({ board: preRender } as BoardPost);
+  const [answer, setAnswer] = useState<BoardPost[]>([]);
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
   const navigation = useNavigation<NavigationProps>();
   const [likeCnt, setLikeCnt] = useState(0);
   const [reportModal, setReportModal] = useState(false);
   const [reportType, setReportType] = React.useState<ReportType[]>([]);
 
-  const handleDelete = async (board_id: number) => {
+  const handleDelete = async () => {
     try {
       const response = await boardDelete(id);
       navigation.goBack();
@@ -74,7 +75,10 @@ const QAdetail = () => {
 
   useEffect(() => {
     getArticle(id)
-      .then(data => setPost(data.data))
+      .then(data => {
+        setPost(data.data);
+        console.log(data.data.answerList);
+      })
       .catch(err => Alert.alert(err));
   }, []);
 
@@ -280,13 +284,17 @@ const QAdetail = () => {
             신고
           </IconButton>
 
-          <IconButton name="comment-o" color="purple" onPress={() => console.log("답변")}>
+          <IconButton
+            name="comment-o"
+            color="purple"
+            onPress={() => navigation.navigate("QA_answer", { id: id })}
+          >
             답변
           </IconButton>
         </View>
       </View>
       <ScrollView style={styles.scroll}>
-        {data.map(answer => (
+        {answer.map(answer => (
           <View style={styles.answerBox} key={answer.id}>
             <View style={styles.line} />
             <View style={{ margin: "3%" }}>
