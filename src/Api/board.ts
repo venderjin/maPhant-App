@@ -8,26 +8,26 @@ const listArticle = (
   sortCriterion: number,
 ): Promise<dataResponse> =>
   GetAPI<dataResponse>(
-    `/board?boardTypeId=${boardType_id}&page=${page}&pageSize=${pageSize}&sortCriterionId=${sortCriterion}`,
+    `/board/?boardTypeId=${boardType_id}&page=${page}&pageSize=${pageSize}&sortCriterionId=${sortCriterion}`,
   );
 
-const listBoardType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/board/boardType`);
+const listBoardType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/board/boardType/`);
 
 function boardPost(
   parentId: null | number,
-  categoryId: number,
-  userId: number,
+  // categoryId: number,
+  // userId: number,
   typeId: number,
   title: string,
   body: string,
   isHide: number,
-  isComplete: 0 | 1,
+  isComplete: number,
   isAnonymous: number,
 ) {
-  return PostAPI(`/board/create`, {
+  return PostAPI(`/board/create/`, {
     parentId,
-    categoryId,
-    userId,
+    // categoryId,
+    // userId,
     typeId,
     title,
     body,
@@ -48,7 +48,7 @@ const listHotBoard = (
   GetAPI(`/board/hot?boardTypeId=${boardType_id}&page=${page}&recordSize=${recordSize}`);
 
 function boardEdit(id: number, title: string, body: string, isHide: number) {
-  return PutAPI(`/board/update`, {
+  return PutAPI(`/board/update/`, {
     id,
     title,
     body,
@@ -56,22 +56,25 @@ function boardEdit(id: number, title: string, body: string, isHide: number) {
   });
 }
 
+const boardComplete = (questId: number, answerId: number): Promise<dataResponse> =>
+  PostAPI<dataResponse>(`/board/complete?questId=${questId}&answerId=${answerId}`);
+
 const boardDelete = (board_id: number): Promise<dataResponse> =>
-  DeleteAPI<dataResponse>(`/board/${board_id}`);
+  DeleteAPI<dataResponse>(`/board/${board_id}/`);
 
 const getArticle = (board_id: number): Promise<dataResponse<BoardPost>> =>
   GetAPI<dataResponse<BoardPost>>(`/board/${board_id}`);
 
 function insertLikePost(board_id: number) {
-  return PostAPI(`/board/like/${board_id}`);
+  return PostAPI(`/board/like/${board_id}/`);
 }
 
 function deleteLikeBoard(board_id: number) {
-  return DeleteAPI(`/board/like/${board_id}`);
+  return DeleteAPI(`/board/like/${board_id}/`);
 }
 
 function searchArticle(content: string, boardType_id: number) {
-  return GetAPI(`/board/search?content=${content}&boardTypeId=${boardType_id}`);
+  return GetAPI(`/board/search/?content=${content}&boardTypeId=${boardType_id}`);
 }
 function bookMarkArticle(board_id: number) {
   return PostAPI(`/bookmark/${board_id}`);
@@ -81,7 +84,7 @@ function DeletebookMarkArticle(board_id: number) {
 }
 const listReportType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/report/list`);
 function ReportPost(board_id: number, reportType_id: number) {
-  return PostAPI(`/board/report?boardId=${board_id}&reportId=${reportType_id}`, {
+  return PostAPI(`/board/report/?boardId=${board_id}&reportId=${reportType_id}`, {
     board_id,
     reportType_id,
   });
@@ -132,6 +135,7 @@ const commentLikeCnt = (comment_id: number): Promise<dataResponse> =>
   GetAPI<dataResponse>(`/comment/cnt-like/${comment_id}`);
 
 export {
+  boardComplete,
   boardDelete,
   boardEdit,
   boardPost,
