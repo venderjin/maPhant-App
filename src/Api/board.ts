@@ -82,6 +82,9 @@ function bookMarkArticle(board_id: number) {
 function DeletebookMarkArticle(board_id: number) {
   return DeleteAPI(`/bookmark/${board_id}`);
 }
+function ImageUpload(formData: FormData) {
+  return PostAPI(`/image`, formData);
+}
 const listReportType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/report/list`);
 function ReportPost(board_id: number, reportType_id: number) {
   return PostAPI(`/board/report/?boardId=${board_id}&reportId=${reportType_id}`, {
@@ -89,6 +92,15 @@ function ReportPost(board_id: number, reportType_id: number) {
     reportType_id,
   });
 }
+
+const commentReportType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/report/list`);
+function ReportComment(commentId: number, reportId: number) {
+  return PostAPI(`/comment/report`, {
+    commentId,
+    reportId,
+  });
+}
+
 const listSortCriterion = (): Promise<dataResponse> =>
   GetAPI<dataResponse>(`/board/sortCriterion/`);
 
@@ -147,10 +159,12 @@ export {
   commentLike,
   commentLikeCnt,
   commentReply,
+  commentReportType,
   commentUpdate,
   DeletebookMarkArticle,
   deleteLikeBoard,
   getArticle,
+  ImageUpload,
   insertLikePost,
   listArticle,
   listBoardType,
@@ -158,6 +172,7 @@ export {
   listHotBoardTotal,
   listReportType,
   listSortCriterion,
+  ReportComment,
   ReportPost,
   searchArticle,
 };
