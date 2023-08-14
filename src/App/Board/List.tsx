@@ -99,7 +99,7 @@ const DetailList: React.FC = () => {
   };
 
   const detailContent = (board: BoardArticle) => {
-    if (boardType.id == 3) {
+    if (boardType.id == 2) {
       navigation.navigate("QnAdetail", { id: board.boardId });
     } else {
       navigation.navigate("BoardDetail", { id: board.boardId });
@@ -130,13 +130,17 @@ const DetailList: React.FC = () => {
 
       <FlatList
         data={displayData}
-        renderItem={({ item: board }) => (
-          <View key={board.boardId} style={styles.body}>
-            <Pressable onPress={() => detailContent(board)}>
-              <PostSummary post={board} boardType={boardType} />
-            </Pressable>
-          </View>
-        )}
+        renderItem={({ item: board }) =>
+          board.parentId == null ? (
+            <View key={board.boardId} style={styles.body}>
+              <Pressable onPress={() => detailContent(board)}>
+                <PostSummary post={board} boardType={boardType} />
+              </Pressable>
+            </View>
+          ) : (
+            <></>
+          )
+        }
         onEndReached={() => pageFunc()}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
