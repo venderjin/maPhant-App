@@ -11,10 +11,10 @@ import {
   View,
 } from "react-native";
 
-import { listArticle, searchArticle } from "../../Api/board";
-import { Container } from "../../components/common";
+import { listArticle, listSortCriterion, searchArticle } from "../../Api/board";
+import { Container, TextButton } from "../../components/common";
 import SearchBar from "../../components/Input/searchbar";
-import { BoardArticle, BoardType } from "../../types/Board";
+import { BoardArticle, BoardType, SortType } from "../../types/Board";
 import { NavigationProps } from "../../types/Navigation";
 import PostSummary from "./PostSummary";
 
@@ -26,6 +26,22 @@ const DetailList: React.FC = () => {
   const navigation = useNavigation<NavigationProp<NavigationProps>>();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<BoardArticle[]>([]);
+  const [sortType, setsortType] = React.useState<SortType[]>([]);
+
+  const [testType, settestType] = React.useState<number>(1);
+  useEffect(() => {
+    listSortCriterion()
+      .then(data => {
+        setsortType(data.data as SortType[]);
+        console.log(data.data);
+      })
+      .catch(err => alert(err));
+  }, [boardType]);
+
+  const handleSortChange = (selectedSortId: number) => {
+    // 선택된 정렬 유형을 id로 찾습니다.
+    settestType(selectedSortId);
+  };
 
   const fetchData = async () => {
     try {
@@ -33,7 +49,8 @@ const DetailList: React.FC = () => {
         setRefreshing(false);
         return;
       }
-      const data = await listArticle(boardType.id, 1, 50, 1);
+      // const data = await listArticle(boardType.id, 1, 50, 1);
+      const data = await listArticle(boardType.id, 1, 50, testType);
       if (data.data) {
         setboardData(data.data as BoardArticle[]);
       }
@@ -67,7 +84,7 @@ const DetailList: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [testType]);
 
   const createBoard = () => {
     console.log("글쓰기 화면으로 바뀌어야함");
@@ -87,6 +104,23 @@ const DetailList: React.FC = () => {
   return (
     <Container style={styles.container}>
       <SearchBar onSearchChange={handleSearch} />
+      <TouchableOpacity style={styles.sortContainer}>
+        {sortType.map((sort, index) => (
+          <View key={index}>
+            <TextButton
+              key={sort.id}
+              onPress={() => {
+                handleSortChange(sort.id);
+                console.log(testType);
+              }} // 선택된 정렬 유형 id를 핸들러에 전달합니다.
+              style={styles.sortKey}
+            >
+              {sort.name}
+            </TextButton>
+          </View>
+        ))}
+      </TouchableOpacity>
+
       <FlatList
         data={displayData}
         renderItem={({ item: board }) => (
@@ -129,6 +163,15 @@ const styles = StyleSheet.create({
     right: "10%",
     bottom: "5%",
     padding: 10,
+  },
+  sortContainer: {
+    flexDirection: "row",
+  },
+  sortKey: {
+    backgroundColor: "#5299EB",
+    marginRight: "5%",
+    width: 120, // 원하는 너비로 조절
+    height: 50,
   },
 });
 
