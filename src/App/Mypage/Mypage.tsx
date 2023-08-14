@@ -1,4 +1,4 @@
-import { FontAwesome } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
@@ -113,6 +113,7 @@ const MyView = () => {
 
   const [visibleIntroModal, setVisibleIntoModal] = useState(false);
   const [introduceTxt, setIntroduceTxt] = useState("");
+  let confirmedIntroTxt: string = "";
 
   return (
     <View style={styles.view}>
@@ -154,7 +155,16 @@ const MyView = () => {
       <Modal animationType="fade" transparent={true} visible={visibleIntroModal}>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <Spacer size={5} />
+            <TouchableOpacity
+              style={{ alignItems: "flex-end" }}
+              onPress={() => {
+                setVisibleIntoModal(false);
+              }}
+              hitSlop={{ top: 32, bottom: 32, left: 32, right: 32 }}
+            >
+              <AntDesign name="closecircle" size={20} color="#aaa" />
+            </TouchableOpacity>
+            {/* <Spacer size={5} /> */}
             <View style={{ alignItems: "center" }}>
               <Text style={styles.Moaltext}>소개글을 수정해주세요</Text>
             </View>
@@ -164,11 +174,10 @@ const MyView = () => {
                 style={styles.modalInput}
                 paddingHorizontal={20}
                 borderRadius={30}
-                placeholder="소개글"
-                onChangeText={text => setIntroduceTxt(text)}
-                // value={phoneNumber}
-                // keyboardType="numbers-and-punctuation"
-                // inputMode="tel"
+                placeholder={introduceTxt !== "" ? `${introduceTxt}` : "소개글을 입력해주세요"}
+                onChangeText={text => {
+                  confirmedIntroTxt = text;
+                }}
               ></Input>
               <Spacer size={10} />
             </View>
@@ -178,13 +187,17 @@ const MyView = () => {
                 style={styles.modalConfirmBtn}
                 onPress={() => {
                   setVisibleIntoModal(false);
+                  setIntroduceTxt("");
                 }}
               >
-                취소
+                삭제
               </TextButton>
               <TextButton
                 style={styles.modalConfirmBtn}
                 onPress={() => {
+                  setIntroduceTxt(confirmedIntroTxt);
+                  setVisibleIntoModal(false);
+
                   // EditUser.changePhNum(phoneNumber);
                 }}
               >
