@@ -92,7 +92,7 @@ const DetailList: React.FC = () => {
   };
 
   const detailContent = (board: BoardArticle) => {
-    if (boardType.id == 3) {
+    if (boardType.id == 2) {
       navigation.navigate("QnAdetail", { id: board.boardId });
     } else {
       navigation.navigate("BoardDetail", { id: board.boardId });

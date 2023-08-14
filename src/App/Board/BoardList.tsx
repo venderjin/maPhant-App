@@ -83,7 +83,6 @@ const BoardList = () => {
             </View>
             <View style={{ borderBottomWidth: 1 }}></View>
             <SearchBar />
-
             <View style={styles.board}>
               {boardTypeDataRows.map((rowData, rowIndex) => (
                 <View key={rowIndex} style={{ flexDirection: "row" }}>

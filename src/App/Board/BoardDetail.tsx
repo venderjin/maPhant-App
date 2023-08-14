@@ -5,10 +5,12 @@ import {
   Alert,
   Keyboard,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { useSelector } from "react-redux";
@@ -22,11 +24,14 @@ import {
   commentLike,
   commentReply,
   getArticle,
+  listReportType,
+  ReportComment,
+  ReportPost,
 } from "../../Api/board";
-import { Container, IconButton, Input, TextButton } from "../../components/common";
+import { Container, IconButton, Input, Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
-import { BoardArticleBase, BoardPost, commentType } from "../../types/Board";
+import { BoardArticleBase, BoardPost, commentType, ReportType } from "../../types/Board";
 import { UserData } from "../../types/User";
 import { dateFormat, dateTimeFormat } from "./Time";
 
@@ -45,6 +50,10 @@ const BoardDetail = () => {
   const [parent_id, setParentId] = useState<number>(0);
   const [checked, setChecked] = useState<boolean>(false);
   const [likeCnt, setLikeCnt] = useState<number>(0);
+  const [reportModal, setReportModal] = useState(false);
+  const [reportCommentModal, setReportCommentModal] = useState(false);
+  const [reportType, setReportType] = React.useState<ReportType[]>([]);
+  const [commentId, setCommentId] = useState<number>(0);
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
   const navigation = useNavigation<NavigationProps>();
   const [commentLength, setCommentLength] = useState<number>(0);
@@ -60,7 +69,6 @@ const BoardDetail = () => {
     }
   };
   // console.log(boardData)
-
   const handleUpdate = async () => {
     try {
       const response = await boardEdit(id, post.board.title, post.board.body, post.board.isHide);
@@ -121,7 +129,6 @@ const BoardDetail = () => {
       })
       .catch();
   }, []);
-
   useEffect(() => {
     commentArticle(id, 1, 50)
       .then(response => {
@@ -132,6 +139,15 @@ const BoardDetail = () => {
       })
       .catch();
   }, [likeCnt, commentLength, comments.length]);
+
+  useEffect(() => {
+    listReportType()
+      .then(data => {
+        setReportType(data.data as ReportType[]);
+        console.log(data.data);
+      })
+      .catch(err => console.log(err));
+  }, []);
 
   const handleCommentLike = (comment_id: number, likeCnt: number) => {
     commentLike(user.id, comment_id)
@@ -171,10 +187,135 @@ const BoardDetail = () => {
     ]);
   }
 
+  const handleReport = async (board_id: number, reportType_id: number) => {
+    try {
+      const response = await ReportPost(board_id, reportType_id);
+      Alert.alert("신고되었습니다.");
+      console.log(response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+  if (post.board === undefined) {
+    return <></>;
+  }
+
+  const handleCommentReport = async (commentId: number, reportId: number) => {
+    try {
+      const response = await ReportComment(commentId, reportId);
+      Alert.alert("신고되었습니다.");
+      console.log(response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+  if (post.board === undefined) {
+    return <></>;
+  }
+
+  const ModalWrapper = () => {
+    const [selectedReportIndex, setSelectedReportIndex] = useState<number>();
+
+    return (
+      <Modal animationType="fade" transparent={true} visible={reportModal}>
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            {reportType.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  setSelectedReportIndex(index);
+                }}
+                style={[
+                  styles.reportItem,
+                  selectedReportIndex === index && styles.selectedReportItem,
+                  // 선택된 항목의 경우 스타일 적용
+                ]}
+              >
+                <Text style={styles.reportContent}>{item.name}</Text>
+              </TouchableOpacity>
+            ))}
+            <View style={styles.modalBtnDirection}>
+              <TextButton style={styles.modalConfirmBtn} onPress={() => setReportModal(false)}>
+                취소
+              </TextButton>
+              <TextButton
+                style={styles.modalConfirmBtn}
+                onPress={() => {
+                  // 수정된 닉네임 server 전송
+                  if (selectedReportIndex !== null) {
+                    handleReport(id, selectedReportIndex);
+                    console.log(selectedReportIndex);
+                  }
+                  setReportModal(false);
+                }}
+              >
+                신고
+              </TextButton>
+            </View>
+            <Spacer size={5} />
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const ModalWrapperComment = ({ commentId }: { commentId: number }) => {
+    const [selectedCommentReportIndex, setSelectedCommentReportIndex] = useState<number>();
+
+    return (
+      <Modal animationType="fade" transparent={true} visible={reportCommentModal}>
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            {reportType.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  setSelectedCommentReportIndex(index); // 댓글 신고의 경우
+                }}
+                style={[
+                  styles.reportItem,
+                  selectedCommentReportIndex === index && styles.selectedReportItem,
+                  // 선택된 항목의 경우 스타일 적용
+                ]}
+              >
+                <Text style={styles.reportContent}>{item.name}</Text>
+              </TouchableOpacity>
+            ))}
+            <View style={styles.modalBtnDirection}>
+              <TextButton
+                style={styles.modalConfirmBtn}
+                onPress={() => setReportCommentModal(false)}
+              >
+                취소
+              </TextButton>
+              <TextButton
+                style={styles.modalConfirmBtn}
+                onPress={() => {
+                  // 수정된 닉네임 server 전송
+                  if (selectedCommentReportIndex !== null) {
+                    handleCommentReport(commentId, selectedCommentReportIndex);
+                    console.log(selectedCommentReportIndex);
+                    console.log(commentId);
+                  }
+                  setReportCommentModal(false);
+                }}
+              >
+                신고
+              </TextButton>
+            </View>
+            <Spacer size={5} />
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   return (
     <>
       <ScrollView style={styles.scroll}>
         <Container style={styles.container}>
+          <ModalWrapper />
           <View style={styles.infoBox}>
             <View>
               <View style={styles.header}>
@@ -224,7 +365,13 @@ const BoardDetail = () => {
               <IconButton name="star-o" color="orange" onPress={() => console.log("스크랩")}>
                 스크랩
               </IconButton>
-              <IconButton name="exclamation-circle" color="red" onPress={() => console.log("신고")}>
+              <IconButton
+                name="exclamation-circle"
+                color="red"
+                onPress={() => {
+                  setReportModal(true);
+                }}
+              >
                 신고
               </IconButton>
             </View>
@@ -236,6 +383,7 @@ const BoardDetail = () => {
               // comment.parent_id == null ? (
               <>
                 <View style={styles.commentBox} key={comment.id}>
+                  <ModalWrapperComment commentId={commentId} />
                   <View style={styles.line} />
                   <View style={{ flex: 1, margin: "3%" }}>
                     <View style={styles.commentHeader}>
@@ -290,7 +438,10 @@ const BoardDetail = () => {
                         <IconButton
                           name="exclamation-circle"
                           color="red"
-                          onPress={() => console.log("신고")}
+                          onPress={() => {
+                            setCommentId(comment.id);
+                            setReportCommentModal(true);
+                          }}
                         >
                           신고
                         </IconButton>
@@ -324,7 +475,10 @@ const BoardDetail = () => {
                                   <IconButton
                                     name="exclamation-circle"
                                     color="red"
-                                    onPress={() => console.log("신고")}
+                                    onPress={() => {
+                                      setCommentId(reply.id);
+                                      setReportCommentModal(true);
+                                    }}
                                   >
                                     신고
                                   </IconButton>
@@ -497,6 +651,42 @@ const styles = StyleSheet.create({
     maxHeight: 180,
     overflow: "hidden",
     margin: 20,
+  },
+  modalBackground: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContainer: {
+    flex: 0.8,
+    borderRadius: 25,
+    backgroundColor: "#ffffff",
+    padding: 15,
+  },
+  modalInput: {
+    width: "100%",
+    paddingVertical: "5%",
+    backgroundColor: "#D8E1EC",
+  },
+  modalBtnDirection: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  modalConfirmBtn: {
+    width: "45%",
+  },
+  reportContent: {
+    // backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  reportItem: {
+    padding: 8,
+  },
+  selectedReportItem: {
+    backgroundColor: "#5299EB",
   },
 });
 
