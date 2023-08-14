@@ -4,6 +4,7 @@ import MailRoutes from "../../Navigator/MailRoute";
 
 const Stack = createStackNavigator();
 
+// eslint-disable-next-line react/display-name
 export default () => (
   <Stack.Navigator initialRouteName="Mail">
     <Stack.Screen
@@ -14,6 +15,11 @@ export default () => (
     <Stack.Screen
       name="Chatroom"
       component={MailRoutes[1].component}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="SearchUser"
+      component={MailRoutes[2].component}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>

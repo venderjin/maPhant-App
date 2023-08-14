@@ -27,10 +27,10 @@ const Login: React.FC = () => {
     UIStore.showLoadingOverlay();
     UserAPI.login(email, password)
       .then(res => {
-        UserStorage.setUserToken(res["pubKey"], res["privKey"]);
-
-        return UserAPI.getProfile().then(res => {
-          UserStorage.setUserProfile(res.data);
+        UserStorage.setUserToken(res["pubKey"], res["privKey"]).then(() => {
+          return UserAPI.getProfile().then(res => {
+            UserStorage.setUserProfile(res.data);
+          });
         });
       })
       .catch(message => {
