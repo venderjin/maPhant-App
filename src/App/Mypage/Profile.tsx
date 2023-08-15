@@ -43,17 +43,17 @@ const Profile: React.FC = () => {
     if (item.toString() == "작성한 게시글 목록") {
       console.log(item);
       // 페이지 이동
-      // navigation.navigate("Bookmark");
+      navigation.navigate("WriteBoard");
     }
     if (item.toString() == "작성한 댓글 목록") {
       console.log(item);
       // 페이지 이동
-      // navigation.navigate("Bookmark");
+      navigation.navigate("WriteContent");
     }
     if (item.toString() == "좋아요한 글 목록") {
       console.log(item);
       // 페이지 이동
-      // navigation.navigate("Bookmark");
+      navigation.navigate("LikeContent");
     }
   };
   function OtherProfile() {

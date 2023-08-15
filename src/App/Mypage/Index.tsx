@@ -23,6 +23,9 @@ export default function MypageIndex() {
         component={Routes[7].component}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="WriteBoard" component={Routes[8].component} />
+      <Stack.Screen name="WriteContent" component={Routes[9].component} />
+      <Stack.Screen name="LikeContent" component={Routes[10].component} />
     </Stack.Navigator>
   );
 }
