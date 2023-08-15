@@ -2,16 +2,85 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import CheckBox from "expo-checkbox";
 import * as ImagePicker from "expo-image-picker";
+import { sha512 } from "js-sha512";
 import React, { useEffect, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity } from "react-native";
-import { useSelector } from "react-redux";
 
-import { boardPost, ImageUpload } from "../../Api/board";
+import { boardPost } from "../../Api/board";
+import { statusResponse } from "../../Api/fetchAPI";
 import { BoardType } from "../../App/Board/BoardList";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
-import { UserCategory, UserData } from "../../types/User";
+
+function uploadAPI<T extends statusResponse>(
+  method: string = "POST",
+  url: string,
+  body?: FormData,
+) {
+  return UserStorage.getUserToken().then(token => {
+    const abortController = new AbortController();
+    const abortSignal = abortController.signal;
+    setTimeout(() => abortController.abort(), 10000);
+
+    const options: RequestInit = {
+      method: method,
+      signal: abortSignal,
+      headers: {},
+    };
+    console.info(token);
+    if (token != undefined) {
+      // @ts-expect-error
+      options.headers["x-auth"] = token.token;
+      // @ts-expect-error
+      options.headers["x-timestamp"] = Math.floor(Date.now() / 1000);
+      // @ts-expect-error
+      options.headers["x-sign"] = sha512(
+        // @ts-expect-error
+        `${options.headers["x-timestamp"]}${token.privKey}`,
+      );
+    }
+
+    if (method != "GET") {
+      options.body = body;
+    }
+
+    const url_complete = `https://dev.api.tovelop.esm.kr${url}`;
+    console.info(url_complete, options);
+    return fetch(url_complete, options)
+      .catch(err => {
+        console.warn(method, url_complete, body, err);
+        if (err.name && (err.name === "AbortError" || err.name === "TimeoutError")) {
+          return Promise.reject("서버와 통신에 실패 했습니다 (Timeout)");
+        }
+
+        return Promise.reject("서버와 통신 중 오류가 발생했습니다.");
+      })
+      .then(res => {
+        console.log(res);
+        console.info(res.body);
+        // 특수 처리 (로그인 실패시에도 401이 들어옴)
+        // 로그인의 경우는 바로 내려 보냄
+        if (url == "/user/login") {
+          return res.json();
+        }
+
+        if (res.status === 401) {
+          // 로그인 안됨 (unauthorized)
+          UserStorage.removeUserData();
+          return Promise.reject("로그인 토큰이 만료되었습니다.");
+        }
+
+        return res.json();
+      })
+      .then(json => {
+        console.log(json);
+        const resp = json as T;
+
+        return Promise.resolve({ json: resp });
+      });
+  });
+}
 
 const Post: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -24,6 +93,8 @@ const Post: React.FC = () => {
 
   const [requsetpermission, setRequestPermission] = ImagePicker.useCameraPermissions();
   const [imageUrl, setImageUrl] = useState<string[]>([]);
+
+  const [postImageUrl, setPostImageUrl] = useState<string[]>([]);
 
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
@@ -43,6 +114,7 @@ const Post: React.FC = () => {
   };
 
   const complete = async () => {
+    console.log(postImageUrl);
     try {
       const response = await boardPost(
         null,
@@ -53,6 +125,8 @@ const Post: React.FC = () => {
         0,
         isanonymous,
         //hashtags.join(" "),
+        postImageUrl, // 이새끼가 자꾸 null 로 들어감 개빡침
+        // ["https://tovelope.s3.ap-northeast-2.amazonaws.com/image_1.jpg"]
       );
       console.log("게시물 작성 성공", response);
       // console.log(categoryId, userId, boardType.id, title, body);
@@ -97,7 +171,7 @@ const Post: React.FC = () => {
 
     try {
       // Call the uploadImageAsync function to upload the selected images
-      await uploadImageAsync(result.assets.uri, selectedImages);
+      await uploadImageAsync(selectedImages);
     } catch (error) {
       console.error("Image upload error:", error);
       // Handle the error
@@ -105,19 +179,35 @@ const Post: React.FC = () => {
     setImageUrl(selectedImages.map(image => image.uri));
 
     console.log("selectedImages", selectedImages);
-    async function uploadImageAsync(uri: string, selectedImages: any) {
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async function uploadImageAsync(images: any[]) {
       const formData = new FormData();
-      for (const name in selectedImages) {
-        formData.append(name, selectedImages[name]);
-      }
+      console.log(images);
+
+      images.forEach((image, index) => {
+        // @ts-expect-error
+        formData.append("files", {
+          uri: image.uri,
+          type: "image/jpeg",
+          name: `image_${index + 1}.jpg`,
+        });
+      });
+
+      console.log(formData);
+
       try {
-        // Call the ImageUpload function to upload the selected images
-        const response = await ImageUpload(formData);
-        console.log("Image upload response:", response);
-        // Handle the response as needed
+        // const response = await uploadAPI(formData);
+        const response = uploadAPI("POST", "/image", formData);
+        console.log("Image upload response:", (await response).json);
+        const jsonResponse = (await response).json;
+        for (const item of jsonResponse) {
+          const imageUrl = item.url;
+          postImageUrl.push(imageUrl);
+        }
+        setPostImageUrl(postImageUrl);
       } catch (error) {
         console.error("Image upload error:", error);
-        // Handle the error
       }
     }
   };
