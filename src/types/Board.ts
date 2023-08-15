@@ -14,7 +14,7 @@ type BoardArticleBase = {
 //게시판 읽기
 type BoardArticle = {
   categoryId: number;
-  imageUrl?: string[];
+  imagesUrl?: string[];
   isComplete: number;
   parentId?: number;
   reportCnt: number;

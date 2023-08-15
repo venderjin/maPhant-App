@@ -3,6 +3,7 @@ import Checkbox from "expo-checkbox";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Image,
   Keyboard,
   KeyboardAvoidingView,
   Modal,
@@ -310,7 +311,6 @@ const BoardDetail = () => {
       </Modal>
     );
   };
-
   return (
     <>
       <ScrollView style={styles.scroll}>
@@ -354,6 +354,16 @@ const BoardDetail = () => {
                 </View>
                 <View>
                   <Text style={styles.context}>{post.board.body}</Text>
+                  <ScrollView horizontal={true} style={styles.imageContainer}>
+                    {post.board.imagesUrl &&
+                      post.board.imagesUrl.map((imageUrl, index) => (
+                        <Image
+                          key={index}
+                          source={{ uri: imageUrl }}
+                          style={{ width: 200, height: 200, marginRight: 5 }}
+                        />
+                      ))}
+                  </ScrollView>
                 </View>
               </View>
             </View>
@@ -687,6 +697,10 @@ const styles = StyleSheet.create({
   },
   selectedReportItem: {
     backgroundColor: "#5299EB",
+  },
+  imageContainer: {
+    flexDirection: "row",
+    marginTop: "10%",
   },
 });
 
