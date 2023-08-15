@@ -6,7 +6,6 @@ import { Text } from "react-native";
 import { boardPost } from "../../Api/board";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
-import { BoardArticleBase } from "../../types/Board";
 
 const QA_answer: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -17,8 +16,8 @@ const QA_answer: React.FC = () => {
   const [isanonymous, setIsanonymous] = useState(0);
   const [isHide, setIsHide] = useState(0);
 
-  const params = useRoute().params as { id: number; preRender?: BoardArticleBase };
-  const { id, preRender } = params;
+  const params = useRoute().params as { id: number };
+  const { id } = params;
   const navigation = useNavigation<NavigationProps>();
 
   const check = (name: string, isChecked: boolean) => {
