@@ -19,5 +19,7 @@ type OtherUserData = {
   profile_img: string[];
   user_nickname: string;
 };
-
-export type { OtherUserData, UserCategory, UserData };
+type OtherUserId = {
+  id: number;
+};
+export type { OtherUserData, OtherUserId, UserCategory, UserData };

@@ -11,6 +11,7 @@ import WriteContent from "../App/Mypage/WriteContent";
 import LikeContent from "../App/Mypage/LikeContent";
 import { BoardArticle } from "../types/Board";
 import { RouteType } from "../types/Navigation";
+import { OtherUserId } from "../types/User";
 
 const Routes: RouteType[] = [
   {
@@ -71,4 +72,5 @@ export type NavigationProp = {
   LikeContent: undefined;
 };
 
+export type { OtherUserId as OtherUserForm };
 export default Routes;
