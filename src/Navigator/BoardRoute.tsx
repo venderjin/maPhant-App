@@ -6,7 +6,7 @@ import Post from "../App/Board/Post";
 import QA_answer from "../App/Board/QA_answer";
 import QAdetail from "../App/Board/QAdetail";
 import QnABoard from "../App/Board/QnAList";
-import { BoardArticleBase } from "../types/Board";
+import { BoardArticle } from "../types/Board";
 import { RouteType } from "../types/Navigation";
 
 const Routes: RouteType[] = [
@@ -48,8 +48,8 @@ export type NavigationProp = {
   BoardList: undefined;
   QnABoard: undefined;
   DetailList: { boardType: BoardType };
-  detail: { id: number; preRender?: BoardArticleBase };
-  QA_answer: { id: number; preRender?: BoardArticleBase };
+  detail: { id: number; preRender?: BoardArticle };
+  QA_answer: { id: number; preRender?: BoardArticle };
   Post: undefined;
 };
 

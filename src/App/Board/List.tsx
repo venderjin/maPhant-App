@@ -130,17 +130,13 @@ const DetailList: React.FC = () => {
 
       <FlatList
         data={displayData}
-        renderItem={({ item: board }) =>
-          board.parentId == null ? (
-            <View key={board.boardId} style={styles.body}>
-              <Pressable onPress={() => detailContent(board)}>
-                <PostSummary post={board} boardType={boardType} />
-              </Pressable>
-            </View>
-          ) : (
-            <></>
-          )
-        }
+        renderItem={({ item: board }) => (
+          <View key={board.boardId} style={styles.body}>
+            <Pressable onPress={() => detailContent(board)}>
+              <PostSummary post={board} boardType={boardType} />
+            </Pressable>
+          </View>
+        )}
         onEndReached={() => pageFunc()}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />

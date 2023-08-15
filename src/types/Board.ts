@@ -1,6 +1,7 @@
 type BoardArticleBase = {
   title: string;
   body: string;
+  userNickname?: string;
   likeCnt: number;
   commentCnt: number;
   createdAt: string;
@@ -21,6 +22,7 @@ type BoardArticle = {
   typeId: string;
   userId: number;
   boardId: number;
+  id?: number;
 } & BoardArticleBase;
 
 //글 읽기
