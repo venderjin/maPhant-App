@@ -1,15 +1,61 @@
+import { FontAwesome } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, Text, Modal, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView, Modal, Platform, StyleSheet, Text, View } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FontAwesome } from "@expo/vector-icons";
 
+import { readProfile } from "../../Api/member/Others";
+import UserAPI from "../../Api/memberAPI";
 import { Container, ImageBox, Input, TextButton } from "../../components/common";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProps } from "../../Navigator/Routes";
+import { OtherUserData, UserData } from "../../types/User";
 
 const Profile: React.FC = () => {
-  //   const navigation = useNavigation<NavigationProps>();
+  const navigation = useNavigation<NavigationProps>();
+  const [profileList, setProfileList] = useState<UserData[]>([]);
+  const [otherUserProfileList, setOtherUserProfileList] = useState<OtherUserData[]>([]);
+  const [id, setId] = useState(0);
+  // 일단 다른 사용자 id 불러올 방법이 없어서 자신 id로 하는 중
+  // 값을 받아오는데 시간이 생각보다 걸린다...
+  useEffect(() => {
+    UserAPI.getProfile()
+      .then(res => {
+        console.log("e");
+        setProfileList(res.data);
+      })
+      .catch(e => alert(e));
+  }, []);
 
+  // 불러온 id로 상대방 프로필, 소개글, 닉네임을 받아옴
+  useEffect(() => {
+    setId(profileList.id);
+    console.log(id);
+    readProfile(id)
+      .then(res => {
+        setOtherUserProfileList(res.data);
+        console.log(res.data);
+      })
+      .catch(e => console.log(e));
+  }, []);
+
+  const changePage = (item: string) => {
+    if (item.toString() == "작성한 게시글 목록") {
+      console.log(item);
+      // 페이지 이동
+      // navigation.navigate("Bookmark");
+    }
+    if (item.toString() == "작성한 댓글 목록") {
+      console.log(item);
+      // 페이지 이동
+      // navigation.navigate("Bookmark");
+    }
+    if (item.toString() == "좋아요한 글 목록") {
+      console.log(item);
+      // 페이지 이동
+      // navigation.navigate("Bookmark");
+    }
+  };
   function OtherProfile() {
     return (
       <Container
@@ -23,6 +69,7 @@ const Profile: React.FC = () => {
       >
         <Container>
           <ImageBox
+            // 이 부분은 받아온 이미지를 어떻게 불러오는지 몰라서 그대로 나둠
             source={require("../../../assets/image3.png")}
             width={120}
             height={120}
@@ -32,13 +79,20 @@ const Profile: React.FC = () => {
         </Container>
         <Container style={{ alignItems: "center", margin: 20 }}>
           <Container>
-            <Text style={{ fontSize: 25, fontWeight: "bold" }}>UserNickName</Text>
+            <Text style={{ fontSize: 25, fontWeight: "bold" }}>{profileList.nickname}</Text>
           </Container>
           <Container>
             <Text style={{ color: "gray" }}>User department</Text>
           </Container>
           <Container style={{ margin: 10 }}>
-            <Text>안녕하세요 여기는 소개글 자리입니다.!</Text>
+            {
+              // 소개글 유무로 내용을 정함
+              profileList.body ? (
+                <Text>{profileList.body}</Text>
+              ) : (
+                <Text>안녕하세요 여기는 소개글 자리입니다! </Text>
+              )
+            }
           </Container>
         </Container>
         <Container>
@@ -83,7 +137,10 @@ const Profile: React.FC = () => {
                 <>
                   <TouchableOpacity
                     key={index}
-                    onPress={() => alert(item)}
+                    onPress={() => {
+                      alert(item);
+                      changePage(item);
+                    }}
                     style={{
                       padding: 10,
                       paddingVertical: 18,
