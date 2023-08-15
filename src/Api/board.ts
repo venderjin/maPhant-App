@@ -59,7 +59,7 @@ function boardEdit(id: number, title: string, body: string, isHide: number) {
 }
 
 const boardComplete = (questId: number, answerId: number): Promise<dataResponse> =>
-  PostAPI<dataResponse>(`/board/complete?questId=${questId}&answerId=${answerId}`);
+  PostAPI<dataResponse>(`/board/complete/?questId=${questId}&answerId=${answerId}`);
 
 const boardDelete = (board_id: number): Promise<dataResponse> =>
   DeleteAPI<dataResponse>(`/board/${board_id}/`);

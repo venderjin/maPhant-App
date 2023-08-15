@@ -4,6 +4,7 @@ import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } fr
 import { useSelector } from "react-redux";
 
 import {
+  boardComplete,
   boardDelete,
   boardEdit,
   bookMarkArticle,
@@ -110,6 +111,16 @@ const QAdetail = () => {
       },
     ]);
   }
+
+  const handleComplete = (answerId: number) => {
+    boardComplete(id, answerId)
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        Alert.alert(error);
+      });
+  };
 
   const handleLike = async () => {
     try {
@@ -309,9 +320,11 @@ const QAdetail = () => {
                     <IconButton
                       name="lightbulb-o"
                       color="purple"
-                      onPress={() => console.log("해결")}
+                      onPress={() => {
+                        handleComplete(answer.id);
+                      }}
                     >
-                      해결
+                      채택
                     </IconButton>
                     <IconButton
                       name="thumbs-o-up"
