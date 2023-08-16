@@ -25,7 +25,7 @@ const Routes: RouteType[] = [
     component: DetailList,
   },
   {
-    name: "detail",
+    name: "QnAdetail",
     component: QAdetail,
   },
   {
@@ -59,7 +59,7 @@ export type NavigationProp = {
   QnABoard: { boardType: BoardType };
   DetailList: { boardType: BoardType };
   BoardDetail: { id: number; preRender?: BoardArticle };
-  detail: { id: number; preRender?: BoardArticle };
+  QnAdetail: { id: number; preRender?: BoardArticle };
   Post: { boardType: BoardType };
   QA_answer: { id: number; preRender?: BoardArticle };
   HotBoard: undefined;

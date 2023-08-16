@@ -453,7 +453,6 @@ const BoardDetail = () => {
           {comments
             .filter(comment => comment.parent_id === null)
             .map(comment => (
-              // comment.parent_id == null ? (
               <>
                 <View style={styles.commentBox} key={comment.id}>
                   <ModalWrapperComment commentId={commentId} />
@@ -547,9 +546,11 @@ const BoardDetail = () => {
                                   <IconButton
                                     name="thumbs-o-up"
                                     color="skyblue"
-                                    onPress={() => console.log("추천")}
+                                    onPress={() => {
+                                      handleCommentLike(reply.id, reply.like_cnt);
+                                    }}
                                   >
-                                    추천
+                                    {reply.like_cnt === 0 ? "추천" : reply.like_cnt}
                                   </IconButton>
                                   <IconButton
                                     name="exclamation-circle"
