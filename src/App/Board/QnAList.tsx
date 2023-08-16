@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { listArticle, listHotBoard } from "../../Api/board";
 import { Container } from "../../components/common";
@@ -15,14 +15,6 @@ const QnABoard: React.FC = () => {
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
   const [hotBoard, setHotBoard] = useState<HotBoard[]>([]);
-  // const [sort, setSort] = useState<SortType>();
-
-  // sortCriterion()
-  //   .then(data => {
-  //     setSort(data.data as SortType);
-  //   })
-  //   .catch(err => console.log(err));
-
   useEffect(() => {
     listHotBoard(boardType.id, 1, 50)
       .then(data => {
@@ -32,9 +24,9 @@ const QnABoard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    listArticle(boardType.id, 1, 50, 1)
+    listArticle(boardType.id, 1, 10, 50, 1)
       .then(data => {
-        if (data.data) setboardData(data.data as BoardArticle[]);
+        if (data.data) setboardData(data.data.list as BoardArticle[]);
       })
       .catch(err => console.log(err));
   }, []);
@@ -62,9 +54,6 @@ const QnABoard: React.FC = () => {
             </View>
           ))}
         </ScrollView>
-      </View>
-      <View>
-        <TextInput placeholder="aiwebfjiabdnjk"></TextInput>
       </View>
       <View style={styles.total}>
         <View style={styles.hHead}>
