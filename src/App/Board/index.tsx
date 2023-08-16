@@ -15,6 +15,11 @@ export default function BoardIndex(): JSX.Element {
       <Stack.Screen name="editPost" component={Routes[6].component} />
       <Stack.Screen name="QA_answer" component={Routes[7].component} />
       <Stack.Screen name="HotBoard" component={Routes[8].component} />
+      <Stack.Screen
+        name="Profile"
+        component={Routes[9].component}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }

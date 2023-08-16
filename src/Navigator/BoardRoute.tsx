@@ -7,6 +7,7 @@ import QA_answer from "../App/Board/QA_answer";
 import QAdetail from "../App/Board/QAdetail";
 import QnABoard from "../App/Board/QnAList";
 import TotalList from "../App/Board/TotalList";
+import Profile from "../App/Mypage/Profile";
 import { BoardArticle } from "../types/Board";
 import { RouteType } from "../types/Navigation";
 
@@ -46,6 +47,10 @@ const Routes: RouteType[] = [
   {
     name: "HotBoard",
     component: TotalList,
+  },
+  {
+    name: "Profile",
+    component: Profile,
   },
 ];
 
