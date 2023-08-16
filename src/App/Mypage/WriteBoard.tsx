@@ -36,6 +36,7 @@ const WriteBoard: React.FC = () => {
         <View>
           <Text style={{}}>Total page : {page.totalRecordCount} </Text>
         </View>
+        <View style={{ width: "100%", height: 2, backgroundColor: "#5299EB" }} />
         <FlatList
           data={writeboardList}
           renderItem={({ item, index }) => (
