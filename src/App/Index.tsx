@@ -9,8 +9,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import Board from "./Board/index";
 import Home from "./Home/Index";
-import Mail from "./Mail/Mail";
-import Mypage from "./Mypage/Mypage";
+import Mail from "./Mail/Index";
+import Mypage from "./Mypage/Index";
 
 const tabs: {
   name: string;
@@ -29,11 +29,13 @@ const tabs: {
     name: "게시판",
     icon: <FontAwesome5 name="book" size={24} color="#000" />,
     component: Board,
+    useSafeArea: false,
   },
   {
     name: "메일",
     icon: <Ionicons name="mail" size={24} color="#000" />,
     component: Mail,
+    useSafeArea: false,
   },
   {
     name: "내 정보",

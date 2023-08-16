@@ -1,5 +1,8 @@
+import BoardDetail from "../App/Board/BoardDetail";
 import BoardList, { BoardType } from "../App/Board/BoardList";
+import Edit from "../App/Board/editPost";
 import DetailList from "../App/Board/List";
+import Post from "../App/Board/Post";
 import QA_answer from "../App/Board/QA_answer";
 import QAdetail from "../App/Board/QAdetail";
 import QnABoard from "../App/Board/QnAList";
@@ -23,8 +26,16 @@ const Routes: RouteType[] = [
     component: QAdetail,
   },
   {
-    name: "qa_answer",
-    component: QA_answer,
+    name: "BoardDetail",
+    component: BoardDetail,
+  },
+  {
+    name: "Post",
+    component: Post,
+  },
+  {
+    name: "editPost",
+    component: Edit,
   },
 ];
 
@@ -34,6 +45,7 @@ export type NavigationProp = {
   DetailList: { boardType: BoardType };
   detail: undefined;
   qa_answer: undefined;
+  Post: undefined;
 };
 
 export default Routes;

@@ -1,25 +1,28 @@
-import { Theme, useNavigation, useTheme } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
-import React, { useContext, useEffect, useState } from "react";
+import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useNavigation } from "@react-navigation/native";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   Dimensions,
-  Image,
   ImageSourcePropType,
   NativeScrollEvent,
   NativeSyntheticEvent,
   SafeAreaView,
   ScrollView,
+  StyleProp,
   StyleSheet,
   Text,
   TextInput,
+  TextStyle,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useSelector } from "react-redux";
 
 import { NavigationProps } from "../../Navigator/Routes";
 import { ThemeContext } from "../Style/ThemeContext";
+
 interface Tags {
   id: string | undefined;
   title: string | undefined;
@@ -27,11 +30,7 @@ interface Tags {
 // type homeScreenProps = NativeStackScreenProps
 
 const Home: React.FC = () => {
-  const { width, height } = useWindowDimensions();
-  const [SCREEN_WIDTH, setSCREEN_WIDTH] = useState(width);
-  const [SCREEN_HEIGHT, setSCREEN_HEIGHT] = useState(height);
-  const [isDark, setIsDark] = useContext(ThemeContext);
-  const theme = useTheme();
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const changeMode = () => {
     setIsDark(!isDark);
@@ -68,32 +67,76 @@ const Home: React.FC = () => {
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = event.nativeEvent.contentOffset.x;
-    const infoPage = Math.round((offsetX / SCREEN_WIDTH) * 0.9);
+    const infoPage = Math.round(offsetX / SCREEN_WIDTH);
     setCurrentinfoPage(infoPage);
   };
 
-  const createInfoView = (info: ImageSourcePropType[]) => {
-    return info.map((image: ImageSourcePropType, index: number) => (
-      <View
-        key={index}
-        style={{
-          width: SCREEN_WIDTH * 0.9,
-          height: "100%",
-        }}
-      >
-        <Image
-          source={image as ImageSourcePropType}
-          style={{ width: "100%", height: "100%", resizeMode: "stretch" }}
-        />
-      </View>
-    ));
+  const CreateInfoView: React.FC<{
+    imageList: [ImageSourcePropType, () => void][];
+    currentPage: number;
+  }> = props => {
+    const { imageList, _currentPage } = props;
+    return (
+      <>
+        {imageList.map(([image, action], idx) => (
+          <Pressable key={idx} onPress={action} style={{ paddingHorizontal: 16, height: 250 }}>
+            <ImageBox source={image} width={SCREEN_WIDTH - 16 * 2} height={250} borderRadius={8} />
+          </Pressable>
+        ))}
+      </>
+    );
   };
 
-  // function mapInfo() {
-  //   return info.map((info, index) => createInfoView(info, index));
-  // }
+  const styles = StyleSheet.create({
+    infoDotBox: {
+      flexDirection: "row",
+      justifyContent: "center",
+      marginTop: 10,
+    },
+    infoDot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      backgroundColor: "gray",
+      marginHorizontal: 5,
+    },
+    activeinfoDot: {
+      backgroundColor: "#5299EB",
+    },
+    unactiveinfoDot: {
+      backgroundColor: "#CBD7E6",
+    },
+  });
 
-  // Info *
+  return (
+    <View>
+      <ScrollView
+        horizontal={true}
+        pagingEnabled={true}
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        style={{ borderRadius: 18 }}
+      >
+        <CreateInfoView imageList={imageList} currentPage={currentinfoPage} />
+      </ScrollView>
+
+      <View style={styles.infoDotBox}>
+        {Array.from({ length: infoPageCount }, (_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.infoDot,
+              index === currentinfoPage ? styles.activeinfoDot : styles.unactiveinfoDot,
+            ]}
+          />
+        ))}
+      </View>
+    </View>
+  );
+};
+
+const TodaysHot: React.FC = () => {
   // * HotTags
   const [tags /*, setTags*/] = useState<Tags[]>([
     //useState를 이용해 상태 변경
@@ -112,22 +155,22 @@ const Home: React.FC = () => {
   }, []);
 
   /*const tagFetchData = async () => {
-    try {
-      // 백엔드에서 데이터를 받아오는 비동기 요청
-      const response = await fetch('API');
-      const data = await response.json();
-
-      // 받아온 데이터를 기반으로 배열 생성 후 상태 변경
-      const tagList: Tags[] = data.map((tag: any) => ({
-        id: tags.id,
-        title: tags.title,
-      }));
-
-      setTags(tagList);
-    } catch (error) {
-      console.error('Fetching data error :', error);
-    }
-  };*/
+      try {
+        // 백엔드에서 데이터를 받아오는 비동기 요청
+        const response = await fetch('API');
+        const data = await response.json();
+  
+        // 받아온 데이터를 기반으로 배열 생성 후 상태 변경
+        const tagList: Tags[] = data.map((tag: any) => ({
+          id: tags.id,
+          title: tags.title,
+        }));
+  
+        setTags(tagList);
+      } catch (error) {
+        console.error('Fetching data error :', error);
+      }
+    };*/
 
   const createTagView = (tag: Tags, index: number) => {
     const colors = [
@@ -149,13 +192,14 @@ const Home: React.FC = () => {
           backgroundColor: colors[index % colors.length],
           justifyContent: "flex-start",
           alignItems: "center",
-          marginRight: Dimensions.get("window").width * 0.02,
-          padding: Dimensions.get("window").width * 0.025,
+          marginLeft: 4,
+          paddingVertical: 8,
+          paddingHorizontal: 12,
           height: 36,
           borderRadius: 30,
         }}
       >
-        <Text style={{}}>{tag.title}</Text>
+        <Text>{tag.title}</Text>
       </View>
     );
   };
@@ -163,8 +207,6 @@ const Home: React.FC = () => {
   function mapTag() {
     return tags.map((tag, index) => createTagView(tag, index));
   }
-  const navigation = useNavigation<NavigationProps>();
-  // HotTags *
 
   return (
     //view화면
@@ -420,6 +462,7 @@ const createStyle = (width: number, height: number, theme: Theme) =>
       paddingRight: "5%",
     },
     todaysHotTitleBox: {
+      padding: 16,
       flex: 1,
       flexDirection: "row",
       //backgroundColor: "skyblue",
@@ -427,7 +470,6 @@ const createStyle = (width: number, height: number, theme: Theme) =>
     },
 
     todaysHotTitleText: {
-      color: theme.colors.text,
       fontSize: 25,
       fontWeight: "bold",
     },
@@ -436,36 +478,93 @@ const createStyle = (width: number, height: number, theme: Theme) =>
       flexDirection: "row",
       //backgroundColor: "purple",
     },
-    advertisementContainer: {
-      height: Dimensions.get("window").height * 0.25,
-      backgroundColor: "pink",
-    },
+  });
+
+  return (
+    <View>
+      <View style={styles.todaysHotTitleBox}>
+        <TextThemed style={styles.todaysHotTitleText}> 🔥오늘의</TextThemed>
+        <Text
+          style={{
+            fontSize: 25,
+            fontWeight: "bold",
+            color: "red",
+          }}
+        >
+          {" "}
+          HOT
+        </Text>
+        <TextThemed style={styles.todaysHotTitleText}> 키워드🔥</TextThemed>
+      </View>
+
+      <ScrollView
+        horizontal={true}
+        keyboardDismissMode="none"
+        showsHorizontalScrollIndicator={false}
+        style={styles.todaysHotTagBox}
+        contentContainerStyle={{ paddingHorizontal: 16 }}
+      >
+        {mapTag()}
+      </ScrollView>
+    </View>
+  );
+};
+
+const Advertisements: React.FC = () => {
+  const screen_width = useWindowDimensions().width;
+  // const styles = StyleSheet.create({
+  //   advertisementContainer: {
+  //     height: 300,
+  //     backgroundColor: "pink",
+  //   },
+  // });
+
+  // return <View style={styles.advertisementContainer}>
+  return <ImageBox source={require("../../../assets/adv1.png")} width={screen_width} />;
+  // </View>
+};
+const ToolBox: React.FC = () => {
+  const styles = StyleSheet.create({
     homeBlockLayout: {
-      width: "100%",
-      // height: homeBlockLayoutHeight,
-      //backgroundColor: "blue",
       alignItems: "center",
       justifyContent: "center",
+      paddingHorizontal: 16,
     },
     homeBlockContainer: {
-      width: "90%",
-      height: "100%",
-      //backgroundColor: "yellow",
-      alignItems: "center",
-      justifyContent: "space-around",
-
+      width: "100%",
+      justifyContent: "space-between",
       flexDirection: "row",
     },
     homeBlock: {
       width: "23%",
-      height: "50%",
+      height: 40,
+      padding: 4,
       backgroundColor: "skyblue",
       alignItems: "center",
       borderColor: "black",
       justifyContent: "center",
       borderRadius: 15,
-      marginRight: "2%",
     },
   });
+
+  return (
+    <View style={styles.homeBlockLayout}>
+      <View style={styles.homeBlockContainer}>
+        <TouchableOpacity style={styles.homeBlock}>
+          <Text>즐겨찾기</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.homeBlock}>
+          <Text>Blog</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.homeBlock}>
+          <Text>Point</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.homeBlock}>
+          <Text>아몰랑</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
 
 export default Home;
