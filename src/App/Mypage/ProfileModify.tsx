@@ -1,12 +1,14 @@
+import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Field, Formik, FormikErrors } from "formik";
-import React, { useCallback, useState } from "react";
-import { Modal, ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
 import { useSelector } from "react-redux";
 
-import EditUser from "../../Api/member/EditUser";
+import { PostAPI } from "../../Api/fetchAPI";
 import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
+import UserAPI from "../../Api/memberAPI";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
 import SearchByFilter from "../../components/Input/SearchByFilter";
 import { NavigationProps } from "../../Navigator/Routes";
@@ -52,9 +54,13 @@ const ProfileModify: React.FC = () => {
     major: category?.majorName,
   };
 
+  const [userEmail, setUserEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [nickname, setNickname] = useState("");
+  let tmpNickname = "";
+  let tmpPhoneNumber = "";
+  const [studentNum, setStudentNum] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [modifyingPassWordModal, setModyfyingPassWordModal] = useState(false);
   const [modifyingNicknameModal, setModyfyingNicknameModal] = useState(false);
@@ -62,9 +68,6 @@ const ProfileModify: React.FC = () => {
   const [modifyingFieldModal, setModyfyingFieldModal] = useState(false);
 
   const navigation = useNavigation<NavigationProps>();
-
-  // const route = useRoute();
-  // const params = route.params as SignUpFormParams;
 
   const onSubmit = useCallback((errors: FormikErrors<ISearchForm>, next: () => void) => {
     if (Object.keys(errors).length === 0) {
@@ -81,6 +84,20 @@ const ProfileModify: React.FC = () => {
     field: "",
     major: "",
   };
+
+  useEffect(() => {
+    PostAPI("/user/changeinfo/olddata").then(res => {
+      if (res.success == true) {
+        console.log(res.data);
+        setUserEmail(res.data.email);
+        setPassword(res.data.password);
+        setNickname(res.data.nickname);
+        setStudentNum(res.data.sno);
+        setPhoneNumber(res.data.phNum);
+      }
+    });
+  }, []);
+
   return (
     <Container style={{ backgroundColor: "white" }} paddingHorizontal={10}>
       <ScrollView
@@ -98,7 +115,7 @@ const ProfileModify: React.FC = () => {
             {/* -----------이메일 */}
             <Text style={styles.text}>이메일</Text>
             <View style={styles.modifyingContainer}>
-              <Text style={styles.text}>{usetModifying.email}</Text>
+              <Text style={styles.text}>{userEmail}</Text>
             </View>
 
             {/* --------------비밀번호 수정 */}
@@ -106,7 +123,9 @@ const ProfileModify: React.FC = () => {
               <View style={styles.modifyingContentWidth}>
                 <Text style={styles.text}>비밀번호</Text>
                 <View style={styles.modifyingContainer}>
-                  <Text style={styles.text}>{usetModifying.password}</Text>
+                  <Text style={styles.text}>
+                    {password.length >= 1 ? "**********" : "비밀번호를 확인해주세요"}
+                  </Text>
                 </View>
               </View>
               <View style={styles.modifyingBtn}>
@@ -124,9 +143,24 @@ const ProfileModify: React.FC = () => {
             <Modal animationType="fade" transparent={true} visible={modifyingPassWordModal}>
               <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
-                  <Spacer size={5} />
                   <View>
-                    <Text style={styles.text}>수정할 비밀번호</Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text style={styles.text}>수정할 비밀번호</Text>
+                      <TouchableOpacity
+                        style={{ alignItems: "flex-end" }}
+                        onPress={() => {
+                          setModyfyingPassWordModal(false);
+                        }}
+                        hitSlop={{ top: 32, bottom: 32, left: 32, right: 32 }}
+                      >
+                        <AntDesign name="closecircle" size={20} color="#aaa" />
+                      </TouchableOpacity>
+                    </View>
                     <Spacer size={10} />
                     <Input
                       style={styles.modalInput}
@@ -134,7 +168,6 @@ const ProfileModify: React.FC = () => {
                       borderRadius={30}
                       placeholder="password"
                       onChangeText={text => setPassword(text)}
-                      value={password}
                       secureTextEntry={true}
                     ></Input>
                     <Spacer size={10} />
@@ -148,7 +181,6 @@ const ProfileModify: React.FC = () => {
                       borderRadius={30}
                       placeholder="confirmPassword"
                       onChangeText={text => setConfirmPassword(text)}
-                      value={confirmPassword}
                       secureTextEntry={true}
                     ></Input>
                   </View>
@@ -165,7 +197,22 @@ const ProfileModify: React.FC = () => {
                     <TextButton
                       style={styles.modalConfirmBtn}
                       onPress={() => {
-                        EditUser.changePassword(password, confirmPassword);
+                        if (password !== confirmPassword) {
+                          alert("비밀번호가 일치하지 않습니다.");
+                        } else {
+                          PostAPI("/user/changeinfo/password", {
+                            newPassword: password,
+                            newPasswordCheck: confirmPassword,
+                          })
+                            .then(res => {
+                              if (res.success === true) {
+                                alert("비밀번호가 변경되었습니다.");
+                                return;
+                              }
+                            })
+                            .catch(err => alert(err));
+                        }
+                        setModyfyingPassWordModal(false);
                       }}
                     >
                       수정
@@ -181,7 +228,7 @@ const ProfileModify: React.FC = () => {
               <View style={styles.modifyingContentWidth}>
                 <Text style={styles.text}>닉네임</Text>
                 <View style={styles.modifyingContainer}>
-                  <Text style={styles.text}>{usetModifying.nickname}</Text>
+                  <Text style={styles.text}>{nickname}</Text>
                 </View>
               </View>
               <View style={styles.modifyingBtn}>
@@ -199,17 +246,33 @@ const ProfileModify: React.FC = () => {
             <Modal animationType="fade" transparent={true} visible={modifyingNicknameModal}>
               <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
-                  <Spacer size={5} />
                   <View>
-                    <Text style={styles.text}>수정할 닉네임</Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text style={styles.text}>수정할 닉네임</Text>
+                      <TouchableOpacity
+                        style={{ alignItems: "flex-end" }}
+                        onPress={() => {
+                          setModyfyingNicknameModal(false);
+                        }}
+                        hitSlop={{ top: 32, bottom: 32, left: 32, right: 32 }}
+                      >
+                        <AntDesign name="closecircle" size={20} color="#aaa" />
+                      </TouchableOpacity>
+                    </View>
                     <Spacer size={10} />
                     <Input
                       style={styles.modalInput}
                       paddingHorizontal={20}
                       borderRadius={30}
-                      placeholder="nickname"
-                      onChangeText={text => setNickname(text)}
-                      value={nickname}
+                      placeholder={nickname}
+                      onChangeText={text => {
+                        tmpNickname = text;
+                      }}
                     ></Input>
                     <Spacer size={10} />
                   </View>
@@ -226,7 +289,21 @@ const ProfileModify: React.FC = () => {
                     <TextButton
                       style={styles.modalConfirmBtn}
                       onPress={() => {
-                        EditUser.changeNickname(nickname);
+                        PostAPI("/user/changeinfo/nickname", {
+                          nickname: tmpNickname,
+                        })
+                          .then(res => {
+                            if (res.success == true) {
+                              console.log(tmpNickname, " 으로 닉네임 수정 성공");
+                              setNickname(tmpNickname);
+                              console.log(nickname);
+                              setModyfyingNicknameModal(false);
+                            }
+                          })
+                          .catch(err => alert(err));
+                        UserAPI.getProfile().then(res => {
+                          UserStorage.setUserProfile(res.data);
+                        });
                       }}
                     >
                       수정
@@ -246,7 +323,7 @@ const ProfileModify: React.FC = () => {
             {/* ----------학번 */}
             <Text style={styles.text}>학번</Text>
             <View style={styles.modifyingContainer}>
-              <Text style={styles.text}>{usetModifying.studentNumber}</Text>
+              <Text style={styles.text}>{studentNum}</Text>
             </View>
 
             {/* ----------핸드폰 번호 수정 */}
@@ -254,7 +331,9 @@ const ProfileModify: React.FC = () => {
               <View style={styles.modifyingContentWidth}>
                 <Text style={styles.text}>핸드폰 번호</Text>
                 <View style={styles.modifyingContainer}>
-                  <Text style={styles.text}>{usetModifying.nickname}</Text>
+                  <Text style={styles.text}>
+                    {phoneNumber == null ? "핸드폰번호를 입력해주세요" : phoneNumber}
+                  </Text>
                 </View>
               </View>
               <View style={styles.modifyingBtn}>
@@ -271,19 +350,31 @@ const ProfileModify: React.FC = () => {
             <Modal animationType="fade" transparent={true} visible={modifyingPhoneNumModal}>
               <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
-                  <Spacer size={5} />
                   <View>
-                    <Text style={styles.text}>수정 핸드폰 번호</Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text style={styles.text}>수정할 핸드폰 번호</Text>
+                      <TouchableOpacity
+                        style={{ alignItems: "flex-end" }}
+                        onPress={() => {
+                          setModyfyingPhoneNumModal(false);
+                        }}
+                        hitSlop={{ top: 32, bottom: 32, left: 32, right: 32 }}
+                      >
+                        <AntDesign name="closecircle" size={20} color="#aaa" />
+                      </TouchableOpacity>
+                    </View>
                     <Spacer size={10} />
                     <Input
                       style={styles.modalInput}
                       paddingHorizontal={20}
                       borderRadius={30}
-                      placeholder="phoneNumber"
-                      onChangeText={text => setPhoneNumber(text)}
-                      value={phoneNumber}
-                      // keyboardType="numbers-and-punctuation"
-                      // inputMode="tel"
+                      placeholder={phoneNumber == null ? "010-0000-0000" : phoneNumber}
+                      onChangeText={text => (tmpPhoneNumber = text)}
                     ></Input>
                     <Spacer size={10} />
                   </View>
@@ -300,7 +391,20 @@ const ProfileModify: React.FC = () => {
                     <TextButton
                       style={styles.modalConfirmBtn}
                       onPress={() => {
-                        EditUser.changePhNum(phoneNumber);
+                        PostAPI("/user/changeinfo/phnum", {
+                          phNum: tmpPhoneNumber,
+                        })
+                          .then(res => {
+                            console.log(res);
+                            if (res.success == true) {
+                              console.log("핸드폰번호 수정 성공");
+                              setPhoneNumber(tmpPhoneNumber);
+                              setModyfyingPhoneNumModal(false);
+                            }
+                          })
+                          .catch(error => {
+                            alert(error);
+                          });
                       }}
                     >
                       수정
