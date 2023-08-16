@@ -51,6 +51,7 @@ const QAdetail = () => {
   const [likeCnt, setLikeCnt] = useState(0);
   const [reportModal, setReportModal] = useState(false);
   const [reportType, setReportType] = React.useState<ReportType[]>([]);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   const handleDelete = async () => {
     try {
@@ -144,20 +145,16 @@ const QAdetail = () => {
     }
   };
 
-  const handleBookmark = async (board_id: number) => {
+  const handleBookmarkToggle = async (board_id: number) => {
     try {
-      const response = await bookMarkArticle(id);
-      Alert.alert("북마크 추가 되었습니다.");
-      console.log(response);
-    } catch (error) {
-      Alert.alert(error);
-    }
-  };
-  const DeleteBookmark = async (board_id: number) => {
-    try {
-      const response = await DeletebookMarkArticle(board_id);
-      Alert.alert("북마크 삭제 되었습니다.");
-      console.log(response);
+      if (isBookmarked) {
+        await DeletebookMarkArticle(board_id);
+        Alert.alert("북마크 삭제되었습니다.");
+      } else {
+        await bookMarkArticle(id);
+        Alert.alert("북마크 추가되었습니다.");
+      }
+      setIsBookmarked(!isBookmarked); // 토글 상태 업데이트
     } catch (error) {
       Alert.alert(error);
     }
@@ -280,7 +277,7 @@ const QAdetail = () => {
           >
             {likeCnt === 0 ? "추천" : likeCnt}
           </IconButton>
-          <IconButton name="star-o" color="orange" onPress={() => handleBookmark(id)}>
+          <IconButton name="star-o" color="orange" onPress={() => handleBookmarkToggle(id)}>
             북마크
           </IconButton>
           {/* {modal()} */}
