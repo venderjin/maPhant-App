@@ -23,28 +23,12 @@ import { BoardArticle, BoardPost, ReportType } from "../../types/Board";
 import { UserData } from "../../types/User";
 import { dateTimeFormat } from "./Time";
 
-const data = [
-  {
-    id: 1,
-    name: "jingjing",
-    date: "12312.312.412.3",
-  },
-  {
-    id: 2,
-    name: "ahdjfad",
-    date: "2024.232.",
-  },
-  { id: 3, name: "지망이", date: " 2023.03,12" },
-];
-
 const QAdetail = () => {
   const params = useRoute().params as { id: number; preRender?: BoardArticle };
   const { id, preRender } = params;
 
   const [LoadingOverlay, setLoadingOverlay] = useState(false);
 
-  // const [post, setPost] = useState({ board: preRender } as BoardPost);
-  // const [answer, setAnswer] = useState({ answerList: preRender } as BoardPost);
   const [post, setPost] = useState({ board: preRender, answerList: preRender } as BoardPost);
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
   const navigation = useNavigation<NavigationProps>();
@@ -70,7 +54,7 @@ const QAdetail = () => {
     try {
       const response = await boardEdit(id, post.board.title, post.board.body, post.board.isHide);
       console.log("수정 가능", response);
-      navigation.navigate("editPost", { post: post, boardType: boardData });
+      navigation.navigate("editPost", { post: post.board, boardType: boardData });
     } catch (error) {
       console.error("수정 오류", error);
     }
@@ -107,7 +91,7 @@ const QAdetail = () => {
       {
         text: "네",
         onPress: () => {
-          handleDelete(id);
+          handleDelete();
         },
       },
     ]);
@@ -127,9 +111,8 @@ const QAdetail = () => {
     try {
       const response = await insertLikePost(id);
       post.board.isLike = true;
-      console.warn(likeCnt);
       setLikeCnt(likeCnt + 1);
-      console.log("추천 성공", response);
+      console.log(response);
     } catch (error) {
       Alert.alert(error);
     }
@@ -301,7 +284,7 @@ const QAdetail = () => {
         </View>
       </View>
       <ScrollView style={styles.scroll}>
-        {post.answerList === null ? (
+        {post.answerList === undefined ? (
           <></>
         ) : (
           post.answerList.map(answer => (
@@ -311,7 +294,7 @@ const QAdetail = () => {
                 <View style={styles.answerheader}>
                   <View style={{ flexDirection: "row" }}>
                     <Text style={styles.answername}>{answer.userId}</Text>
-                    <Text style={styles.answerdate}>{answer.createdAt}</Text>
+                    <Text style={styles.answerdate}>{dateTimeFormat(answer.createdAt)}</Text>
                   </View>
                   <View style={styles.cbutBox}>
                     <IconButton
@@ -326,21 +309,25 @@ const QAdetail = () => {
                     <IconButton
                       name="thumbs-o-up"
                       color="skyblue"
-                      onPress={() => console.log("추천")}
+                      onPress={() => {
+                        answer.isLike ? likeDelete() : handleLike();
+                      }}
                     >
-                      추천
+                      {likeCnt === 0 ? "추천" : likeCnt}
                     </IconButton>
                     <IconButton
                       name="exclamation-circle"
                       color="red"
-                      onPress={() => console.log("신고")}
+                      onPress={() => {
+                        setReportModal(true);
+                      }}
                     >
                       신고
                     </IconButton>
                   </View>
                 </View>
                 <TouchableOpacity
-                // onPress={() => navigation.navigate("QA_answer")}
+                  onPress={() => navigation.navigate("BoardDetail", { id: answer.id })}
                 >
                   <View style={styles.answercontext}>
                     <Text style={styles.qatitle}>{answer.title}</Text>
