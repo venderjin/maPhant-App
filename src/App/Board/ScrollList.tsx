@@ -24,7 +24,7 @@ function ScrollList(post: BoardArticle | HotBoard): JSX.Element {
 
   const detailContent = (board_id: number) => {
     if (boardType.id == 2) {
-      navigation.navigate("detail", { id: board_id });
+      navigation.navigate("QnAdetail", { id: board_id });
     } else {
       navigation.navigate("BoardDetail", { id: board_id });
     }
