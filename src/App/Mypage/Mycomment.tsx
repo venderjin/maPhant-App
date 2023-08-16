@@ -17,7 +17,7 @@ export default function (): JSX.Element {
 }
 
 function Mycomment(): JSX.Element {
-  const [comment, setComment] = useState<BoardArticle[] & { body: string }[]>([]);
+  const [comments, setComments] = useState<BoardArticle[] & { body: string }[]>([]);
   const [endPage, setEndPage] = React.useState<number>(0);
   const [pages, setPages] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -34,7 +34,7 @@ function Mycomment(): JSX.Element {
           console.log(res.errors);
           return;
         } else {
-          setComment([...comment, ...res.data.list]);
+          setComments([...comments, ...res.data.list]);
           setEndPage(res.data.pagination.endPage);
         }
       },
@@ -69,13 +69,13 @@ function Mycomment(): JSX.Element {
 
   const detailContent = (comments: BoardArticle) => {
     console.log(comments.board_id);
-    navigation.navigate("Boardetail", { id: comments.board_id });
+    navigation.navigate("BoardDetail", { id: comments.board_id });
   };
 
   return (
     <>
       <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>
-        {comment.map(comment => (
+        {comments.map(comment => (
           <>
             <Pressable onPress={() => detailContent(comment)}>
               <View style={styles.container}>
