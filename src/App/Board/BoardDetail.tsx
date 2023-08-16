@@ -19,12 +19,16 @@ import { useSelector } from "react-redux";
 import {
   boardDelete,
   boardEdit,
+  bookMarkArticle,
   commentArticle,
   commentDelete,
   commentInsert,
   commentLike,
   commentReply,
+  DeletebookMarkArticle,
+  deleteLikeBoard,
   getArticle,
+  insertLikePost,
   listReportType,
   ReportComment,
   ReportPost,
@@ -58,6 +62,7 @@ const BoardDetail = () => {
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
   const navigation = useNavigation<NavigationProps>();
   const [commentLength, setCommentLength] = useState<number>(0);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   const handleDelete = async () => {
     try {
@@ -214,6 +219,42 @@ const BoardDetail = () => {
     return <></>;
   }
 
+  const handleLike = async () => {
+    try {
+      const response = await insertLikePost(id);
+      post.board.isLike = true;
+      setLikeCnt(likeCnt + 1);
+      console.log(response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+  const likeDelete = async () => {
+    try {
+      const response = await deleteLikeBoard(id);
+      post.board.isLike = false;
+      setLikeCnt(likeCnt - 1);
+      console.log("취소", response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+
+  const handleBookmarkToggle = async (board_id: number) => {
+    try {
+      if (isBookmarked) {
+        await DeletebookMarkArticle(board_id);
+        Alert.alert("북마크 삭제되었습니다.");
+      } else {
+        await bookMarkArticle(id);
+        Alert.alert("북마크 추가되었습니다.");
+      }
+      setIsBookmarked(!isBookmarked); // 토글 상태 업데이트
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+
   const ModalWrapper = () => {
     const [selectedReportIndex, setSelectedReportIndex] = useState<number>();
 
@@ -369,11 +410,17 @@ const BoardDetail = () => {
             </View>
 
             <View style={styles.cbutBox}>
-              <IconButton name="thumbs-o-up" color="skyblue" onPress={() => console.log("추천")}>
-                추천
+              <IconButton
+                name="thumbs-o-up"
+                color="skyblue"
+                onPress={() => {
+                  post.board.isLike ? likeDelete() : handleLike();
+                }}
+              >
+                {likeCnt === 0 ? "추천" : likeCnt}
               </IconButton>
-              <IconButton name="star-o" color="orange" onPress={() => console.log("스크랩")}>
-                스크랩
+              <IconButton name="star-o" color="orange" onPress={() => handleBookmarkToggle(id)}>
+                북마크
               </IconButton>
               <IconButton
                 name="exclamation-circle"
