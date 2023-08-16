@@ -4,7 +4,7 @@ import CheckBox from "expo-checkbox";
 import * as ImagePicker from "expo-image-picker";
 import { sha512 } from "js-sha512";
 import React, { useEffect, useState } from "react";
-import { Image, ScrollView, Text, TouchableOpacity } from "react-native";
+import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import { boardPost } from "../../Api/board";
 import { statusResponse } from "../../Api/fetchAPI";
@@ -46,7 +46,7 @@ function uploadAPI<T extends statusResponse>(
     }
 
     const url_complete = `https://dev.api.tovelop.esm.kr${url}`;
-
+    console.info(url_complete, options);
     return fetch(url_complete, options)
       .catch(err => {
         console.warn(method, url_complete, body, err);
@@ -94,6 +94,8 @@ const Post: React.FC = () => {
   const [requsetpermission, setRequestPermission] = ImagePicker.useCameraPermissions();
   const [imageUrl, setImageUrl] = useState<string[]>([]);
 
+  const [postImageUrl, setPostImageUrl] = useState<string[]>([]);
+
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
   const navigation = useNavigation<NavigationProps>();
@@ -112,6 +114,12 @@ const Post: React.FC = () => {
   };
 
   const complete = async () => {
+    console.log(postImageUrl);
+    console.log("hashtagInput : ", hashtagInput);
+    console.log("hashtags", hashtags);
+    const DBnewHashtags = hashtags.map(word => word.replace(/^#/, ""));
+    console.log("DBnewHashtags", DBnewHashtags);
+
     try {
       const response = await boardPost(
         null,
@@ -122,6 +130,8 @@ const Post: React.FC = () => {
         0,
         isanonymous,
         //hashtags.join(" "),
+        postImageUrl.length == 0 ? undefined : postImageUrl,
+        DBnewHashtags,
       );
       console.log("게시물 작성 성공", response);
       // console.log(categoryId, userId, boardType.id, title, body);
@@ -132,8 +142,10 @@ const Post: React.FC = () => {
   };
 
   const updateHashtags = () => {
-    const words = hashtagInput.split("");
+    const words = hashtagInput.split(" ");
+    console.log("words", words);
     const newHashtags = words.filter(word => word.startsWith("#"));
+    console.log("newHashtags ", newHashtags);
     setHashtags(newHashtags);
   };
 
@@ -194,7 +206,13 @@ const Post: React.FC = () => {
       try {
         // const response = await uploadAPI(formData);
         const response = uploadAPI("POST", "/image", formData);
-        console.log("Image upload response:", response);
+        console.log("Image upload response:", (await response).json);
+        const jsonResponse = (await response).json;
+        for (const item of jsonResponse) {
+          const imageUrl = item.url;
+          postImageUrl.push(imageUrl);
+        }
+        setPostImageUrl(postImageUrl);
       } catch (error) {
         console.error("Image upload error:", error);
       }
@@ -247,17 +265,23 @@ const Post: React.FC = () => {
           multiline={true}
         ></Input>
         <Spacer size={20} />
-        <Input
-          placeholder="해시태그"
+        <TextInput
+          placeholder="#해시태그 형식을 지켜주세요."
           onChangeText={text => setHashtagInput(text)}
           value={hashtagInput}
           multiline={true}
-          onSubmitEditing={addHashtag}
-        ></Input>
+          onEndEditing={addHashtag}
+        ></TextInput>
         <Spacer size={10} />
-        {hashtags.map((tag, index) => (
-          <Text key={index}>{tag}</Text>
-        ))}
+        <View style={{ flexDirection: "row" }}>
+          {hashtags.map((tag, index) => (
+            <Text key={index}>
+              <Text style={{ backgroundColor: "#C9E4F9" }}>{tag}</Text>
+              {"   "}
+            </Text>
+          ))}
+        </View>
+
         <Spacer size={20} />
         <Input
           style={{ height: "40%" }}

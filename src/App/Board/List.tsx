@@ -1,5 +1,5 @@
 import { Entypo } from "@expo/vector-icons";
-import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
@@ -14,8 +14,8 @@ import {
 import { listArticle, listSortCriterion, searchArticle } from "../../Api/board";
 import { Container, TextButton } from "../../components/common";
 import SearchBar from "../../components/Input/searchbar";
+import { NavigationProps } from "../../Navigator/Routes";
 import { BoardArticle, BoardType, SortType } from "../../types/Board";
-import { NavigationProps } from "../../types/Navigation";
 import PostSummary from "./PostSummary";
 
 const DetailList: React.FC = () => {
@@ -23,11 +23,11 @@ const DetailList: React.FC = () => {
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const navigation = useNavigation<NavigationProp<NavigationProps>>();
+  const navigation = useNavigation<NavigationProps>();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<BoardArticle[]>([]);
   const [sortType, setsortType] = React.useState<SortType[]>([]);
-  const [page, setPage] = React.useState<number>(1);
+  const [page, setPage] = React.useState<number>(2);
 
   const [sort, setSort] = React.useState<number>(1);
   useEffect(() => {
@@ -51,9 +51,9 @@ const DetailList: React.FC = () => {
         return;
       }
       // const data = await listArticle(boardType.id, 1, 1, 1);
-      const data = await listArticle(boardType.id, page, 10, sort);
+      const data = await listArticle(boardType.id, 1, 10, 10, sort);
       if (data.data) {
-        setboardData(data.data as BoardArticle[]);
+        setboardData(data.data.list as BoardArticle[]);
       }
     } catch (err) {
       console.log(err);
@@ -64,12 +64,13 @@ const DetailList: React.FC = () => {
 
   const pageFunc = async () => {
     setPage(page + 1);
-    await listArticle(boardType.id, page, 10, sort).then(data => {
-      setboardData(boardData.concat(data.data as BoardArticle[]));
+    await listArticle(boardType.id, page, 10, 10, sort).then(data => {
+      setboardData(boardData.concat(data.data.list as BoardArticle[]));
     });
   };
   const onRefresh = async () => {
     setRefreshing(true);
+    setPage(2);
     fetchData();
   };
 
@@ -130,17 +131,13 @@ const DetailList: React.FC = () => {
 
       <FlatList
         data={displayData}
-        renderItem={({ item: board }) =>
-          board.parentId == null ? (
-            <View key={board.boardId} style={styles.body}>
-              <Pressable onPress={() => detailContent(board)}>
-                <PostSummary post={board} boardType={boardType} />
-              </Pressable>
-            </View>
-          ) : (
-            <></>
-          )
-        }
+        renderItem={({ item: board }) => (
+          <View key={board.boardId} style={styles.body}>
+            <Pressable onPress={() => detailContent(board)}>
+              <PostSummary post={board} boardType={boardType} />
+            </Pressable>
+          </View>
+        )}
         onEndReached={() => pageFunc()}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
