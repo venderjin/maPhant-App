@@ -31,6 +31,7 @@ export default function MypageIndex() {
         component={Routes[11].component}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="Mylike" component={Routes[12].component} />
     </Stack.Navigator>
   );
 }

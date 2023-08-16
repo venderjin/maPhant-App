@@ -1,3 +1,4 @@
+import BoardDetail from "../App/Board/BoardDetail";
 import QAdetail from "../App/Board/QAdetail";
 import Chatroom from "../App/Mail/Chatroom";
 import Bookmark from "../App/Mypage/Bookmark";
@@ -33,7 +34,7 @@ const Routes: RouteType[] = [
     component: Mypost,
   },
   {
-    name: "detail",
+    name: "BoardDetail",
     component: BoardDetail,
   },
   {
@@ -63,6 +64,10 @@ const Routes: RouteType[] = [
   {
     name: "Chatroom",
     component: Chatroom,
+  },
+  {
+    name: "Mylike",
+    component: Mylike,
   },
 ];
 

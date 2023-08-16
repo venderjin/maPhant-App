@@ -228,6 +228,8 @@ export default function MyPage() {
 
   const userProfle = useSelector(UserStorage.userProfileSelector);
 
+  const navigation = useNavigation<NavigationProps>();
+
   const checkPasswordHandler = () => {
     PostAPI("/user/changeinfo/identification", {
       password: checkPassword,
