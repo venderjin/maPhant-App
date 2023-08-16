@@ -456,7 +456,7 @@ const HotPost: React.FC = () => {
     });
   }, []);
 
-  const detailContent = (boardId: BoardArticle) => {
+  const detailContent = (boardId: number) => {
     navigation.navigate("BoardDetail", { id: boardId });
   };
 
