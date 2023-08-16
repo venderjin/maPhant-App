@@ -1,11 +1,13 @@
 import { useRoute } from "@react-navigation/native";
-import { Container } from "../../components/common";
-import { Text, View } from "react-native";
-import { OtherUserForm } from "../../Navigator/MypageRoute";
 import { useEffect, useState } from "react";
-import { bringBoardList } from "../../Api/member/Others";
-import { Pagination, OWriteBoardList } from "../../types/User";
+import { Text, View } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+
+import { bringBoardList } from "../../Api/member/Others";
+import { Container } from "../../components/common";
+import { OtherUserForm } from "../../Navigator/MypageRoute";
+import { OWriteBoardList, Pagination } from "../../types/User";
+import getCurrentTime from "../Time";
 
 // ({
 //   body: "ss",
@@ -63,7 +65,7 @@ const WriteBoard: React.FC = () => {
                     {item.body}
                   </Text>
                   <Text style={{ marginTop: 10, fontSize: 10, color: "gray" }}>
-                    생성일 :{item.created_at.toLocaleString()}
+                    생성일 :{getCurrentTime(new Date(item.created_at))}
                   </Text>
                 </View>
               </TouchableOpacity>

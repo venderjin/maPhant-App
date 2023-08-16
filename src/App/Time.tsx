@@ -7,7 +7,7 @@ const getCurrentTime = (targetDate: Date) => {
   // 00 : 00 분으로 표시되게 바꿈
   const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
   const formattedHours = hours < 10 ? `0${hours}` : hours;
-  const currentTime = `${years}/${months + 1}/${dates},${formattedHours}:${formattedMinutes}`;
+  const currentTime = `${years}/${months + 1}/${dates} ${formattedHours}:${formattedMinutes}`;
   return currentTime;
 };
 
