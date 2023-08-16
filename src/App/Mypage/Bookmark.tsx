@@ -106,7 +106,7 @@ function Bookmark(): JSX.Element {
           {bookmark.map(bookmark => (
             <>
               <Pressable key={bookmark.id} onPress={() => detailContent(bookmark)}>
-                <View style={stylealss.container}>
+                <View style={styles.container}>
                   <View style={styles.head}>
                     <Text>
                       {(() => {
