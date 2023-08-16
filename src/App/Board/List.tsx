@@ -27,7 +27,7 @@ const DetailList: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<BoardArticle[]>([]);
   const [sortType, setsortType] = React.useState<SortType[]>([]);
-  const [page, setPage] = React.useState<number>(1);
+  const [page, setPage] = React.useState<number>(2);
 
   const [sort, setSort] = React.useState<number>(1);
   useEffect(() => {
@@ -51,10 +51,9 @@ const DetailList: React.FC = () => {
         return;
       }
       // const data = await listArticle(boardType.id, 1, 1, 1);
-      const data = await listArticle(boardType.id, page, 10, 10, sort);
+      const data = await listArticle(boardType.id, 1, 10, 10, sort);
       if (data.data) {
         setboardData(data.data.list as BoardArticle[]);
-        console.error(data.data.list);
       }
     } catch (err) {
       console.log(err);
@@ -71,6 +70,7 @@ const DetailList: React.FC = () => {
   };
   const onRefresh = async () => {
     setRefreshing(true);
+    setPage(2);
     fetchData();
   };
 
