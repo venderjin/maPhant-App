@@ -42,7 +42,10 @@ function boardPost(
   });
 }
 
-const listHotBoardTotal = (page: number, recordSize: number): Promise<dataResponse> =>
+const listHotBoardTotal = (
+  page: number,
+  recordSize: number,
+): Promise<dataResponse<{ list: HotBoard[] }>> =>
   GetAPI(`/board/hot?page=${page}&recordSize=${recordSize}`);
 
 const listHotBoard = (
@@ -152,19 +155,19 @@ const commentLike = (userId: number, commentId: number): Promise<dataResponse> =
 const commentLikeCnt = (comment_id: number): Promise<dataResponse> =>
   GetAPI<dataResponse>(`/comment/cnt-like/${comment_id}`);
 
-const doPoll = (pollId: number): Promise<dataResponse> =>
-  PostAPI<dataResponse>(`/poll/${pollId}`);
+const doPoll = (pollId: number): Promise<dataResponse> => PostAPI<dataResponse>(`/poll/${pollId}`);
 
-const postPoll = (boardId : number, title: string, options: string[]): Promise<dataResponse> =>
+const postPoll = (boardId: number, title: string, options: string[]): Promise<dataResponse> =>
   PostAPI<dataResponse>(`/board/poll/`, {
-    boardId, title, options
+    boardId,
+    title,
+    options,
   });
 
 const closePoll = (): Promise<dataResponse> =>
   PostAPI<dataResponse>(`/poll/close/board/{board_id}`);
 
-const deletePoll = (): Promise<dataResponse> =>
-  DeleteAPI<dataResponse>(`/poll/board/{board_id}`);
+const deletePoll = (): Promise<dataResponse> => DeleteAPI<dataResponse>(`/poll/board/{board_id}`);
 
 export {
   boardComplete,
@@ -199,4 +202,3 @@ export {
   ReportPost,
   searchArticle,
 };
- 
