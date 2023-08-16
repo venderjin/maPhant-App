@@ -22,5 +22,10 @@ export default () => (
       component={MailRoutes[2].component}
       options={{ headerShown: false }}
     />
+    <Stack.Screen
+      name="Profile"
+      component={MailRoutes[3].component}
+      options={{ headerShown: false }}
+    />
   </Stack.Navigator>
 );

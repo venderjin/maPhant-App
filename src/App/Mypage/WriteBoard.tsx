@@ -20,11 +20,9 @@ const WriteBoard: React.FC = () => {
       .then(res => {
         setWriteBoardList(res.data.list);
         setPage(res.data.pagination);
-        console.log("????");
       })
       .catch(e => console.error(e));
   }, []);
-  console.log(page);
   return (
     <Container style={{ backgroundColor: "white", display: "flex", flex: 1 }}>
       <Container style={{ alignItems: "center", flex: 0.1, justifyContent: "center" }}>

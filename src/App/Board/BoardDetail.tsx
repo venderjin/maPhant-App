@@ -135,6 +135,7 @@ const BoardDetail = () => {
       })
       .catch();
   }, []);
+  console.info(post);
   useEffect(() => {
     commentArticle(id, 1, 50)
       .then(response => {
@@ -304,7 +305,7 @@ const BoardDetail = () => {
   console.log(post.board);
 
   const profileNavi = () => {
-    navigation.navigate("Profile");
+    navigation.navigate("Profile", { id: post.board.userId } as never);
   };
 
   const ModalWrapperComment = ({ commentId }: { commentId: number }) => {

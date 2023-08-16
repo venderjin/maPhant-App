@@ -1,22 +1,23 @@
+import { useRoute } from "@react-navigation/native";
 import { useDebugValue, useEffect, useState } from "react";
 import { Text } from "react-native";
 
 import { writeContentList } from "../../Api/member/Others";
 import { Container } from "../../components/common";
-import { OWriteContentList } from "../../types/User";
+import { OtherUserId, OWriteContentList } from "../../types/User";
 import getCurrentTime from "../Time";
 
 const WriteContent: React.FC = () => {
+  const route = useRoute();
+  const params = route.params as OtherUserId;
   const [contentList, setContentList] = useState<OWriteContentList[]>([]);
   useEffect(() => {
-    writeContentList()
+    writeContentList(params.id)
       .then(res => {
-        console.log(res.data.list);
         setContentList(res.data.list);
       })
-      .catch(e => console.log(e));
+      .catch(e => console.error(e));
   }, []);
-  console.info(contentList);
   return (
     <Container>
       {contentList.map(item => (
