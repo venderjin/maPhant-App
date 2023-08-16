@@ -24,11 +24,11 @@ function PostSummary(post: BoardArticle | HotBoard): JSX.Element {
         <Text style={styles.title}>{post.title}</Text>
         <Text style={styles.userName}>{post.userNickname}</Text>
       </View>
-      {/* <View>
+      <View>
         <Text style={styles.content} numberOfLines={1}>
           {post.body}
         </Text>
-      </View> */}
+      </View>
       <View style={styles.head}>
         {post.likeCnt > 0 ? (
           <>

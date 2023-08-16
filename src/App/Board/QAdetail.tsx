@@ -284,7 +284,7 @@ const QAdetail = () => {
         </View>
       </View>
       <ScrollView style={styles.scroll}>
-        {post.answerList === undefined ? (
+        {!post.answerList ? (
           <></>
         ) : (
           post.answerList.map(answer => (

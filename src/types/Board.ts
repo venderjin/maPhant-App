@@ -24,6 +24,7 @@ type BoardArticle = {
   userId: number;
   boardId: number;
   id?: number;
+  tags?: hashTagType[];
 } & BoardArticleBase;
 
 //글 읽기
@@ -75,6 +76,10 @@ type commentType = {
   time: string;
 };
 
+type hashTagType = {
+  id: number;
+  name: string;
+};
 export type {
   BoardArticle,
   BoardArticleBase,
@@ -82,6 +87,7 @@ export type {
   BoardPost,
   BoardType,
   commentType,
+  hashTagType,
   HotBoard,
   ReportType,
   SortType,

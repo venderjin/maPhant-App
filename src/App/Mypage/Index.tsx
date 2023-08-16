@@ -18,7 +18,19 @@ export default function MypageIndex() {
       <Stack.Screen name="BoardDetail" component={Routes[4].component} />
       <Stack.Screen name="Bookmark" component={Routes[5].component} />
       <Stack.Screen name="Mycomment" component={Routes[6].component} />
-      <Stack.Screen name="Mylike" component={Routes[7].component} />
+      <Stack.Screen
+        name="Profile"
+        component={Routes[7].component}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="WriteBoard" component={Routes[8].component} />
+      <Stack.Screen name="WriteContent" component={Routes[9].component} />
+      <Stack.Screen name="LikeContent" component={Routes[10].component} />
+      <Stack.Screen
+        name="Chatroom"
+        component={Routes[11].component}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }

@@ -132,7 +132,7 @@ const Post: React.FC = () => {
         0,
         isanonymous,
         //hashtags.join(" "),
-        postImageUrl,
+        postImageUrl.length == 0 ? undefined : postImageUrl,
         DBnewHashtags,
       );
       console.log("게시물 작성 성공", response);
@@ -334,12 +334,12 @@ const Post: React.FC = () => {
         )}
         <Spacer size={10} />
         <View style={{ flexDirection: "row" }}>
-        {hashtags.map((tag, index) => (
+          {hashtags.map((tag, index) => (
             <Text key={index}>
               <Text style={{ backgroundColor: "#C9E4F9" }}>{tag}</Text>
               {"   "}
             </Text>
-        ))}
+          ))}
         </View>
 
         <Spacer size={20} />
