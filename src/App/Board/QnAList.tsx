@@ -32,48 +32,73 @@ const QnABoard: React.FC = () => {
   }, []);
   return (
     <Container style={styles.container}>
-      <View style={styles.total}>
-        <View style={styles.hHead}>
-          <Text style={styles.hFont}>
-            {" "}
-            HOT 게시글
-            <MaterialCommunityIcons name="fire" size={25} color="black" />
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("DetailList", { boardType: boardType });
-            }}
-          >
-            <Text style={styles.detail}>더보기</Text>
-          </TouchableOpacity>
+      <ScrollView>
+        <View style={styles.total}>
+          <View style={styles.hHead}>
+            <Text style={styles.hFont}>
+              {" "}
+              HOT 게시글
+              <MaterialCommunityIcons name="fire" size={25} color="black" />
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("DetailList", { boardType: boardType });
+              }}
+            >
+              <Text style={styles.detail}>더보기</Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView horizontal>
+            {hotBoard.map(board => (
+              <View key={board.boardId} style={styles.content}>
+                <ScrollList post={board} boardType={boardType} />
+              </View>
+            ))}
+          </ScrollView>
         </View>
-        <ScrollView horizontal>
-          {hotBoard.map(board => (
-            <View key={board.boardId} style={styles.content}>
-              <ScrollList post={board} boardType={boardType} />
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-      <View style={styles.total}>
-        <View style={styles.hHead}>
-          <Text style={styles.hFont}> 최신 게시글</Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("DetailList", { boardType: boardType });
-            }}
-          >
-            <Text style={styles.detail}>더보기</Text>
-          </TouchableOpacity>
+        <View style={styles.total}>
+          <View style={styles.hHead}>
+            <Text style={styles.hFont}> 최신 게시글</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("DetailList", { boardType: boardType });
+              }}
+            >
+              <Text style={styles.detail}>더보기</Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView horizontal>
+            {boardData.map(board => (
+              <View key={board.boardId} style={styles.content}>
+                <ScrollList post={board} boardType={boardType} />
+              </View>
+            ))}
+          </ScrollView>
         </View>
-        <ScrollView horizontal>
-          {boardData.map(board => (
-            <View key={board.boardId} style={styles.content}>
-              <ScrollList post={board} boardType={boardType} />
-            </View>
-          ))}
-        </ScrollView>
-      </View>
+        <View style={styles.total}>
+          <View style={styles.hHead}>
+            <Text style={styles.hFont}>
+              {" "}
+              투표 게시글
+              <MaterialCommunityIcons name="cloud" size={25} color="black" />
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("DetailList", { boardType: boardType });
+              }}
+            >
+              <Text style={styles.detail}>더보기</Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView horizontal>
+            {hotBoard.map(board => (
+              <View key={board.boardId} style={styles.content}>
+                <ScrollList post={board} boardType={boardType} />
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      </ScrollView>
     </Container>
   );
 };

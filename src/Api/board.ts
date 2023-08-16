@@ -152,12 +152,27 @@ const commentLike = (userId: number, commentId: number): Promise<dataResponse> =
 const commentLikeCnt = (comment_id: number): Promise<dataResponse> =>
   GetAPI<dataResponse>(`/comment/cnt-like/${comment_id}`);
 
+const doPoll = (pollId: number): Promise<dataResponse> =>
+  PostAPI<dataResponse>(`/poll/${pollId}`);
+
+const postPoll = (boardId : number, title: string, options: string[]): Promise<dataResponse> =>
+  PostAPI<dataResponse>(`/board/poll/`, {
+    boardId, title, options
+  });
+
+const closePoll = (): Promise<dataResponse> =>
+  PostAPI<dataResponse>(`/poll/close/board/{board_id}`);
+
+const deletePoll = (): Promise<dataResponse> =>
+  DeleteAPI<dataResponse>(`/poll/board/{board_id}`);
+
 export {
   boardComplete,
   boardDelete,
   boardEdit,
   boardPost,
   bookMarkArticle,
+  closePoll,
   commentArticle,
   commentDelete,
   commentInsert,
@@ -168,6 +183,8 @@ export {
   commentUpdate,
   DeletebookMarkArticle,
   deleteLikeBoard,
+  deletePoll,
+  doPoll,
   getArticle,
   ImageUpload,
   insertLikePost,
@@ -177,7 +194,9 @@ export {
   listHotBoardTotal,
   listReportType,
   listSortCriterion,
+  postPoll,
   ReportComment,
   ReportPost,
   searchArticle,
 };
+ 
