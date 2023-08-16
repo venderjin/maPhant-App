@@ -25,6 +25,7 @@ function boardPost(
   isComplete: number,
   isAnonymous: number,
   imagesUrl?: string[],
+  tagNames?: string[],
 ) {
   return PostAPI(`/board/create/`, {
     parentId,
@@ -37,6 +38,7 @@ function boardPost(
     isComplete,
     isAnonymous,
     imagesUrl,
+    tagNames,
   });
 }
 

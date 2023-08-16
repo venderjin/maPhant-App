@@ -15,6 +15,7 @@ type BoardArticleBase = {
 type BoardArticle = {
   categoryId: number;
   imagesUrl?: string[];
+  tagNames?: string[];
   isComplete: number;
   parentId?: number;
   reportCnt: number;
