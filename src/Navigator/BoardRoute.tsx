@@ -6,6 +6,7 @@ import Post from "../App/Board/Post";
 import QA_answer from "../App/Board/QA_answer";
 import QAdetail from "../App/Board/QAdetail";
 import QnABoard from "../App/Board/QnAList";
+import { BoardArticle } from "../types/Board";
 import { RouteType } from "../types/Navigation";
 
 const Routes: RouteType[] = [
@@ -37,14 +38,18 @@ const Routes: RouteType[] = [
     name: "editPost",
     component: Edit,
   },
+  {
+    name: "QA_answer",
+    component: QA_answer,
+  },
 ];
 
 export type NavigationProp = {
   BoardList: undefined;
   QnABoard: undefined;
   DetailList: { boardType: BoardType };
-  detail: undefined;
-  qa_answer: undefined;
+  detail: { id: number; preRender?: BoardArticle };
+  QA_answer: { id: number; preRender?: BoardArticle };
   Post: undefined;
 };
 

@@ -1,14 +1,15 @@
-import { BoardPost, commentType, HotBoard } from "../types/Board";
+import { BoardArticle, BoardPost, commentType, HotBoard } from "../types/Board";
 import { dataResponse, DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
 const listArticle = (
   boardType_id: number,
   page: number,
+  recordSize: number,
   pageSize: number,
   sortCriterion: number,
-): Promise<dataResponse> =>
-  GetAPI<dataResponse>(
-    `/board/?boardTypeId=${boardType_id}&page=${page}&pageSize=${pageSize}&sortCriterionId=${sortCriterion}`,
+): Promise<dataResponse<{ name?: string; list: BoardArticle[] }>> =>
+  GetAPI(
+    `/board/?boardTypeId=${boardType_id}&page=${page}&recordSize=${recordSize}&pageSize=${pageSize}&sortCriterionId=${sortCriterion}`,
   );
 
 const listBoardType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/board/boardType/`);
@@ -23,6 +24,8 @@ function boardPost(
   isHide: number,
   isComplete: number,
   isAnonymous: number,
+  imagesUrl?: string[],
+  tagNames?: string[],
 ) {
   return PostAPI(`/board/create/`, {
     parentId,
@@ -34,6 +37,8 @@ function boardPost(
     isHide,
     isComplete,
     isAnonymous,
+    imagesUrl,
+    tagNames,
   });
 }
 
@@ -57,7 +62,7 @@ function boardEdit(id: number, title: string, body: string, isHide: number) {
 }
 
 const boardComplete = (questId: number, answerId: number): Promise<dataResponse> =>
-  PostAPI<dataResponse>(`/board/complete?questId=${questId}&answerId=${answerId}`);
+  PostAPI<dataResponse>(`/board/complete/?questId=${questId}&answerId=${answerId}`);
 
 const boardDelete = (board_id: number): Promise<dataResponse> =>
   DeleteAPI<dataResponse>(`/board/${board_id}/`);
@@ -147,12 +152,27 @@ const commentLike = (userId: number, commentId: number): Promise<dataResponse> =
 const commentLikeCnt = (comment_id: number): Promise<dataResponse> =>
   GetAPI<dataResponse>(`/comment/cnt-like/${comment_id}`);
 
+const doPoll = (pollId: number): Promise<dataResponse> =>
+  PostAPI<dataResponse>(`/poll/${pollId}`);
+
+const postPoll = (boardId : number, title: string, options: string[]): Promise<dataResponse> =>
+  PostAPI<dataResponse>(`/board/poll/`, {
+    boardId, title, options
+  });
+
+const closePoll = (): Promise<dataResponse> =>
+  PostAPI<dataResponse>(`/poll/close/board/{board_id}`);
+
+const deletePoll = (): Promise<dataResponse> =>
+  DeleteAPI<dataResponse>(`/poll/board/{board_id}`);
+
 export {
   boardComplete,
   boardDelete,
   boardEdit,
   boardPost,
   bookMarkArticle,
+  closePoll,
   commentArticle,
   commentDelete,
   commentInsert,
@@ -163,6 +183,8 @@ export {
   commentUpdate,
   DeletebookMarkArticle,
   deleteLikeBoard,
+  deletePoll,
+  doPoll,
   getArticle,
   ImageUpload,
   insertLikePost,
@@ -172,7 +194,9 @@ export {
   listHotBoardTotal,
   listReportType,
   listSortCriterion,
+  postPoll,
   ReportComment,
   ReportPost,
   searchArticle,
 };
+ 

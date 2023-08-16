@@ -1,5 +1,5 @@
 import { Entypo } from "@expo/vector-icons";
-import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
@@ -14,8 +14,8 @@ import {
 import { listArticle, listSortCriterion, searchArticle } from "../../Api/board";
 import { Container, TextButton } from "../../components/common";
 import SearchBar from "../../components/Input/searchbar";
+import { NavigationProps } from "../../Navigator/Routes";
 import { BoardArticle, BoardType, SortType } from "../../types/Board";
-import { NavigationProps } from "../../types/Navigation";
 import PostSummary from "./PostSummary";
 
 const DetailList: React.FC = () => {
@@ -23,12 +23,13 @@ const DetailList: React.FC = () => {
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const navigation = useNavigation<NavigationProp<NavigationProps>>();
+  const navigation = useNavigation<NavigationProps>();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<BoardArticle[]>([]);
   const [sortType, setsortType] = React.useState<SortType[]>([]);
+  const [page, setPage] = React.useState<number>(2);
 
-  const [testType, settestType] = React.useState<number>(1);
+  const [sort, setSort] = React.useState<number>(1);
   useEffect(() => {
     listSortCriterion()
       .then(data => {
@@ -40,7 +41,7 @@ const DetailList: React.FC = () => {
 
   const handleSortChange = (selectedSortId: number) => {
     // 선택된 정렬 유형을 id로 찾습니다.
-    settestType(selectedSortId);
+    setSort(selectedSortId);
   };
 
   const fetchData = async () => {
@@ -49,10 +50,10 @@ const DetailList: React.FC = () => {
         setRefreshing(false);
         return;
       }
-      // const data = await listArticle(boardType.id, 1, 50, 1);
-      const data = await listArticle(boardType.id, 1, 50, testType);
+      // const data = await listArticle(boardType.id, 1, 1, 1);
+      const data = await listArticle(boardType.id, 1, 10, 10, sort);
       if (data.data) {
-        setboardData(data.data as BoardArticle[]);
+        setboardData(data.data.list as BoardArticle[]);
       }
     } catch (err) {
       console.log(err);
@@ -61,8 +62,15 @@ const DetailList: React.FC = () => {
     }
   };
 
+  const pageFunc = async () => {
+    setPage(page + 1);
+    await listArticle(boardType.id, page, 10, 10, sort).then(data => {
+      setboardData(boardData.concat(data.data.list as BoardArticle[]));
+    });
+  };
   const onRefresh = async () => {
     setRefreshing(true);
+    setPage(2);
     fetchData();
   };
 
@@ -84,7 +92,7 @@ const DetailList: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [testType]);
+  }, [sort]);
 
   const createBoard = () => {
     console.log("글쓰기 화면으로 바뀌어야함");
@@ -111,7 +119,7 @@ const DetailList: React.FC = () => {
               key={sort.id}
               onPress={() => {
                 handleSortChange(sort.id);
-                console.log(testType);
+                console.log(sort);
               }} // 선택된 정렬 유형 id를 핸들러에 전달합니다.
               style={styles.sortKey}
             >
@@ -130,6 +138,7 @@ const DetailList: React.FC = () => {
             </Pressable>
           </View>
         )}
+        onEndReached={() => pageFunc()}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
       <View style={styles.btn}>

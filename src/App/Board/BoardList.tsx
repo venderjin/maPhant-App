@@ -23,7 +23,7 @@ const BoardList = () => {
 
   const splitIntoRows = (data: BoardType[], itemsPerRow: number) => {
     const rows = [];
-    for (let i = 0; i < data.length; i += itemsPerRow) {
+    for (let i = 0; i < 6; i += itemsPerRow) {
       rows.push(data.slice(i, i + itemsPerRow));
     }
     return rows;
@@ -83,6 +83,7 @@ const BoardList = () => {
             </View>
             <View style={{ borderBottomWidth: 1 }}></View>
             <SearchBar />
+
             <View style={styles.board}>
               {boardTypeDataRows.map((rowData, rowIndex) => (
                 <View key={rowIndex} style={{ flexDirection: "row" }}>
