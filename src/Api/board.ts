@@ -1,14 +1,15 @@
-import { BoardPost, commentType, HotBoard } from "../types/Board";
+import { BoardArticle, BoardPost, commentType, HotBoard } from "../types/Board";
 import { dataResponse, DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
 const listArticle = (
   boardType_id: number,
   page: number,
+  recordSize: number,
   pageSize: number,
   sortCriterion: number,
-): Promise<dataResponse> =>
-  GetAPI<dataResponse>(
-    `/board/?boardTypeId=${boardType_id}&page=${page}&pageSize=${pageSize}&sortCriterionId=${sortCriterion}`,
+): Promise<dataResponse<{ name?: string; list: BoardArticle[] }>> =>
+  GetAPI(
+    `/board/?boardTypeId=${boardType_id}&page=${page}&recordSize=${recordSize}&pageSize=${pageSize}&sortCriterionId=${sortCriterion}`,
   );
 
 const listBoardType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/board/boardType/`);

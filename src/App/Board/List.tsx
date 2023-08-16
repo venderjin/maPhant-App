@@ -1,5 +1,5 @@
 import { Entypo } from "@expo/vector-icons";
-import { NavigationProp, useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
@@ -14,8 +14,8 @@ import {
 import { listArticle, listSortCriterion, searchArticle } from "../../Api/board";
 import { Container, TextButton } from "../../components/common";
 import SearchBar from "../../components/Input/searchbar";
+import { NavigationProps } from "../../Navigator/Routes";
 import { BoardArticle, BoardType, SortType } from "../../types/Board";
-import { NavigationProps } from "../../types/Navigation";
 import PostSummary from "./PostSummary";
 
 const DetailList: React.FC = () => {
@@ -23,7 +23,7 @@ const DetailList: React.FC = () => {
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const navigation = useNavigation<NavigationProp<NavigationProps>>();
+  const navigation = useNavigation<NavigationProps>();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<BoardArticle[]>([]);
   const [sortType, setsortType] = React.useState<SortType[]>([]);
@@ -51,9 +51,10 @@ const DetailList: React.FC = () => {
         return;
       }
       // const data = await listArticle(boardType.id, 1, 1, 1);
-      const data = await listArticle(boardType.id, page, 10, sort);
+      const data = await listArticle(boardType.id, page, 10, 10, sort);
       if (data.data) {
-        setboardData(data.data as BoardArticle[]);
+        setboardData(data.data.list as BoardArticle[]);
+        console.error(data.data.list);
       }
     } catch (err) {
       console.log(err);
@@ -64,8 +65,8 @@ const DetailList: React.FC = () => {
 
   const pageFunc = async () => {
     setPage(page + 1);
-    await listArticle(boardType.id, page, 10, sort).then(data => {
-      setboardData(boardData.concat(data.data as BoardArticle[]));
+    await listArticle(boardType.id, page, 10, 10, sort).then(data => {
+      setboardData(boardData.concat(data.data.list as BoardArticle[]));
     });
   };
   const onRefresh = async () => {
