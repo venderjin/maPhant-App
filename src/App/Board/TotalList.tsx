@@ -1,31 +1,26 @@
 import { useRoute } from "@react-navigation/native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import { BoardArticle, BoardType } from "../../types/Board";
+import { listHotBoardTotal } from "../../Api/board";
+import { BoardType, HotBoard } from "../../types/Board";
 import PostSummary from "./PostSummary";
 
 const DetailBoardList = () => {
-  // const route = useRoute();
-  // const params = route.params as NavigationProps["DetailList"];
-  // console.log(params?.boardType);
-  // const boardType = params?.boardType;
-
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
 
-  const [boardData] = useState<BoardArticle[]>([]);
-  // // useEffect(() => {
-  //   listArticle(params?.boardType).then((data: BoardArticle[]) => {
-  //     setboardData(data);
-  //   });
-  // }, []);
+  const [boardData, setboardData] = useState<HotBoard[]>([]);
+
+  useEffect(() => {
+    listHotBoardTotal(1, 50).then(data => setboardData(data.data.list as HotBoard[]));
+  }, []);
   return (
     <ScrollView style={styles.container}>
       {boardData.map(board => (
         <View key={board.boardId} style={styles.body}>
           <Pressable onPress={() => console.log(board.title)}>
-            <Text style={styles.board}>{boardType.name}</Text>
+            <Text style={styles.board}>{board.type}</Text>
             <PostSummary post={board} boardType={boardType} />
           </Pressable>
         </View>

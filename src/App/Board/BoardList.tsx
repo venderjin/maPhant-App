@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import {
   Keyboard,
@@ -14,12 +14,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { listBoardType } from "../../Api/board";
 import SearchBar from "../../components/Input/searchbar";
+import { NavigationProps } from "../../Navigator/Routes";
 import { BoardType } from "../../types/Board";
-import { NavigationProps } from "../../types/Navigation";
 
 const BoardList = () => {
   const [boardTypeData, setboardTypeData] = React.useState<BoardType[]>([]);
-  const navigation = useNavigation<NavigationProp<NavigationProps>>();
+  const navigation = useNavigation<NavigationProps>();
 
   const splitIntoRows = (data: BoardType[], itemsPerRow: number) => {
     const rows = [];
@@ -55,7 +55,7 @@ const BoardList = () => {
   };
 
   const changePage = () => {
-    navigation.navigate("List" as never);
+    navigation.navigate("HotBoard" as never);
   };
   const touch = () => {
     console.log("??????");

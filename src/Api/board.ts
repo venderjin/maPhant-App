@@ -42,7 +42,10 @@ function boardPost(
   });
 }
 
-const listHotBoardTotal = (page: number, recordSize: number): Promise<dataResponse> =>
+const listHotBoardTotal = (
+  page: number,
+  recordSize: number,
+): Promise<dataResponse<{ list: HotBoard[] }>> =>
   GetAPI(`/board/hot?page=${page}&recordSize=${recordSize}`);
 
 const listHotBoard = (
