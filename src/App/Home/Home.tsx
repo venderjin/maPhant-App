@@ -1,7 +1,9 @@
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
+  Image,
   ImageSourcePropType,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -19,9 +21,11 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import { useSelector } from "react-redux";
 
+import { GetAPI } from "../../Api/fetchAPI";
 import { Container, ImageBox, Spacer, TextThemed } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
+import { BoardArticle } from "../../types/Board";
 import { UserCategory } from "../../types/User";
 import { ThemeContext } from "../Style/ThemeContext";
 
@@ -436,9 +440,29 @@ const TodaysHot: React.FC = () => {
 };
 
 const HotPost: React.FC = () => {
+  const [hotPost, setHotPost] = useState<BoardArticle[]>([]);
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    GetAPI("/board/hot?&page=1&recordSize=2").then(res => {
+      console.log(res);
+      if (res.success === false) {
+        console.log(res.errors);
+        return;
+      } else {
+        setHotPost(res.data.list);
+      }
+    });
+  }, []);
+
+  const detailContent = (boardId: BoardArticle) => {
+    navigation.navigate("BoardDetail", { id: boardId });
+  };
+
   const styles = StyleSheet.create({
     hotPostBox: {
-      height: 300,
+      height: 340,
       borderWidth: 1,
       borderColor: "#d1d1d1",
       borderRadius: 10,
@@ -450,7 +474,7 @@ const HotPost: React.FC = () => {
       justifyContent: "center",
     },
     boxTitle: {
-      fontSize: 20,
+      fontSize: 18,
       fontWeight: "bold",
       marginLeft: 20,
     },
@@ -460,7 +484,80 @@ const HotPost: React.FC = () => {
       marginLeft: 20,
       marginRight: 20,
     },
+    postBox: {
+      height: 143,
+      marginLeft: 20,
+      marginRight: 20,
+      // backgroundColor: "skyblue",
+    },
+    nameAndtypeBox: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingLeft: 10,
+      paddingRight: 10,
+    },
+    profileImage: {
+      width: 30,
+      height: 30,
+      borderRadius: 15,
+      marginRight: 10,
+      borderWidth: 1,
+    },
+    textContainer: {
+      flexDirection: "row",
+    },
+
+    userNickname: {
+      fontSize: 15,
+      fontWeight: "bold",
+      // backgroundColor: "pink",
+    },
+    boardType: {
+      fontSize: 15,
+      color: "gray",
+      marginLeft: "60%",
+    },
+    titleAndbodyBox: {
+      height: 60,
+      // backgroundColor: "skyblue",
+    },
+    postTitle: {
+      fontSize: 15,
+      fontWeight: "bold",
+    },
+    postBody: {
+      fontSize: 15,
+      marginLeft: 5,
+      // backgroundColor: "pink",
+    },
+    timeAndlikeAndcomment: {
+      flexDirection: "row",
+      // backgroundColor: "pink",
+      alignItems: "center",
+      height: 25,
+    },
+    likeTextWrapper: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginRight: 10,
+    },
+    commentTextWrapper: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    iconText: {
+      marginLeft: 4,
+    },
+    timeTextWrapper: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginLeft: "60%",
+    },
   });
+
+  if (hotPost.length === 0) {
+    return <View></View>;
+  }
   return (
     <View style={styles.hotPostBox}>
       <View style={styles.boxTitleBox}>
@@ -468,8 +565,105 @@ const HotPost: React.FC = () => {
       </View>
 
       <View style={styles.line}></View>
+
+      <Pressable style={styles.postBox} onPress={() => detailContent(hotPost[0].boardId)}>
+        <Spacer size={10} />
+
+        <View style={styles.nameAndtypeBox}>
+          <Image
+            source={{ uri: "https://tovelope.s3.ap-northeast-2.amazonaws.com/image_1.jpg" }}
+            style={styles.profileImage}
+          />
+          <View style={styles.textContainer}>
+            <Text style={styles.userNickname}>{hotPost[0].userNickname}</Text>
+            <Text style={styles.boardType}>{hotPost[0].type}</Text>
+          </View>
+        </View>
+
+        <Spacer size={5} />
+        <View style={styles.titleAndbodyBox}>
+          <Text style={styles.postTitle}>{hotPost[0].title}</Text>
+          <Spacer size={2} />
+          <Text style={styles.postBody}>{hotPost[0].body}</Text>
+        </View>
+
+        <Spacer size={5} />
+        <View style={styles.timeAndlikeAndcomment}>
+          <View style={styles.likeTextWrapper}>
+            <Feather name="thumbs-up" size={13} color="tomato" />
+            <Text style={styles.iconText}>{hotPost[0].likeCnt}</Text>
+          </View>
+          <View style={styles.commentTextWrapper}>
+            <FontAwesome name="comment-o" size={13} color="blue" />
+            <Text style={styles.iconText}>{hotPost[0].commentCnt}</Text>
+          </View>
+          <View style={styles.timeTextWrapper}>
+            <Text>{dateToString(hotPost[0].createdAt)}</Text>
+          </View>
+        </View>
+      </Pressable>
+
+      <View style={styles.line}></View>
+
+      <Pressable style={styles.postBox} onPress={() => detailContent(hotPost[1].boardId)}>
+        <Spacer size={10} />
+        <View style={styles.nameAndtypeBox}>
+          <Image
+            source={{ uri: "https://tovelope.s3.ap-northeast-2.amazonaws.com/image_1.jpg" }}
+            style={styles.profileImage}
+          />
+          <View style={styles.textContainer}>
+            <Text style={styles.userNickname}>{hotPost[1].userNickname}</Text>
+            <Text style={styles.boardType}>{hotPost[1].type}</Text>
+          </View>
+        </View>
+
+        <Spacer size={5} />
+        <View style={styles.titleAndbodyBox}>
+          <Text style={styles.postTitle}>{hotPost[1].title}</Text>
+          <Spacer size={2} />
+          <Text style={styles.postBody}>{hotPost[1].body}</Text>
+        </View>
+
+        <Spacer size={5} />
+        <View style={styles.timeAndlikeAndcomment}>
+          <View style={styles.likeTextWrapper}>
+            <Feather name="thumbs-up" size={13} color="tomato" />
+            <Text style={styles.iconText}>{hotPost[1].likeCnt}</Text>
+          </View>
+          <View style={styles.commentTextWrapper}>
+            <FontAwesome name="comment-o" size={13} color="blue" />
+            <Text style={styles.iconText}>{hotPost[1].commentCnt}</Text>
+          </View>
+          <View style={styles.timeTextWrapper}>
+            <Text>{dateToString(hotPost[1].createdAt)}</Text>
+          </View>
+        </View>
+      </Pressable>
     </View>
   );
 };
+function dateToString(date: string): string {
+  const start = new Date(date);
+  const end = new Date();
+
+  const diff = end.getTime() - start.getTime();
+  const diffDate = new Date(diff);
+
+  const year = diffDate.getFullYear() - 1970;
+  const month = diffDate.getMonth();
+  const day = diffDate.getDate() - 1;
+  const hour = diffDate.getHours();
+  const minute = diffDate.getMinutes();
+  const second = diffDate.getSeconds();
+
+  if (year > 0) return `${year}년 전`;
+  if (month > 0) return `${month}달 전`;
+  if (day > 0) return `${day}일 전`;
+  if (hour > 0) return `${hour}시간 전`;
+  if (minute > 0) return `${minute}분 전`;
+  if (second > 0) return `${second}초 전`;
+  return "방금 전";
+}
 
 export default Home;
