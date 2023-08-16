@@ -301,6 +301,7 @@ const BoardDetail = () => {
       </Modal>
     );
   };
+  console.log(post.board);
 
   const ModalWrapperComment = ({ commentId }: { commentId: number }) => {
     const [selectedCommentReportIndex, setSelectedCommentReportIndex] = useState<number>();
@@ -395,16 +396,27 @@ const BoardDetail = () => {
                 </View>
                 <View>
                   <Text style={styles.context}>{post.board.body}</Text>
-                  <ScrollView horizontal={true} style={styles.imageContainer}>
-                    {post.board.imagesUrl &&
-                      post.board.imagesUrl.map((imageUrl, index) => (
+                  {post.board.imagesUrl != null && (
+                    <ScrollView horizontal={true} style={styles.imageContainer}>
+                      {post.board.imagesUrl.map((imageUrl, index) => (
                         <Image
                           key={index}
                           source={{ uri: imageUrl }}
                           style={{ width: 200, height: 200, marginRight: 5 }}
                         />
                       ))}
-                  </ScrollView>
+                    </ScrollView>
+                  )}
+                  {post.board.tags != null && (
+                    <ScrollView horizontal={true} style={styles.imageContainer}>
+                      {post.board.tags.map((hash, index) => (
+                        <Text key={index}>
+                          <Text style={{ backgroundColor: "#C9E4F9" }}>{"#" + hash.name}</Text>
+                          {"   "}
+                        </Text>
+                      ))}
+                    </ScrollView>
+                  )}
                 </View>
               </View>
             </View>

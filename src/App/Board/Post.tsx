@@ -90,9 +90,6 @@ const Post: React.FC = () => {
   const [checkList, setCheckList] = useState<string[]>([]);
   const [isanonymous, setIsanonymous] = useState(0);
   const [isHide, setIsHide] = useState(0);
-  const [voteInputs, setVoteInputs] = useState(false);
-  const [voteTitle, setVoteTitle] = useState("");
-  const [voteOptions, setVoteOptions] = useState<string[]>([]);
 
   const [requsetpermission, setRequestPermission] = ImagePicker.useCameraPermissions();
   const [imageUrl, setImageUrl] = useState<string[]>([]);
@@ -122,6 +119,7 @@ const Post: React.FC = () => {
     console.log("hashtags", hashtags);
     const DBnewHashtags = hashtags.map(word => word.replace(/^#/, ""));
     console.log("DBnewHashtags", DBnewHashtags);
+
     try {
       const response = await boardPost(
         null,
@@ -132,7 +130,7 @@ const Post: React.FC = () => {
         0,
         isanonymous,
         //hashtags.join(" "),
-        postImageUrl,
+        postImageUrl.length == 0 ? undefined : postImageUrl,
         DBnewHashtags,
       );
       console.log("게시물 작성 성공", response);
@@ -156,24 +154,6 @@ const Post: React.FC = () => {
       updateHashtags();
       setHashtagInput("");
     }
-  };
-
-  const voteHandling = async () => {
-    setVoteInputs(!voteInputs);
-  };
-
-  const addVoteOptions = async () => {
-    setVoteOptions([...voteOptions, ""]);
-  };
-
-  const handleVoteOptionChange = (index: number, text: string) => {
-    const updatedOptions = [...voteOptions];
-    updatedOptions[index] = text;
-    setVoteOptions(updatedOptions);
-  };
-
-  const handleRemoveVoteOption = indexToRemove => {
-    setVoteOptions(voteOptions.filter((_, index) => index !== indexToRemove));
   };
 
   const uploadImage = async () => {
@@ -256,7 +236,7 @@ const Post: React.FC = () => {
             ></CheckBox>
             <Text>비공개</Text>
           </Container>
-          <Container style={{ flexDirection: "row", marginRight: 10 }}>
+          <Container style={{ flexDirection: "row" }}>
             <CheckBox
               style={{ marginRight: 5 }}
               value={checkList.includes("anonymous")}
@@ -269,11 +249,6 @@ const Post: React.FC = () => {
           </Container>
         </Container>
         <Container style={{ flexDirection: "row" }}>
-          <TouchableOpacity onPress={voteHandling}>
-            <AntDesign name="cloud" size={24} color="black" />
-          </TouchableOpacity>
-        </Container>
-        <Container style={{ flexDirection: "row" }}>
           <TouchableOpacity onPress={uploadImage}>
             <AntDesign name="camerao" size={24} color="black" />
           </TouchableOpacity>
@@ -282,7 +257,6 @@ const Post: React.FC = () => {
           <TextButton onPress={complete}>완료</TextButton>
         </Container>
       </Container>
-
       <Container>
         <Input
           placeholder="제목"
@@ -298,48 +272,14 @@ const Post: React.FC = () => {
           multiline={true}
           onEndEditing={addHashtag}
         ></TextInput>
-        {voteInputs && (
-          <>
-            <Spacer size={20} />
-            <Container style={{ flexDirection: "row" }}>
-              <Input
-                style={{ width: "80%", marginRight: 10, height: 35 }}
-                placeholder="투표 제목"
-                onChangeText={text => setVoteTitle(text)}
-                value={voteTitle}
-              />
-              <TextButton onPress={addVoteOptions}>추가</TextButton>
-            </Container>
-            <Spacer size={10} />
-            <Container>
-              {voteOptions.map((option, index) => (
-                <>
-                  <Container style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Input
-                      style={{ flex: 1 }}
-                      key={index}
-                      placeholder={`투표 선택지 ${index + 1}`}
-                      onChangeText={text => handleVoteOptionChange(index, text)}
-                      value={option}
-                    />
-                    <TouchableOpacity onPress={() => handleRemoveVoteOption(index)}>
-                      <Text style={{ color: "black" }}>X</Text>
-                    </TouchableOpacity>
-                  </Container>
-                  <Spacer size={10} />
-                </>
-              ))}
-            </Container>
-          </>
-        )}
         <Spacer size={10} />
         <View style={{ flexDirection: "row" }}>
-        {hashtags.map((tag, index) => (
+          {hashtags.map((tag, index) => (
             <Text key={index}>
               <Text style={{ backgroundColor: "#C9E4F9" }}>{tag}</Text>
               {"   "}
             </Text>
-        ))}
+          ))}
         </View>
 
         <Spacer size={20} />
