@@ -93,7 +93,6 @@ const Alarm: React.FC = () => {
     const getFcmToken = async () => {
       const token = (await Notifications.getDevicePushTokenAsync()).data;
       sendFcm(token);
-      alert(token);
       console.log(token);
       return token;
     };
