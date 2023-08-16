@@ -2,7 +2,6 @@ import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
-  Dimensions,
   ImageSourcePropType,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -68,7 +67,7 @@ const Home: React.FC = () => {
         <Spacer size={20} />
         <TodaysHot />
         <Spacer size={40} />
-        <Advertisements />
+        <HotPost />
         <Spacer size={20} />
       </ScrollView>
     </Container>
@@ -436,18 +435,41 @@ const TodaysHot: React.FC = () => {
   );
 };
 
-const Advertisements: React.FC = () => {
-  const screen_width = useWindowDimensions().width;
-  // const styles = StyleSheet.create({
-  //   advertisementContainer: {
-  //     height: 300,
-  //     backgroundColor: "pink",
-  //   },
-  // });
+const HotPost: React.FC = () => {
+  const styles = StyleSheet.create({
+    hotPostBox: {
+      height: 300,
+      borderWidth: 1,
+      borderColor: "#d1d1d1",
+      borderRadius: 10,
+      marginLeft: 10,
+      marginRight: 10,
+    },
+    boxTitleBox: {
+      height: 50,
+      justifyContent: "center",
+    },
+    boxTitle: {
+      fontSize: 20,
+      fontWeight: "bold",
+      marginLeft: 20,
+    },
+    line: {
+      borderWidth: 0.7,
+      borderColor: "#d1d1d1",
+      marginLeft: 20,
+      marginRight: 20,
+    },
+  });
+  return (
+    <View style={styles.hotPostBox}>
+      <View style={styles.boxTitleBox}>
+        <Text style={styles.boxTitle}>Hot 게시글</Text>
+      </View>
 
-  // return <View style={styles.advertisementContainer}>
-  return <ImageBox source={require("../../../assets/adv1.png")} width={screen_width} />;
-  // </View>
+      <View style={styles.line}></View>
+    </View>
+  );
 };
 
 export default Home;
