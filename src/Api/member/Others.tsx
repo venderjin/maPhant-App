@@ -1,4 +1,4 @@
-import { OtherUserData } from "../../types/User";
+import { OtherUserData, WriteBoardList } from "../../types/User";
 import { GetAPI, statusResponse } from "../fetchAPI";
 
 //프로필 닉네임, 소개글, 프로필 이미지 가져오는 부분, 상대방 id 필요
@@ -10,7 +10,10 @@ function readProfile(otherUserId: number) {
 
 // 게시글 가져오는 부분, 상대방 id 필요
 function bringBoardList(otherUserId: number) {
-  return GetAPI(`/profile/board?page=1&recordSize=3&targetUserId`, { otherUserId });
+  return GetAPI<{ data: WriteBoardList } & statusResponse>(
+    `/profile/board?page=1&recordSize=3&targetUserId`,
+    { otherUserId },
+  );
 }
 
 //작성한 댓글 목록 가져오기
