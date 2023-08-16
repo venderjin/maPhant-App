@@ -53,10 +53,9 @@ const Profile: React.FC = () => {
   console.log(cmpid);
   cmpid.map(item => item.other_id == 128) ? console.info("성공") : console.info("실패");
   const chat = () => {
-    const roomId = cmpid.map(item => item.other_id == 152) ? cmpid.id : 0;
+    const roomIds = cmpid.filter(item => item.other_id == 152);
+    const roomId = roomIds.length == 0 ? 0 : roomIds[0].id;
     // 여기 상대방 닉네임이랑, 그 상대방의 id를 같이 넘겨줘야함. id는 board에서 상대 닉네임 클릭시 id랑 같이 넘겨 받아야함. MypageRoute에 추가해줘서 넘어감 이게 맞는 방법인지 잘모르겠음
-    console.log(roomId);
-    console.info(cmpid);
     navigation.navigate("Chatroom", {
       id: 152,
       nickname: "한국인",
