@@ -1,14 +1,15 @@
-import { BoardPost, commentType, HotBoard } from "../types/Board";
+import { BoardArticle, BoardPost, commentType, HotBoard } from "../types/Board";
 import { dataResponse, DeleteAPI, GetAPI, PostAPI, PutAPI } from "./fetchAPI";
 
 const listArticle = (
   boardType_id: number,
   page: number,
+  recordSize: number,
   pageSize: number,
   sortCriterion: number,
-): Promise<dataResponse> =>
-  GetAPI<dataResponse>(
-    `/board/?boardTypeId=${boardType_id}&page=${page}&pageSize=${pageSize}&sortCriterionId=${sortCriterion}`,
+): Promise<dataResponse<{ name?: string; list: BoardArticle[] }>> =>
+  GetAPI(
+    `/board/?boardTypeId=${boardType_id}&page=${page}&recordSize=${recordSize}&pageSize=${pageSize}&sortCriterionId=${sortCriterion}`,
   );
 
 const listBoardType = (): Promise<dataResponse> => GetAPI<dataResponse>(`/board/boardType/`);
@@ -23,6 +24,7 @@ function boardPost(
   isHide: number,
   isComplete: number,
   isAnonymous: number,
+  imagesUrl?: string[],
 ) {
   return PostAPI(`/board/create/`, {
     parentId,
@@ -34,6 +36,7 @@ function boardPost(
     isHide,
     isComplete,
     isAnonymous,
+    imagesUrl,
   });
 }
 
@@ -57,7 +60,7 @@ function boardEdit(id: number, title: string, body: string, isHide: number) {
 }
 
 const boardComplete = (questId: number, answerId: number): Promise<dataResponse> =>
-  PostAPI<dataResponse>(`/board/complete?questId=${questId}&answerId=${answerId}`);
+  PostAPI<dataResponse>(`/board/complete/?questId=${questId}&answerId=${answerId}`);
 
 const boardDelete = (board_id: number): Promise<dataResponse> =>
   DeleteAPI<dataResponse>(`/board/${board_id}/`);
