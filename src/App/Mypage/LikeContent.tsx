@@ -18,7 +18,7 @@ const LikeContent: React.FC = () => {
       .then(res => {
         setLikeList(res.data.list);
       })
-      .catch(e => console.log(e));
+      .catch(e => console.error(e));
   }, []);
   return (
     <Container style={{ backgroundColor: "white", display: "flex", flex: 1 }}>

@@ -65,8 +65,12 @@ const Profile: React.FC = () => {
       >
         <Container style={{ flex: 2, justifyContent: "flex-end" }}>
           <ImageBox
-            // 이 부분은 받아온 이미지를 어떻게 불러오는지 몰라서 그대로 나둠
-            source={require("../../../assets/image3.png")}
+            // 기본 이미지 설정 되면 나중에 변경해야함
+            source={
+              otherUserProfileList.profile_img
+                ? otherUserProfileList.profile_img
+                : require("../../../assets/image3.png")
+            }
             width={110}
             height={110}
             borderRadius={100}
@@ -96,7 +100,6 @@ const Profile: React.FC = () => {
         <Container style={{ flex: 1 }}>
           <TextButton
             onPress={() => {
-              alert("메롱");
               chat();
             }}
           >
