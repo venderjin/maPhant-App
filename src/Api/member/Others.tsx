@@ -16,7 +16,7 @@ function readProfile(otherUserId: number) {
 // 게시글 가져오는 부분, 상대방 id 필요
 function bringBoardList(otherUserId: number) {
   return GetAPI<{ data: OWriteBoardList } & statusResponse>(
-    `/profile/board?page=1&recordSize=3&targetUserId`,
+    `/profile/board?page=1&recordSize=100000&targetUserId`,
     { otherUserId },
   );
 }

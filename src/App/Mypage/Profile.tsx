@@ -1,8 +1,8 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Modal, Platform, StyleSheet, Text, View } from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import { Text, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { readProfile } from "../../Api/member/Others";
@@ -65,26 +65,27 @@ const Profile: React.FC = () => {
           borderRadius: 8,
           alignItems: "center",
           justifyContent: "center",
+          flexShrink: 1,
         }}
       >
-        <Container>
+        <Container style={{ flex: 2, justifyContent: "flex-end" }}>
           <ImageBox
             // 이 부분은 받아온 이미지를 어떻게 불러오는지 몰라서 그대로 나둠
             source={require("../../../assets/image3.png")}
-            width={120}
-            height={120}
+            width={110}
+            height={110}
             borderRadius={100}
             style={{ borderColor: "#5299EB", borderWidth: 3, borderRadius: 100 }}
           />
         </Container>
-        <Container style={{ alignItems: "center", margin: 20 }}>
+        <Container style={{ alignItems: "center", flex: 1 }}>
           <Container>
             <Text style={{ fontSize: 25, fontWeight: "bold" }}>{profileList.nickname}</Text>
           </Container>
           <Container>
             <Text style={{ color: "gray" }}>User department</Text>
           </Container>
-          <Container style={{ margin: 10 }}>
+          <Container style={{}}>
             {
               // 소개글 유무로 내용을 정함
               profileList.body ? (
@@ -95,35 +96,21 @@ const Profile: React.FC = () => {
             }
           </Container>
         </Container>
-        <Container>
+        <Container style={{ flex: 1 }}>
           <TextButton onPress={() => alert("메롱")}>1:1채팅</TextButton>
         </Container>
       </Container>
     );
   }
-  //   function SendMail() {
-  //     return (
-  //       <Container
-  //         style={{
-  //           backgroundColor: "rgba(82, 153, 235, 0.8)",
-  //           alignItems: "center",
-  //           borderRadius: 8,
-  //           marginTop: 20,
-  //         }}
-  //       >
-  //         <Text style={{ color: "white" }}>쪽지 보내기 </Text>
-  //         <FontAwesome name="message-line" size={24} color="black" />
-  //       </Container>
-  //     );
-  //   }
+
   function Otherfunction() {
     return (
       <Container
         style={{
           backgroundColor: "rgba(82, 153, 235, 0.3)",
           borderRadius: 8,
+          marginTop: 10,
           flex: 1,
-          marginTop: 20,
         }}
       >
         <Container style={{ padding: 20 }}>
@@ -131,7 +118,7 @@ const Profile: React.FC = () => {
             <FontAwesome name="user" color="#5299EB" size={18} />
             <Text style={{ fontWeight: "bold", fontSize: 16, marginLeft: 10 }}>계정 기능</Text>
           </Container>
-          <Container>
+          <Container style={{}}>
             {["작성한 게시글 목록", "작성한 댓글 목록", "좋아요한 글 목록"].map(
               (item, index, array) => (
                 <>
@@ -143,7 +130,6 @@ const Profile: React.FC = () => {
                     }}
                     style={{
                       padding: 10,
-                      paddingVertical: 18,
                       flexDirection: "row",
                       justifyContent: "space-between",
                     }}
