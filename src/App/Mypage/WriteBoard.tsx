@@ -4,7 +4,7 @@ import { Text } from "react-native";
 import { OtherUserForm } from "../../Navigator/MypageRoute";
 import { useEffect, useState } from "react";
 import { bringBoardList } from "../../Api/member/Others";
-import { Pagination, WriteBoardList } from "../../types/User";
+import { Pagination, OWriteBoardList } from "../../types/User";
 
 // ({
 //   body: "ss",
@@ -27,7 +27,7 @@ import { Pagination, WriteBoardList } from "../../types/User";
 const WriteBoard: React.FC = () => {
   const route = useRoute();
   const params = route.params as OtherUserForm;
-  const [writeboardList, setWriteBoardList] = useState<WriteBoardList[]>([]);
+  const [writeboardList, setWriteBoardList] = useState<OWriteBoardList[]>([]);
   const [page, setPage] = useState<Pagination[]>([]);
 
   useEffect(() => {
@@ -35,6 +35,7 @@ const WriteBoard: React.FC = () => {
       .then(res => {
         setWriteBoardList(res.data.list);
         setPage(res.data.pagination);
+        console.log("????");
       })
       .catch(e => console.error(e));
   }, []);
@@ -42,9 +43,9 @@ const WriteBoard: React.FC = () => {
     <Container>
       <Text style={{ backgroundColor: "skyblue" }}> 작성한 게시글 목록 페이지 </Text>
       {writeboardList.map(item => (
-        <Text key={item.id} style={{ backgroundColor: "skyblue" }}>
-          {item.title}
-        </Text>
+        <Container key={item.id}>
+          <Text style={{ backgroundColor: "skyblue" }}>{item.title}</Text>
+        </Container>
       ))}
     </Container>
   );

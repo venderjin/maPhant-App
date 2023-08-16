@@ -25,7 +25,7 @@ type OtherUserId = {
   id: number;
 };
 
-type WriteBoardList = {
+type OWriteBoardList = {
   body: string;
   category_id: number;
   comment_cnt: number;
@@ -53,4 +53,49 @@ type Pagination = {
   totalPageCount: number;
   totalRecordCount: number;
 };
-export type { WriteBoardList, OtherUserData, OtherUserId, UserCategory, UserData, Pagination };
+
+type OWriteContentList = {
+  id: number;
+  parent_id: string;
+  user_id: number;
+  nickname: string;
+  boardtype_id: number;
+  board_type: string;
+  board_id: number;
+  board_title: string;
+  body: string;
+  is_anonymous: boolean;
+  created_at: Date;
+  modified_at: string;
+  like_cnt: number;
+  commnet_id: number;
+};
+
+type OLikeContentList = {
+  id: number;
+  category_id: number;
+  user_id: number;
+  type: string;
+  title: string;
+  body: string;
+  is_hide: number;
+  is_conplete: boolean;
+  is_anoymous: boolean;
+  created_at: Date;
+  modified_at: string;
+  comment_cnt: number;
+  like_cnt: number;
+  report_cnt: number;
+  images_url: string;
+  isLike: boolean;
+};
+export type {
+  OWriteBoardList,
+  OWriteContentList,
+  OLikeContentList,
+  OtherUserData,
+  OtherUserId,
+  UserCategory,
+  UserData,
+  Pagination,
+};
