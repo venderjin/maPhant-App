@@ -1,18 +1,17 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { Field, Formik, FormikErrors } from "formik";
+import { Field, FormikErrors } from "formik";
 import React, { useCallback, useEffect, useState } from "react";
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
 import { useSelector } from "react-redux";
 
 import { PostAPI } from "../../Api/fetchAPI";
-import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
+import { fieldList, majorList } from "../../Api/member/signUp";
 import UserAPI from "../../Api/memberAPI";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
 import SearchByFilter from "../../components/Input/SearchByFilter";
 import { NavigationProps } from "../../Navigator/Routes";
-import UIStore from "../../storage/UIStore";
 import UserStorage from "../../storage/UserStorage";
 
 interface ISearchForm {
@@ -294,16 +293,17 @@ const ProfileModify: React.FC = () => {
                         })
                           .then(res => {
                             if (res.success == true) {
-                              console.log(tmpNickname, " 으로 닉네임 수정 성공");
+                              console.log(tmpNickname, "으로 닉네임 수정 성공");
                               setNickname(tmpNickname);
-                              console.log(nickname);
                               setModyfyingNicknameModal(false);
                             }
                           })
-                          .catch(err => alert(err));
-                        UserAPI.getProfile().then(res => {
-                          UserStorage.setUserProfile(res.data);
-                        });
+                          .catch(err => alert(err))
+                          .finally(() =>
+                            UserAPI.getProfile().then(res => {
+                              UserStorage.setUserProfile(res.data);
+                            }),
+                          );
                       }}
                     >
                       수정
@@ -420,7 +420,9 @@ const ProfileModify: React.FC = () => {
               <View style={styles.modifyingContentWidth}>
                 <Text style={styles.text}>계열 / 학과</Text>
                 <View style={styles.modifyingContainer}>
-                  <Text style={styles.text}>
+                  <Text style={styles.fieldtext}>{useCategoryModifying.field}</Text>
+                  <Text style={styles.fieldtext}>- {useCategoryModifying.major}</Text>
+                  {/* <Text style={styles.text}>
                     {useCategoryModifying.field} - {useCategoryModifying.major}
                   </Text>
                   <Text style={styles.text}>
@@ -428,35 +430,24 @@ const ProfileModify: React.FC = () => {
                   </Text>
                   <Text style={styles.text}>
                     {useCategoryModifying.field} - {useCategoryModifying.major}
-                  </Text>
-                  <Text style={styles.text}>
-                    {useCategoryModifying.field} - {useCategoryModifying.major}
-                  </Text>
+                  </Text> */}
                 </View>
               </View>
-              <View style={styles.modifyingBtn}>
+              <View style={styles.modifyingFieldBtn}>
                 <TextButton
                   fontSize={16}
                   onPress={() => {
                     setModyfyingFieldModal(true);
                   }}
                 >
-                  추가
-                </TextButton>
-                <TextButton
-                  fontSize={16}
-                  onPress={() => {
-                    setModyfyingFieldModal(true);
-                  }}
-                >
-                  삭제
+                  수정
                 </TextButton>
               </View>
             </View>
             <Modal animationType="fade" transparent={true} visible={modifyingFieldModal}>
               <View style={styles.modalBackground}>
-                <View style={styles.modalContainer}>
-                  <Formik
+                <View style={styles.modalFieldContainer}>
+                  {/* <Formik
                     initialValues={SearchForm}
                     // validationSchema={validationSchema}
                     onSubmit={async values => {
@@ -473,49 +464,61 @@ const ProfileModify: React.FC = () => {
                         .finally(() => UIStore.hideLoadingOverlay());
                     }}
                   >
-                    {({ handleSubmit, errors }) => (
-                      <Container style={styles.modalContainer}>
-                        <Text style={styles.text}>계열 추가하기</Text>
-                        <Container style={styles.FlistContainer}>
-                          <Field
-                            placeholder="계열 입력해 주세요."
-                            name="field"
-                            list={fieldList}
-                            component={SearchByFilter}
-                          />
-                        </Container>
-                        <Spacer size={10} />
-                        <Text style={styles.text}>학과 추가하기</Text>
-                        <Container style={styles.MlistContainer}>
-                          <Field
-                            placeholder="전공 입력해 주세요."
-                            name="major"
-                            list={majorList}
-                            component={SearchByFilter}
-                          />
-                        </Container>
-                        <View style={styles.modalBtnDirection}>
-                          <TextButton
-                            style={styles.modalConfirmBtn}
-                            onPress={() => {
-                              setModyfyingFieldModal(false);
-                            }}
-                          >
-                            취소
-                          </TextButton>
-                          <TextButton
-                            style={styles.modalConfirmBtn}
-                            onPress={() => {
-                              onSubmit(errors, handleSubmit);
-                              // 계열 추가하기
-                            }}
-                          >
-                            추가
-                          </TextButton>
-                        </View>
-                      </Container>
-                    )}
-                  </Formik>
+                    {({ handleSubmit, errors }) => ( */}
+                  <Container style={styles.modalContainer}>
+                    <Text style={styles.text}>계열 추가하기</Text>
+                    <Container style={styles.FlistContainer}>
+                      <Field
+                        placeholder="계열 입력해 주세요."
+                        name="field"
+                        list={fieldList}
+                        component={SearchByFilter}
+                      />
+                    </Container>
+                    <Spacer size={10} />
+                    <Text style={styles.text}>학과 추가하기</Text>
+                    <Container style={styles.MlistContainer}>
+                      <Field
+                        placeholder="전공 입력해 주세요."
+                        name="major"
+                        list={majorList}
+                        component={SearchByFilter}
+                      />
+                    </Container>
+                    <View style={styles.modalBtnDirection}>
+                      <TextButton
+                        style={styles.modalConfirmBtn}
+                        onPress={() => {
+                          setModyfyingFieldModal(false);
+                        }}
+                      >
+                        취소
+                      </TextButton>
+                      <TextButton
+                        style={styles.modalConfirmBtn}
+                        onPress={() => {
+                          // PostAPI("/user/changeinfo/nickname", {
+                          //   nickname: tmpNickname,
+                          // })
+                          //   .then(res => {
+                          //     if (res.success == true) {
+                          //       console.log(tmpNickname, "으로 닉네임 수정 성공");
+                          //       setNickname(tmpNickname);
+                          //       setModyfyingNicknameModal(false);
+                          //     }
+                          //   })
+                          //   .catch(err => alert(err));
+                          // UserAPI.getProfile().then(res => {
+                          //   UserStorage.setUserProfile(res.data);
+                          // });
+                        }}
+                      >
+                        추가
+                      </TextButton>
+                    </View>
+                  </Container>
+                  {/* )} */}
+                  {/* </Formik> */}
                 </View>
               </View>
             </Modal>
@@ -551,6 +554,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
+  fieldtext: {
+    fontSize: 16,
+    // paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
   childRow: {
     flexDirection: "row",
   },
@@ -574,12 +582,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     padding: 15,
   },
+  modalFieldContainer: {
+    flex: 1,
+    borderRadius: 25,
+    backgroundColor: "#ffffff",
+    padding: 15,
+  },
   modalInput: {
     width: "100%",
     paddingVertical: "5%",
     backgroundColor: "#D8E1EC",
   },
   modifyingBtn: {
+    width: "25%",
+    justifyContent: "flex-end",
+    paddingLeft: 10,
+  },
+  modifyingFieldBtn: {
     width: "25%",
     justifyContent: "flex-end",
     paddingLeft: 10,

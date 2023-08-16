@@ -1,6 +1,7 @@
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import { sha512 } from "js-sha512";
+import React, { useEffect, useState } from "react";
 import {
   ColorValue,
   Modal,
@@ -13,13 +14,88 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 
-import { PostAPI } from "../../Api/fetchAPI";
+import { GetAPI, PostAPI, statusResponse } from "../../Api/fetchAPI";
 import DeleteAPI from "../../Api/member/DeleteUser";
 import { Input, Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
 import { UserData } from "../../types/User";
 import Myimg from "./Myimg";
+
+function uploadAPI<T extends statusResponse>(
+  method: string = "PATCH",
+  url: string,
+  body?: FormData,
+) {
+  return UserStorage.getUserToken().then(token => {
+    const abortController = new AbortController();
+    const abortSignal = abortController.signal;
+    setTimeout(() => abortController.abort(), 10000);
+
+    const options: RequestInit = {
+      method: method,
+      signal: abortSignal,
+      headers: {},
+    };
+    console.info(token);
+    if (token != undefined) {
+      // @ts-expect-error
+      options.headers["x-auth"] = token.token;
+      // @ts-expect-error
+      options.headers["x-timestamp"] = Math.floor(Date.now() / 1000);
+      // @ts-expect-error
+      options.headers["x-sign"] = sha512(
+        // @ts-expect-error
+        `${options.headers["x-timestamp"]}${token.privKey}`,
+      );
+    }
+
+    if (method != "GET") {
+      options.body = body;
+    }
+
+    const url_complete = `https://dev.api.tovelop.esm.kr${url}`;
+    console.info(url_complete, options);
+    return fetch(url_complete, options)
+      .catch(err => {
+        console.warn(method, url_complete, body, err);
+        if (err.name && (err.name === "AbortError" || err.name === "TimeoutError")) {
+          return Promise.reject("서버와 통신에 실패 했습니다 (Timeout)");
+        }
+
+        return Promise.reject("서버와 통신 중 오류가 발생했습니다.");
+      })
+      .then(res => {
+        console.log(res);
+        console.info(res.body);
+        // 특수 처리 (로그인 실패시에도 401이 들어옴)
+        // 로그인의 경우는 바로 내려 보냄
+        if (url == "/user/login") {
+          return res.json();
+        }
+
+        if (res.status === 401) {
+          // 로그인 안됨 (unauthorized)
+          UserStorage.removeUserData();
+          return Promise.reject("로그인 토큰이 만료되었습니다.");
+        }
+
+        return res.json();
+      })
+      .then(json => {
+        console.log(json);
+        const resp = json as T;
+
+        return Promise.resolve({ json: resp });
+      });
+  });
+}
+
+type profile = {
+  nickname?: string;
+  body?: string;
+  file?: string;
+};
 
 type sectionItem = {
   title?: string;
@@ -114,6 +190,43 @@ const MyView = () => {
   const [visibleIntroModal, setVisibleIntoModal] = useState(false);
   const [introduceTxt, setIntroduceTxt] = useState("");
   let confirmedIntroTxt: string = "";
+  const userID = useSelector(UserStorage.userProfileSelector)!.id;
+
+  useEffect(() => {
+    GetAPI(`/profile?targerUserId=${userID}`).then(res => {
+      if (res.success == true) {
+        console.log(res.data);
+        setIntroduceTxt(res.data.body);
+      }
+    });
+  }, []);
+
+  const editIntro = async () => {
+    const formData = new FormData();
+    formData.append("body", confirmedIntroTxt);
+    console.log(formData);
+    try {
+      const res = await uploadAPI("PATCH", "/profile", formData);
+      console.log(res);
+      setIntroduceTxt(confirmedIntroTxt);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const deleteIntro = async () => {
+    const formData = new FormData();
+    formData.append("body", "");
+
+    console.log(formData);
+    try {
+      console.log();
+      const res = await uploadAPI("PATCH", "/profile", formData);
+      console.log(res);
+      setIntroduceTxt("");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <View style={styles.view}>
@@ -141,14 +254,19 @@ const MyView = () => {
         </View>
       </View>
       <View style={styles.introTxtContainer}>
-        <TouchableOpacity style={styles.introTxtBtn}>
-          <Text
-            style={styles.introTxt}
-            onPress={() => {
-              setVisibleIntoModal(true);
-            }}
-          >
-            {introduceTxt !== "" ? `${introduceTxt}` : "소개글을 입력해주세요"}
+        <TouchableOpacity
+          style={styles.introTxtBtn}
+          hitSlop={{ top: 32, bottom: 32, left: 32, right: 32 }}
+          onPress={() => {
+            setVisibleIntoModal(true);
+          }}
+        >
+          <Text style={styles.introTxt}>
+            {introduceTxt == null
+              ? "소개글을 입력해주세요"
+              : introduceTxt == ""
+              ? "소개글을 입력해주세요"
+              : `${introduceTxt}`}
           </Text>
         </TouchableOpacity>
       </View>
@@ -174,7 +292,13 @@ const MyView = () => {
                 style={styles.modalInput}
                 paddingHorizontal={20}
                 borderRadius={30}
-                placeholder={introduceTxt !== "" ? `${introduceTxt}` : "소개글을 입력해주세요"}
+                placeholder={
+                  introduceTxt == null
+                    ? "소개글을 입력해주세요"
+                    : introduceTxt == ""
+                    ? "소개글을 입력해주세요"
+                    : `${introduceTxt}`
+                }
                 onChangeText={text => {
                   confirmedIntroTxt = text;
                 }}
@@ -187,7 +311,7 @@ const MyView = () => {
                 style={styles.modalConfirmBtn}
                 onPress={() => {
                   setVisibleIntoModal(false);
-                  setIntroduceTxt("");
+                  deleteIntro();
                 }}
               >
                 삭제
@@ -195,11 +319,24 @@ const MyView = () => {
               <TextButton
                 style={styles.modalConfirmBtn}
                 onPress={() => {
-                  setIntroduceTxt(confirmedIntroTxt);
-                  setVisibleIntoModal(false);
-
-                  // EditUser.changePhNum(phoneNumber);
+                  console.log(confirmedIntroTxt);
+                  editIntro();
                 }}
+                // onPress={() => {
+                //   PatchAPI("/profile", {
+                //     nickname: null,
+                //     body: confirmedIntroTxt,
+                //     file: null,
+                //   }).then(res => {
+                //     if (res.success == true) {
+                //       console.log("닉네임 업데이트 성공");
+                //       console.log(res.data);
+                //       setIntroduceTxt(confirmedIntroTxt);
+                //       setVisibleIntoModal(false);
+                //     }
+                //   });
+                //   console.log(introduceTxt);
+                // }}
               >
                 수정
               </TextButton>
