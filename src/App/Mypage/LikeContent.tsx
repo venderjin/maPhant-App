@@ -3,6 +3,7 @@ import { Container } from "../../components/common";
 import { Text } from "react-native";
 import { OLikeContentList } from "../../types/User";
 import { likeBoardList } from "../../Api/member/Others";
+import getCurrentTime from "../Time";
 
 const LikeContent: React.FC = () => {
   const [likeList, setLikeList] = useState<OLikeContentList[]>([]);
@@ -23,7 +24,10 @@ const LikeContent: React.FC = () => {
           <Text style={{ backgroundColor: "skyblue" }}> {item.type} </Text>
           <Text style={{ backgroundColor: "skyblue" }}> {item.title} </Text>
           <Text style={{ backgroundColor: "skyblue" }}> {item.body} </Text>
-          <Text style={{ backgroundColor: "skyblue" }}> {item.created_at} </Text>
+          <Text style={{ backgroundColor: "skyblue" }}>
+            {" "}
+            {getCurrentTime(new Date(item.created_at))}{" "}
+          </Text>
         </Container>
       ))}
     </Container>

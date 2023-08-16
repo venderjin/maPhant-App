@@ -3,6 +3,7 @@ import { Container } from "../../components/common";
 import { Text } from "react-native";
 import { OWriteContentList } from "../../types/User";
 import { writeContentList } from "../../Api/member/Others";
+import getCurrentTime from "../Time";
 
 const WriteContent: React.FC = () => {
   const [contentList, setContentList] = useState<OWriteContentList[]>([]);
@@ -22,7 +23,10 @@ const WriteContent: React.FC = () => {
           <Text style={{ backgroundColor: "skyblue" }}> {item.board_type} </Text>
           <Text style={{ backgroundColor: "skyblue" }}> {item.board_title} </Text>
           <Text style={{ backgroundColor: "skyblue" }}> {item.body} </Text>
-          <Text style={{ backgroundColor: "skyblue" }}> {item.created_at} </Text>
+          <Text style={{ backgroundColor: "skyblue" }}>
+            {" "}
+            {getCurrentTime(new Date(item.created_at))}{" "}
+          </Text>
         </Container>
       ))}
     </Container>
