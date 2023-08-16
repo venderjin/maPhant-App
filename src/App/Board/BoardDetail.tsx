@@ -303,6 +303,10 @@ const BoardDetail = () => {
   };
   console.log(post.board);
 
+  const profileNavi = () => {
+    navigation.navigate("Profile");
+  };
+
   const ModalWrapperComment = ({ commentId }: { commentId: number }) => {
     const [selectedCommentReportIndex, setSelectedCommentReportIndex] = useState<number>();
 
@@ -463,7 +467,13 @@ const BoardDetail = () => {
                           justifyContent: "flex-start",
                         }}
                       >
-                        <Text style={styles.commentName}>{comment.nickname}</Text>
+                        <TouchableOpacity
+                          onPress={() => {
+                            profileNavi();
+                          }}
+                        >
+                          <Text style={styles.commentName}>{comment.nickname}</Text>
+                        </TouchableOpacity>
                         <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
                       </View>
 
