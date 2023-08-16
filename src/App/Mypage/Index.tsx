@@ -15,7 +15,7 @@ export default function MypageIndex() {
       <Stack.Screen name="PasswordCheck" component={Routes[1].component} />
       <Stack.Screen name="ProfileModify" component={Routes[2].component} />
       <Stack.Screen name="Mypost" component={Routes[3].component} />
-      <Stack.Screen name="QnAdetail" component={Routes[4].component} />
+      <Stack.Screen name="BoardDetail" component={Routes[4].component} />
       <Stack.Screen name="Bookmark" component={Routes[5].component} />
       <Stack.Screen name="Mycomment" component={Routes[6].component} />
       <Stack.Screen
@@ -31,6 +31,7 @@ export default function MypageIndex() {
         component={Routes[11].component}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="Mylike" component={Routes[12].component} />
     </Stack.Navigator>
   );
 }
