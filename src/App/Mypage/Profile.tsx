@@ -5,16 +5,19 @@ import { Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { receiveChatrooms } from "../../Api/member/FindUser";
 import { readProfile } from "../../Api/member/Others";
 import UserAPI from "../../Api/memberAPI";
 import { Container, ImageBox, Input, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
+import { MessageList } from "../../types/DM";
 import { OtherUserData, UserData } from "../../types/User";
 
 const Profile: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
   const [profileList, setProfileList] = useState<UserData[]>([]);
   const [otherUserProfileList, setOtherUserProfileList] = useState<OtherUserData[]>([]);
+  const [cmpid, setCmpId] = useState<MessageList[]>([]);
   const [id, setId] = useState(0);
   // 일단 다른 사용자 id 불러올 방법이 없어서 자신 id로 하는 중
   // 값을 받아오는데 시간이 생각보다 걸린다...
@@ -39,8 +42,27 @@ const Profile: React.FC = () => {
         console.log(res.data);
       })
       .catch(e => console.log(e));
+    receiveChatrooms()
+      .then(res => {
+        console.log(res);
+        setCmpId(res.data);
+      })
+      .catch(e => console.log(e));
   }, []);
   console.info(otherUserProfileList);
+  console.log(cmpid);
+  cmpid.map(item => item.other_id == 128) ? console.info("성공") : console.info("실패");
+  const chat = () => {
+    const roomId = cmpid.map(item => item.other_id == 152) ? cmpid.id : 0;
+    // 여기 상대방 닉네임이랑, 그 상대방의 id를 같이 넘겨줘야함. id는 board에서 상대 닉네임 클릭시 id랑 같이 넘겨 받아야함. MypageRoute에 추가해줘서 넘어감 이게 맞는 방법인지 잘모르겠음
+    console.log(roomId);
+    console.info(cmpid);
+    navigation.navigate("Chatroom", {
+      id: 152,
+      nickname: "한국인",
+      roomId: roomId,
+    } as never);
+  };
   const changePage = (item: string) => {
     if (item.toString() == "작성한 게시글 목록") {
       console.log(item);
@@ -102,12 +124,7 @@ const Profile: React.FC = () => {
           <TextButton
             onPress={() => {
               alert("메롱");
-              // 여기 상대방 닉네임이랑, 그 상대방의 id를 같이 넘겨줘야함. id는 board에서 상대 닉네임 클릭시 id랑 같이 넘겨 받아야함. MypageRoute에 추가해줘서 넘어감 이게 맞는 방법인지 잘모르겠음
-              // navigation.navigate("Chatroom", {
-              //   id: 152,
-              //   nickname: "한국인",
-              //   roomId: 0,
-              // } as never);
+              chat();
             }}
           >
             1:1채팅
