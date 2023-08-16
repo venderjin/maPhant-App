@@ -1,5 +1,5 @@
 import { FontAwesome } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -18,6 +18,8 @@ const Profile: React.FC = () => {
   const [id, setId] = useState(0);
   // 일단 다른 사용자 id 불러올 방법이 없어서 자신 id로 하는 중
   // 값을 받아오는데 시간이 생각보다 걸린다...
+  // const route = useRoute();
+  // const params = route.params as
   useEffect(() => {
     UserAPI.getProfile()
       .then(res => {
@@ -38,7 +40,7 @@ const Profile: React.FC = () => {
       })
       .catch(e => console.log(e));
   }, []);
-
+  console.info(otherUserProfileList);
   const changePage = (item: string) => {
     if (item.toString() == "작성한 게시글 목록") {
       console.log(item);
@@ -48,12 +50,12 @@ const Profile: React.FC = () => {
     if (item.toString() == "작성한 댓글 목록") {
       console.log(item);
       // 페이지 이동
-      navigation.navigate("WriteContent");
+      navigation.navigate("WriteContent" as never);
     }
     if (item.toString() == "좋아요한 글 목록") {
       console.log(item);
       // 페이지 이동
-      navigation.navigate("LikeContent");
+      navigation.navigate("LikeContent" as never);
     }
   };
   function OtherProfile() {
@@ -97,7 +99,19 @@ const Profile: React.FC = () => {
           </Container>
         </Container>
         <Container style={{ flex: 1 }}>
-          <TextButton onPress={() => alert("메롱")}>1:1채팅</TextButton>
+          <TextButton
+            onPress={() => {
+              alert("메롱");
+              // 여기 상대방 닉네임이랑, 그 상대방의 id를 같이 넘겨줘야함. id는 board에서 상대 닉네임 클릭시 id랑 같이 넘겨 받아야함. MypageRoute에 추가해줘서 넘어감 이게 맞는 방법인지 잘모르겠음
+              // navigation.navigate("Chatroom", {
+              //   id: 152,
+              //   nickname: "한국인",
+              //   roomId: 0,
+              // } as never);
+            }}
+          >
+            1:1채팅
+          </TextButton>
         </Container>
       </Container>
     );

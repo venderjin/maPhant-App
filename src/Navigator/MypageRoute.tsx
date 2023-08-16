@@ -1,5 +1,7 @@
 import QAdetail from "../App/Board/QAdetail";
+import Chatroom from "../App/Mail/Chatroom";
 import Bookmark from "../App/Mypage/Bookmark";
+import LikeContent from "../App/Mypage/LikeContent";
 import Mycomment from "../App/Mypage/Mycomment";
 import Mypage from "../App/Mypage/Mypage";
 import Mypost from "../App/Mypage/Mypost";
@@ -8,7 +10,6 @@ import Profile from "../App/Mypage/Profile";
 import ProfileModify from "../App/Mypage/ProfileModify";
 import WriteBoard from "../App/Mypage/WriteBoard";
 import WriteContent from "../App/Mypage/WriteContent";
-import LikeContent from "../App/Mypage/LikeContent";
 import { BoardArticle } from "../types/Board";
 import { RouteType } from "../types/Navigation";
 import { OtherUserId } from "../types/User";
@@ -58,6 +59,10 @@ const Routes: RouteType[] = [
     name: "LikeContent",
     component: LikeContent,
   },
+  {
+    name: "Chatroom",
+    component: Chatroom,
+  },
 ];
 
 export type NavigationProp = {
@@ -70,6 +75,7 @@ export type NavigationProp = {
   WriteBoard: undefined;
   WriteContent: undefined;
   LikeContent: undefined;
+  Chatroom: undefined;
 };
 
 export type { OtherUserId as OtherUserForm };

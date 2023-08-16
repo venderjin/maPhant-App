@@ -90,12 +90,12 @@ type OLikeContentList = {
   isLike: boolean;
 };
 export type {
-  OWriteBoardList,
-  OWriteContentList,
   OLikeContentList,
   OtherUserData,
   OtherUserId,
+  OWriteBoardList,
+  OWriteContentList,
+  Pagination,
   UserCategory,
   UserData,
-  Pagination,
 };

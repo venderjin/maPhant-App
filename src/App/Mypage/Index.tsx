@@ -26,6 +26,11 @@ export default function MypageIndex() {
       <Stack.Screen name="WriteBoard" component={Routes[8].component} />
       <Stack.Screen name="WriteContent" component={Routes[9].component} />
       <Stack.Screen name="LikeContent" component={Routes[10].component} />
+      <Stack.Screen
+        name="Chatroom"
+        component={Routes[11].component}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }

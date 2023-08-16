@@ -9,24 +9,6 @@ import { OtherUserForm } from "../../Navigator/MypageRoute";
 import { OWriteBoardList, Pagination } from "../../types/User";
 import getCurrentTime from "../Time";
 
-// ({
-//   body: "ss",
-//   category_id: 57,
-//   comment_cnt: 8,
-//   created_at: "2023-08-13T17:22:16",
-//   id: 315,
-//   images_url: null,
-//   isLike: false,
-//   is_anonymous: true,
-//   is_complete: false,
-//   is_hide: 0,
-//   like_cnt: 0,
-//   modified_at: null,
-//   report_cnt: 0,
-//   title: "s",
-//   type: "지식 게시판",
-//   user_id: 133,
-// });
 const WriteBoard: React.FC = () => {
   const route = useRoute();
   const params = route.params as OtherUserForm;
@@ -38,6 +20,7 @@ const WriteBoard: React.FC = () => {
       .then(res => {
         setWriteBoardList(res.data.list);
         setPage(res.data.pagination);
+        console.log("????");
       })
       .catch(e => console.error(e));
   }, []);

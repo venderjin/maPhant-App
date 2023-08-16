@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Container } from "../../components/common";
 import { Text } from "react-native";
-import { OLikeContentList } from "../../types/User";
+
 import { likeBoardList } from "../../Api/member/Others";
+import { Container } from "../../components/common";
+import { OLikeContentList } from "../../types/User";
 import getCurrentTime from "../Time";
 
 const LikeContent: React.FC = () => {

@@ -1,8 +1,9 @@
 import { useDebugValue, useEffect, useState } from "react";
-import { Container } from "../../components/common";
 import { Text } from "react-native";
-import { OWriteContentList } from "../../types/User";
+
 import { writeContentList } from "../../Api/member/Others";
+import { Container } from "../../components/common";
+import { OWriteContentList } from "../../types/User";
 import getCurrentTime from "../Time";
 
 const WriteContent: React.FC = () => {
