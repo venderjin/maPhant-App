@@ -148,6 +148,34 @@ const Myimg: React.FC = () => {
     }
   };
 
+  const deleteImage = async () => {
+    console.log("hi");
+    //권한 승인
+
+    const formData = new FormData();
+    formData.append("file", {
+      name: "default_profile_img.jpg",
+      type: "image/jpeg",
+      uri: "https://tovelope.s3.ap-northeast-2.amazonaws.com/image_1.jpg",
+    });
+
+    console.log(formData);
+    try {
+      const res = await uploadAPI("PATCH", "/profile", formData);
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
+
+    GetAPI(`/profile?targerUserId=${userID}`).then(res => {
+      if (res.success == true) {
+        console.log(res.data.profile_img);
+        console.log(res.data);
+        setDefaultImgSrc(res.data.profile_img);
+      }
+    });
+  };
+
   return (
     <View style={styles.profileImgContainer}>
       <TouchableOpacity
@@ -208,8 +236,15 @@ const Myimg: React.FC = () => {
               <TextButton
                 style={styles.modalConfirmBtn}
                 onPress={() => {
-                  setImgUploadModal(false);
+                  deleteImage();
                   setDefaultImg(true);
+                  console.log();
+                  console.log();
+                  console.log("defaultImg is ", defaultImg);
+                  console.log("defaultImgSrc is ", defaultImgSrc);
+                  console.log();
+                  console.log();
+                  setImgUploadModal(false);
                 }}
               >
                 삭제
