@@ -13,6 +13,7 @@ import { ThemeContext } from "./src/App/Style/ThemeContext";
 import reduxStore from "./src/storage/reduxStore";
 import UIStore from "./src/storage/UIStore";
 import UserStorage from "./src/storage/UserStorage";
+import { View, Image } from "react-native";
 
 const App = () => {
   const isLogged = useSelector(UserStorage.isUserLoggedInSelector);
@@ -23,10 +24,28 @@ const App = () => {
     UserStorage.loadUserDataOnStartUp();
   }, [isUserDataLoading]);
 
+  if (isUserDataLoading)
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#ffffff",
+        }}
+      >
+        <Image
+          source={require("./assets/maphant_logo_eng.jpeg")}
+          style={{ resizeMode: "contain" }}
+        ></Image>
+      </View>
+    );
+  // <Spinner visible={true} textContent={"Loading..."} />;
+
   return (
     <>
       <Spinner visible={showLoadingOverlay} textContent={"Loading..."} />
-      {isLogged || isUserDataLoading ? <MainScreen /> : <Login />}
+      {isLogged ? <MainScreen /> : <Login />}
     </>
   );
 };

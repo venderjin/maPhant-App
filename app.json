@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/maphant_logo.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
