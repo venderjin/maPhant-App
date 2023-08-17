@@ -1,8 +1,9 @@
-import QAdetail from "../App/Board/QAdetail";
+import BoardDetail from "../App/Board/BoardDetail";
 import Chatroom from "../App/Mail/Chatroom";
 import Bookmark from "../App/Mypage/Bookmark";
 import LikeContent from "../App/Mypage/LikeContent";
 import Mycomment from "../App/Mypage/Mycomment";
+import Mylike from "../App/Mypage/Mylike";
 import Mypage from "../App/Mypage/Mypage";
 import Mypost from "../App/Mypage/Mypost";
 import PasswordCheck from "../App/Mypage/PasswordCheck";
@@ -33,7 +34,7 @@ const Routes: RouteType[] = [
   },
   {
     name: "detail",
-    component: QAdetail,
+    component: BoardDetail,
   },
   {
     name: "Bookmark",
@@ -62,6 +63,10 @@ const Routes: RouteType[] = [
   {
     name: "Chatroom",
     component: Chatroom,
+  },
+  {
+    name: "Mylike",
+    component: Mylike,
   },
 ];
 
