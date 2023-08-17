@@ -27,5 +27,9 @@ export default () => (
       component={MailRoutes[3].component}
       options={{ headerShown: false }}
     />
+    <Stack.Screen name="WriteBoard" component={MailRoutes[4].component} />
+    <Stack.Screen name="WriteContent" component={MailRoutes[5].component} />
+    <Stack.Screen name="LikeContent" component={MailRoutes[6].component} />
+    <Stack.Screen name="BoardDetail" component={MailRoutes[7].component} />
   </Stack.Navigator>
 );

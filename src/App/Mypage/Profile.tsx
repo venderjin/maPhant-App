@@ -45,6 +45,7 @@ const Profile: React.FC = () => {
   };
   const changePage = (item: string) => {
     if (item.toString() == "작성한 게시글 목록") {
+      console.log(navigation.getState());
       navigation.navigate("WriteBoard", { id: params.id } as never);
     }
     if (item.toString() == "작성한 댓글 목록") {
