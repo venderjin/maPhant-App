@@ -1,6 +1,7 @@
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { DarkTheme, DefaultTheme, NavigationContainer, useTheme } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
+import * as Notifications from "expo-notifications";
+import React, { useEffect, useRef } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Spinner from "react-native-loading-spinner-overlay";
 import { RootSiblingParent } from "react-native-root-siblings";
@@ -14,13 +15,60 @@ import reduxStore from "./src/storage/reduxStore";
 import UIStore from "./src/storage/UIStore";
 import UserStorage from "./src/storage/UserStorage";
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+async function registerForPushNotificationsAsync() {
+  await Notifications.setNotificationChannelAsync("default", {
+    name: "default",
+    importance: Notifications.AndroidImportance.MAX,
+    vibrationPattern: [0, 250, 250, 250],
+    lightColor: "#FF231F7C",
+  });
+
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
+  if (existingStatus !== "granted") {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+  }
+  if (finalStatus !== "granted") {
+    alert("Failed to get push token for push notification!");
+    return;
+  }
+}
+
 const App = () => {
   const isLogged = useSelector(UserStorage.isUserLoggedInSelector);
   const showLoadingOverlay = useSelector(UIStore.isLoadingUIVisibleSelector);
   const isUserDataLoading = useSelector(UserStorage.isUserDataLoadingSelector);
+  const notificationListener = useRef<Notifications.Subscription>();
+  const responseListener = useRef<Notifications.Subscription>();
 
   useEffect(() => {
     UserStorage.loadUserDataOnStartUp();
+
+    registerForPushNotificationsAsync().then(token => alert(token));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      alert(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    return () => {
+      // @ts-ignore
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      // @ts-ignore
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, [isUserDataLoading]);
 
   if (isUserDataLoading) return <Spinner visible={true} textContent={"Loading..."} />;
