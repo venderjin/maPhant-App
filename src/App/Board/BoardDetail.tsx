@@ -43,7 +43,7 @@ import { dateFormat, dateTimeFormat } from "./Time";
 const BoardDetail = () => {
   const params = useRoute().params as { id: number; preRender?: BoardArticleBase };
   const { id, preRender } = params;
-
+  console.log("아이디", id);
   const [comments, setComments] = useState<commentType[]>([]);
   const [replies, setReplies] = useState<commentType[]>([]);
   const [post, setPost] = useState({ board: {} } as BoardPost);
@@ -74,7 +74,7 @@ const BoardDetail = () => {
       alert(error);
     }
   };
-  // console.log(boardData)
+  // console.log(boardData);
   const handleUpdate = async () => {
     try {
       const response = await boardEdit(id, post.board.title, post.board.body, post.board.isHide);
@@ -151,7 +151,7 @@ const BoardDetail = () => {
     listReportType()
       .then(data => {
         setReportType(data.data as ReportType[]);
-        console.log(data.data);
+        // console.log( data.data);
       })
       .catch(err => console.log(err));
   }, []);

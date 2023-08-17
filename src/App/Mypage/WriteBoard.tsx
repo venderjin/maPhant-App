@@ -1,15 +1,18 @@
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
-
 import { bringBoardList } from "../../Api/member/Others";
 import { Container } from "../../components/common";
 import { OtherUserForm } from "../../Navigator/MypageRoute";
 import { OWriteBoardList, Pagination } from "../../types/User";
 import getCurrentTime from "../Time";
+import { NavigationProps } from "../../Navigator/Routes";
+import BoardDetail from "../Board/BoardDetail";
 
 const WriteBoard: React.FC = () => {
+  const navigation = useNavigation<NavigationProps>();
+
   const route = useRoute();
   const params = route.params as OtherUserForm;
   const [writeboardList, setWriteBoardList] = useState<OWriteBoardList[]>([]);
@@ -23,6 +26,11 @@ const WriteBoard: React.FC = () => {
       })
       .catch(e => console.error(e));
   }, []);
+  console.log(page);
+  {
+    console.log(writeboardList);
+  }
+
   return (
     <Container style={{ backgroundColor: "white", display: "flex", flex: 1 }}>
       <Container style={{ alignItems: "center", flex: 0.1, justifyContent: "center" }}>
@@ -40,7 +48,14 @@ const WriteBoard: React.FC = () => {
           renderItem={({ item, index }) => (
             <>
               {index >= 0 && <View style={lineStyle} />}
-              <TouchableOpacity style={{ padding: 18 }} key={item.id}>
+              <TouchableOpacity
+                style={{ padding: 18 }}
+                key={item.id}
+                onPress={() => {
+                  console.log(navigation);
+                  navigation.navigate("BoardDetail", { id: item.id });
+                }}
+              >
                 <View style={{}}>
                   <Text style={{ fontSize: 17, fontWeight: "bold" }}>{item.title}</Text>
                   <Text style={{ marginTop: 10, fontSize: 15 }} numberOfLines={3}>

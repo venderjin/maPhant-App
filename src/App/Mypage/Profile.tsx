@@ -126,32 +126,33 @@ const Profile: React.FC = () => {
             <Text style={{ fontWeight: "bold", fontSize: 16, marginLeft: 10 }}>계정 기능</Text>
           </Container>
           <Container style={{}}>
-            {["작성한 게시글 목록", "작성한 댓글 목록"].map((item, index, array) => (
-              <>
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => {
-                    alert(item);
-                    changePage(item);
-                  }}
-                  style={{
-                    padding: 10,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Container>
-                    <Text style={{ fontWeight: "600" }}>{item}</Text>
-                  </Container>
-                  <Container>
-                    <FontAwesome name="angle-right" color="#5299EB" />
-                  </Container>
-                </TouchableOpacity>
-                {index !== array.length - 1 && (
-                  <View style={{ width: "100%", height: 1, backgroundColor: "#5299EB" }} />
-                )}
-              </>
-            ))}
+            {["작성한 게시글 목록", "작성한 댓글 목록", "좋아요한 글 목록"].map(
+              (item, index, array) => (
+                <>
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => {
+                      changePage(item);
+                    }}
+                    style={{
+                      padding: 10,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Container>
+                      <Text style={{ fontWeight: "600" }}>{item}</Text>
+                    </Container>
+                    <Container>
+                      <FontAwesome name="angle-right" color="#5299EB" />
+                    </Container>
+                  </TouchableOpacity>
+                  {index !== array.length - 1 && (
+                    <View style={{ width: "100%", height: 1, backgroundColor: "#5299EB" }} />
+                  )}
+                </>
+              ),
+            )}
           </Container>
         </Container>
       </Container>
