@@ -29,12 +29,12 @@ const WriteContent: React.FC = () => {
         renderItem={({ item, index }) => (
           <>
             <Pressable
+              style={{ flex: 1, padding: 5, backgroundColor: "#fff" }}
               key={item.id}
               onPress={() => {
                 navigation.navigate("BoradDetail", { id: item.board_id });
                 console.log(item.id);
               }}
-              style={{ flex: 1, padding: 5, backgroundColor: "#fff" }}
             >
               <Container
                 style={{
@@ -42,7 +42,7 @@ const WriteContent: React.FC = () => {
                 }}
               >
                 <View>
-                  <Text style={{}}>{item.board_type}</Text>
+                  <Text style={{ color: "gray" }}>{item.board_type}</Text>
                 </View>
                 <Container>
                   <Text style={{ fontSize: 15, fontWeight: "bold" }}>{item.board_title}</Text>
@@ -70,9 +70,8 @@ const WriteContent: React.FC = () => {
             <View
               style={{
                 width: "100%",
-                height: 0,
+                height: 2,
                 backgroundColor: "#e8eaec",
-                borderBottomWidth: 1,
               }}
             />
           </>
