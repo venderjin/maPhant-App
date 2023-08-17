@@ -1,17 +1,18 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { Field, FormikErrors } from "formik";
+import { Field, Formik, FormikErrors } from "formik";
 import React, { useCallback, useEffect, useState } from "react";
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-root-toast";
 import { useSelector } from "react-redux";
 
 import { PostAPI } from "../../Api/fetchAPI";
-import { fieldList, majorList } from "../../Api/member/signUp";
+import { categorymajor, fieldList, majorList } from "../../Api/member/signUp";
 import UserAPI from "../../Api/memberAPI";
 import { Container, Input, Spacer, TextButton } from "../../components/common";
 import SearchByFilter from "../../components/Input/SearchByFilter";
 import { NavigationProps } from "../../Navigator/Routes";
+import UIStore from "../../storage/UIStore";
 import UserStorage from "../../storage/UserStorage";
 
 interface ISearchForm {
@@ -21,7 +22,7 @@ interface ISearchForm {
 
 const ProfileModify: React.FC = () => {
   const profile = useSelector(UserStorage.userProfileSelector);
-  const category = useSelector(UserStorage.userCategorySelector);
+  // const category = useSelector(UserStorage.userCategorySelector);
 
   type UserType = {
     email?: string;
@@ -48,10 +49,10 @@ const ProfileModify: React.FC = () => {
     studentNumber: profile?.sno,
   };
 
-  const useCategoryModifying: UserCategory = {
-    field: category?.categoryName,
-    major: category?.majorName,
-  };
+  // const useCategoryModifying: UserCategory = {
+  //   field: category?.categoryName,
+  //   major: category?.majorName,
+  // };
 
   const [userEmail, setUserEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -420,17 +421,20 @@ const ProfileModify: React.FC = () => {
               <View style={styles.modifyingContentWidth}>
                 <Text style={styles.text}>계열 / 학과</Text>
                 <View style={styles.modifyingContainer}>
+                  {profile?.category?.map((category, index) => {
+                    return (
+                      <View key={index}>
+                        <Text style={styles.fieldtext}>{category.categoryName}</Text>
+                        <Text style={styles.fieldtext}>- {category.majorName}</Text>
+                      </View>
+                    );
+                  })}
+                  {/* <Text style={styles.fieldtext}>{useCategoryModifying.field}</Text>
+                  <Text style={styles.fieldtext}>- {useCategoryModifying.major}</Text>
                   <Text style={styles.fieldtext}>{useCategoryModifying.field}</Text>
                   <Text style={styles.fieldtext}>- {useCategoryModifying.major}</Text>
-                  {/* <Text style={styles.text}>
-                    {useCategoryModifying.field} - {useCategoryModifying.major}
-                  </Text>
-                  <Text style={styles.text}>
-                    {useCategoryModifying.field} - {useCategoryModifying.major}
-                  </Text>
-                  <Text style={styles.text}>
-                    {useCategoryModifying.field} - {useCategoryModifying.major}
-                  </Text> */}
+                  <Text style={styles.fieldtext}>{useCategoryModifying.field}</Text>
+                  <Text style={styles.fieldtext}>- {useCategoryModifying.major}</Text> */}
                 </View>
               </View>
               <View style={styles.modifyingFieldBtn}>
@@ -447,7 +451,7 @@ const ProfileModify: React.FC = () => {
             <Modal animationType="fade" transparent={true} visible={modifyingFieldModal}>
               <View style={styles.modalBackground}>
                 <View style={styles.modalFieldContainer}>
-                  {/* <Formik
+                  <Formik
                     initialValues={SearchForm}
                     // validationSchema={validationSchema}
                     onSubmit={async values => {
@@ -464,61 +468,79 @@ const ProfileModify: React.FC = () => {
                         .finally(() => UIStore.hideLoadingOverlay());
                     }}
                   >
-                    {({ handleSubmit, errors }) => ( */}
-                  <Container style={styles.modalContainer}>
-                    <Text style={styles.text}>계열 추가하기</Text>
-                    <Container style={styles.FlistContainer}>
-                      <Field
-                        placeholder="계열 입력해 주세요."
-                        name="field"
-                        list={fieldList}
-                        component={SearchByFilter}
-                      />
-                    </Container>
-                    <Spacer size={10} />
-                    <Text style={styles.text}>학과 추가하기</Text>
-                    <Container style={styles.MlistContainer}>
-                      <Field
-                        placeholder="전공 입력해 주세요."
-                        name="major"
-                        list={majorList}
-                        component={SearchByFilter}
-                      />
-                    </Container>
-                    <View style={styles.modalBtnDirection}>
-                      <TextButton
-                        style={styles.modalConfirmBtn}
-                        onPress={() => {
-                          setModyfyingFieldModal(false);
-                        }}
-                      >
-                        취소
-                      </TextButton>
-                      <TextButton
-                        style={styles.modalConfirmBtn}
-                        onPress={() => {
-                          // PostAPI("/user/changeinfo/nickname", {
-                          //   nickname: tmpNickname,
-                          // })
-                          //   .then(res => {
-                          //     if (res.success == true) {
-                          //       console.log(tmpNickname, "으로 닉네임 수정 성공");
-                          //       setNickname(tmpNickname);
-                          //       setModyfyingNicknameModal(false);
-                          //     }
-                          //   })
-                          //   .catch(err => alert(err));
-                          // UserAPI.getProfile().then(res => {
-                          //   UserStorage.setUserProfile(res.data);
-                          // });
-                        }}
-                      >
-                        추가
-                      </TextButton>
-                    </View>
-                  </Container>
-                  {/* )} */}
-                  {/* </Formik> */}
+                    {({ handleSubmit, errors }) => (
+                      <Container style={styles.modalContainer}>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Text style={styles.text}>계열 추가하기</Text>
+                          <TouchableOpacity
+                            style={{ alignItems: "flex-end" }}
+                            onPress={() => {
+                              setModyfyingFieldModal(false);
+                            }}
+                            hitSlop={{ top: 32, bottom: 32, left: 32, right: 32 }}
+                          >
+                            <AntDesign name="closecircle" size={20} color="#aaa" />
+                          </TouchableOpacity>
+                        </View>
+                        <Container style={styles.FlistContainer}>
+                          <Field
+                            placeholder="계열 입력해 주세요."
+                            name="field"
+                            list={fieldList}
+                            component={SearchByFilter}
+                          />
+                        </Container>
+                        <Spacer size={10} />
+                        <Text style={styles.text}>학과 추가하기</Text>
+                        <Container style={styles.MlistContainer}>
+                          <Field
+                            placeholder="전공 입력해 주세요."
+                            name="major"
+                            list={majorList}
+                            component={SearchByFilter}
+                          />
+                        </Container>
+                        <View style={styles.modalBtnDirection}>
+                          <TextButton
+                            style={styles.modalConfirmBtn}
+                            onPress={() => {
+                              setModyfyingFieldModal(false);
+                            }}
+                          >
+                            취소
+                          </TextButton>
+                          <TextButton
+                            style={styles.modalConfirmBtn}
+                            onPress={() => {
+                              onSubmit(errors, handleSubmit);
+
+                              // PostAPI("/user/changeinfo/nickname", {
+                              //   nickname: tmpNickname,
+                              // })
+                              //   .then(res => {
+                              //     if (res.success == true) {
+                              //       console.log(tmpNickname, "으로 닉네임 수정 성공");
+                              //       setNickname(tmpNickname);
+                              //       setModyfyingNicknameModal(false);
+                              //     }
+                              //   })
+                              //   .catch(err => alert(err));
+                              // UserAPI.getProfile().then(res => {
+                              //   UserStorage.setUserProfile(res.data);
+                              // });
+                            }}
+                          >
+                            추가
+                          </TextButton>
+                        </View>
+                      </Container>
+                    )}
+                  </Formik>
                 </View>
               </View>
             </Modal>
