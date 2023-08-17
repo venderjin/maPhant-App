@@ -1,12 +1,8 @@
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
-<<<<<<< HEAD
-import React, { useEffect, useState } from "react";
-import { Image, View } from "react-native";
-=======
 import * as Notifications from "expo-notifications";
-import React, { useEffect, useRef } from "react";
->>>>>>> 6d3dc4430d7faea7c2dbc593202792291bb842b2
+import React, { useEffect, useRef, useState } from "react";
+import { Image, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -49,12 +45,9 @@ async function registerForPushNotificationsAsync() {
 const App = () => {
   const isLogged = useSelector(UserStorage.isUserLoggedInSelector);
   const isUserDataLoading = useSelector(UserStorage.isUserDataLoadingSelector);
-<<<<<<< HEAD
   const [showImage, setShowImage] = useState(true);
-=======
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
->>>>>>> 6d3dc4430d7faea7c2dbc593202792291bb842b2
 
   useEffect(() => {
     UserStorage.loadUserDataOnStartUp();
@@ -77,7 +70,6 @@ const App = () => {
     };
   }, [isUserDataLoading]);
 
-<<<<<<< HEAD
   useEffect(() => {
     if (isUserDataLoading) setShowImage(true);
     else
@@ -106,17 +98,8 @@ const App = () => {
         />
       </View>
     );
-  // <Spinner visible={true} textContent={"Loading..."} />;
-  // if (isUserDataLoading) return <Spinner visible={true} textContent={"Loading..."} />;
+
   return <>{isLogged || isUserDataLoading ? <MainScreen /> : <Login />}</>;
-=======
-  return (
-    <>
-      <Spinner visible={showLoadingOverlay} textContent={"Loading..."} />
-      {isLogged || isUserDataLoading ? <MainScreen /> : <Login />}
-    </>
-  );
->>>>>>> 6d3dc4430d7faea7c2dbc593202792291bb842b2
 };
 
 const AppWrapper = () => {
