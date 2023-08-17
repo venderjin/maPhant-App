@@ -46,6 +46,14 @@ type HotBoard = {
   type: string;
 } & BoardArticleBase;
 
+type VoteBoard = {
+  boardId: number;
+  userId: number;
+  userNickname: string;
+  typeId: number;
+  type: string;
+} & BoardArticleBase;
+
 type BoardType = {
   id: number;
   name: string;
@@ -91,4 +99,5 @@ export type {
   HotBoard,
   ReportType,
   SortType,
+  VoteBoard,
 };

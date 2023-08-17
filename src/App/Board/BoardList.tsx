@@ -57,6 +57,11 @@ const BoardList = () => {
   const changePage = () => {
     navigation.navigate("HotBoard" as never);
   };
+
+  const changeVotePage = () => {
+    navigation.navigate("VoteBoard" as never);
+  };
+
   const touch = () => {
     console.log("??????");
   };
@@ -98,6 +103,13 @@ const BoardList = () => {
                 <TouchableOpacity onPress={changePage} style={{ marginBottom: 30 }}>
                   <Text>
                     HOT 게시글 <MaterialCommunityIcons name="fire" size={24} color="black" />{" "}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity onPress={changeVotePage} style={{ marginBottom: 30 }}>
+                  <Text>
+                    투표 게시글 <MaterialCommunityIcons name="fire" size={24} color="black" />{" "}
                   </Text>
                 </TouchableOpacity>
               </View>

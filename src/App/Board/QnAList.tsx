@@ -3,10 +3,10 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import { listArticle, listHotBoard } from "../../Api/board";
+import { listArticle, listHotBoard, listVoteBoard } from "../../Api/board";
 import { Container } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
-import { BoardArticle, BoardType, HotBoard } from "../../types/Board";
+import { BoardArticle, BoardType, HotBoard, VoteBoard } from "../../types/Board";
 import ScrollList from "./ScrollList";
 
 const QnABoard: React.FC = () => {
@@ -15,6 +15,7 @@ const QnABoard: React.FC = () => {
   const boardType = params?.boardType;
   const [boardData, setboardData] = useState<BoardArticle[]>([]);
   const [hotBoard, setHotBoard] = useState<HotBoard[]>([]);
+  const [voteBoard, setVoteBoard] = useState<VoteBoard[]>([]);
   useEffect(() => {
     listHotBoard(boardType.id, 1, 50)
       .then(data => {
@@ -30,6 +31,15 @@ const QnABoard: React.FC = () => {
       })
       .catch(err => console.log(err));
   }, []);
+
+  useEffect(() => {
+    listVoteBoard(boardType.id, 1, 50)
+      .then(data => {
+        if (data.data) setVoteBoard(data.data.list as VoteBoard[]);
+      })
+      .catch(err => console.log(err));
+  }, []);
+
   return (
     <Container style={styles.container}>
       <ScrollView>
@@ -91,7 +101,7 @@ const QnABoard: React.FC = () => {
             </TouchableOpacity>
           </View>
           <ScrollView horizontal>
-            {hotBoard.map(board => (
+            {voteBoard.map(board => (
               <View key={board.boardId} style={styles.content}>
                 <ScrollList post={board} boardType={boardType} />
               </View>

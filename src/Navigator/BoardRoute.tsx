@@ -7,6 +7,7 @@ import QA_answer from "../App/Board/QA_answer";
 import QAdetail from "../App/Board/QAdetail";
 import QnABoard from "../App/Board/QnAList";
 import TotalList from "../App/Board/TotalList";
+import VoteTotalList from "../App/Board/VoteTotalList";
 import Profile from "../App/Mypage/Profile";
 import { BoardArticle } from "../types/Board";
 import { RouteType } from "../types/Navigation";
@@ -49,6 +50,10 @@ const Routes: RouteType[] = [
     component: TotalList,
   },
   {
+    name: "VoteBoard",
+    component: VoteTotalList,
+  },
+  {
     name: "Profile",
     component: Profile,
   },
@@ -64,6 +69,7 @@ export type NavigationProp = {
   editPost: { post: BoardArticle };
   QA_answer: { id: number; preRender?: BoardArticle };
   HotBoard: undefined;
+  VoteBoard: undefined;
 };
 
 export default Routes;
