@@ -18,7 +18,6 @@ import { useSelector } from "react-redux";
 
 import {
   boardDelete,
-  boardEdit,
   bookMarkArticle,
   commentArticle,
   commentDelete,
@@ -75,7 +74,7 @@ const BoardDetail = () => {
     }
   };
   // console.log(boardData)
-  const handleUpdate = async () => {
+  const handleUpdate = () => {
     navigation.navigate("editPost", { post: post });
   };
 

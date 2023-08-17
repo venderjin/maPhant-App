@@ -50,7 +50,7 @@ const QAdetail = () => {
   // console.log(boardData)
   console.log(post);
   console.log(user);
-  const handleUpdate = async () => {
+  const handleUpdate = () => {
     navigation.navigate("editPost", { post: post });
   };
 

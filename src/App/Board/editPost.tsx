@@ -23,13 +23,13 @@ const Edit: React.FC = () => {
   const editparams = useRoute().params as { post: BoardPost };
   const post = editparams?.post;
 
-  console.log(post);
   useEffect(() => {
     // 받아온 게시판 타입(boardType)을 이용하여 필요한 작업 수행
     setTitle(post.board.title);
     setBody(post.board.body);
     setIsHide(post.board.isHide);
     setIsAnonymous(post.board.isAnonymous);
+    // setHashtags(post.board.tags.map(word => "#" + word));
   }, []);
 
   const check = (name: string, isChecked: boolean) => {
@@ -43,7 +43,7 @@ const Edit: React.FC = () => {
   const handleUpdate = async () => {
     const DBnewHashtags = hashtags.map(word => word.replace(/^#/, ""));
     try {
-      const response = await boardEdit(post.board.boardId, title, body, isHide, DBnewHashtags);
+      const response = await boardEdit(post.board.id, title, body, isHide);
       console.log(response);
       navigation.goBack();
     } catch (error) {
