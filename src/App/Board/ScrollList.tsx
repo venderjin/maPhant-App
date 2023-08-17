@@ -1,5 +1,7 @@
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import { NavigationProps } from "../../Navigator/Routes";
 import { BoardArticle, BoardType, HotBoard } from "../../types/Board";
 import { dateFormat } from "./Time";
 
@@ -16,11 +18,25 @@ export default function ({
   }
 }
 function ScrollList(post: BoardArticle | HotBoard): JSX.Element {
+  const params = useRoute().params as { boardType: BoardType };
+  const boardType = params?.boardType;
+  const navigation = useNavigation<NavigationProps>();
+
+  const detailContent = (board_id: number) => {
+    if (boardType.id == 2) {
+      navigation.navigate("QnAdetail", { id: board_id });
+    } else {
+      navigation.navigate("BoardDetail", { id: board_id });
+    }
+  };
+
   return (
-    <TouchableOpacity style={styles.button}>
+    <TouchableOpacity style={styles.button} onPress={() => detailContent(post.boardId)}>
       <View style={styles.hBody}>
-        <Text style={styles.title}>{post.title} </Text>
-        {/* <Text style={styles.comment}>{post.content}</Text> */}
+        <Text style={styles.title} numberOfLines={1}>
+          {post.title}{" "}
+        </Text>
+        <Text style={styles.comment}>{post.body}</Text>
       </View>
       <View style={styles.bottom}>
         <Text style={styles.userName}>{post.userId}</Text>
@@ -32,6 +48,7 @@ function ScrollList(post: BoardArticle | HotBoard): JSX.Element {
 
 const styles = StyleSheet.create({
   button: {
+    flex: 1,
     minWidth: 200,
     minHeight: 150,
     padding: 10,

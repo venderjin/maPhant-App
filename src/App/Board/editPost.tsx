@@ -15,22 +15,22 @@ const Edit: React.FC = () => {
   const [checkList, setCheckList] = useState<string[]>([]);
   const [isHide, setIsHide] = useState<number>(0);
   const [isAnonymous, setIsAnonymous] = useState<number>(0);
+  const [hashtagInput, setHashtagInput] = useState("");
+  const [hashtags, setHashtags] = useState<string[]>([]);
 
-  const boardparams = useRoute().params as { boardType: BoardType };
-  const boardType = boardparams?.boardType;
   const navigation = useNavigation<NavigationProps>();
 
   const editparams = useRoute().params as { post: BoardPost };
   const post = editparams?.post;
-  console.log(post);
+
   useEffect(() => {
     // 받아온 게시판 타입(boardType)을 이용하여 필요한 작업 수행
     setTitle(post.board.title);
     setBody(post.board.body);
     setIsHide(post.board.isHide);
     setIsAnonymous(post.board.isAnonymous);
-    console.log("게시판 타입:", boardType);
-  }, [boardType]);
+    // setHashtags(post.board.tags.map(word => "#" + word));
+  }, []);
 
   const check = (name: string, isChecked: boolean) => {
     if (isChecked) {
@@ -41,12 +41,13 @@ const Edit: React.FC = () => {
   };
 
   const handleUpdate = async () => {
+    const DBnewHashtags = hashtags.map(word => word.replace(/^#/, ""));
     try {
-      const response = await boardEdit(post.board.boardId, title, body, isHide);
-      console.log("수정 가능", response);
-      navigation.navigate("DetailList", { boardType: boardType });
+      const response = await boardEdit(post.board.id, title, body, isHide);
+      console.log(response);
+      navigation.goBack();
     } catch (error) {
-      console.error("수정 오류", error);
+      console.error(error);
     }
   };
 
@@ -84,7 +85,7 @@ const Edit: React.FC = () => {
       </Container>
       <Container>
         <Input
-          placeholder="연스으으으으으으으ㅡㅂ"
+          placeholder="제목"
           onChangeText={text => setTitle(text)}
           value={title}
           multiline={true}

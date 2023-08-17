@@ -1,6 +1,7 @@
 type BoardArticleBase = {
   title: string;
   body: string;
+  userNickname?: string;
   likeCnt: number;
   commentCnt: number;
   createdAt: string;
@@ -13,20 +14,23 @@ type BoardArticleBase = {
 //게시판 읽기
 type BoardArticle = {
   categoryId: number;
-  imageUrl?: string;
+  imagesUrl?: string[];
+  tagNames?: string[];
   isComplete: number;
-  parentId: number;
+  parentId?: number;
   reportCnt: number;
   state: string;
   typeId: string;
   userId: number;
   boardId: number;
+  id: number;
+  tags?: hashTagType[];
 } & BoardArticleBase;
 
 //글 읽기
 type BoardPost = {
   board: BoardArticle;
-  answerList?: BoardArticle[];
+  answerList?: BoardArticle[]; //질문 게시판 답변
 };
 
 type BoardListItem = {
@@ -35,6 +39,14 @@ type BoardListItem = {
 } & BoardArticleBase;
 
 type HotBoard = {
+  boardId: number;
+  userId: number;
+  userNickname: string;
+  typeId: number;
+  type: string;
+} & BoardArticleBase;
+
+type VoteBoard = {
   boardId: number;
   userId: number;
   userNickname: string;
@@ -69,8 +81,13 @@ type commentType = {
   created_at: string;
   like_cnt: number;
   comment_id: number;
+  time: string;
 };
 
+type hashTagType = {
+  id: number;
+  name: string;
+};
 export type {
   BoardArticle,
   BoardArticleBase,
@@ -78,7 +95,9 @@ export type {
   BoardPost,
   BoardType,
   commentType,
+  hashTagType,
   HotBoard,
   ReportType,
   SortType,
+  VoteBoard,
 };
