@@ -42,12 +42,9 @@ const App = () => {
     );
   // <Spinner visible={true} textContent={"Loading..."} />;
 
-  return (
-    <>
-      <Spinner visible={showLoadingOverlay} textContent={"Loading..."} />
-      {isLogged ? <MainScreen /> : <Login />}
-    </>
-  );
+  if (isUserDataLoading) return <Spinner visible={true} textContent={"Loading..."} />;
+
+  return <>{isLogged || isUserDataLoading ? <MainScreen /> : <Login />}</>;
 };
 
 const AppWrapper = () => {
