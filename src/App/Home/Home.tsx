@@ -148,7 +148,7 @@ const HeaderCategory: React.FC = () => {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [userCategoryList, setUserCategoryList] = useState<UserCategory[]>([]);
   const profile = useSelector(UserStorage.userProfileSelector);
-  //
+
   const styles = StyleSheet.create({
     titleText: {
       fontSize: 35,
