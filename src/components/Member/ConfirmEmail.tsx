@@ -144,6 +144,28 @@ const ConfirmEmail = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    paddingHorizontal: 40,
+    paddingTop: 80,
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  input: {
+    backgroundColor: "#f2f2f2",
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    marginTop: 20,
+    fontSize: 18,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
   button: {
     borderWidth: 1,
     borderRadius: 4,
@@ -162,6 +184,13 @@ const styles = StyleSheet.create({
   timerText: {
     fontSize: 12,
     color: "#0055FF",
+  },
+  label: {
+    position: "absolute",
+    left: 10,
+    fontSize: 16,
+    color: "#aaa",
+    backgroundColor: "transparent",
   },
 });
 

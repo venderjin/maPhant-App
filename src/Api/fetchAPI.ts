@@ -5,7 +5,7 @@ import UIStore from "../storage/UIStore";
 import UserStorage from "../storage/UserStorage";
 import constraints from "./constraints";
 
-type Method = "GET" | "POST" | "PUT" | "DELETE";
+type Method = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 type statusResponse = {
   success: boolean;
   errors?: string;
@@ -104,7 +104,10 @@ function GetAPI<T extends statusResponse = dataResponse>(
 ) {
   if (params != undefined) {
     const urlParams = new URLSearchParams();
-    Object.keys(params).forEach(key => urlParams.append(key, params[key].toString()));
+    Object.keys(params)
+      .filter(key => params[key] !== undefined)
+      .forEach(key => urlParams.append(key, params[key].toString()));
+
     url = `${url}?${urlParams.toString()}`;
   }
 
@@ -131,6 +134,13 @@ function DeleteAPI<T extends statusResponse = dataResponse>(
 ) {
   return fetchAPI<T>("DELETE", url, body, showLoadingOverlay);
 }
+function PatchAPI<T extends statusResponse = dataResponse>(
+  url: string,
+  body?: object,
+  showLoadingOverlay: boolean = false,
+) {
+  return fetchAPI<T>("PATCH", url, body, showLoadingOverlay);
+}
 
 export type { dataResponse, statusResponse };
-export { DeleteAPI, GetAPI, PostAPI, PutAPI };
+export { DeleteAPI, GetAPI, PatchAPI, PostAPI, PutAPI };

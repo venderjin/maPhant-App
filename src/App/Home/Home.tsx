@@ -147,6 +147,8 @@ const HeaderCategory: React.FC = () => {
   const currentCategory = useSelector(UserStorage.userCategorySelector);
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [userCategoryList, setUserCategoryList] = useState<UserCategory[]>([]);
+  const profile = useSelector(UserStorage.userProfileSelector);
+  //
   const styles = StyleSheet.create({
     titleText: {
       fontSize: 35,
@@ -157,7 +159,7 @@ const HeaderCategory: React.FC = () => {
 
   useEffect(() => {
     UserStorage.listUserCategory().then(list => setUserCategoryList(list));
-  }, []);
+  }, [profile]);
 
   const snapPoints = useMemo(() => ["25%", "60%"], []);
   const onCategoryPress = useCallback((item: UserCategory) => {

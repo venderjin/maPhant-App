@@ -90,6 +90,7 @@ const Login: React.FC = () => {
           </Container>
           <Spacer size={30} />
           <TextButton
+            fontColor="#aaa"
             backgroundColor="transparent"
             paddingVertical={16}
             onPress={() => {
@@ -101,6 +102,7 @@ const Login: React.FC = () => {
         </View>
         <View>
           <TextButton
+            fontColor="#aaa"
             backgroundColor="transparent"
             paddingVertical={16}
             onPress={() => {
