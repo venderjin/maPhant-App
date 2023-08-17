@@ -449,205 +449,207 @@ export default function MyPage() {
   const navigation = useNavigation<NavigationProps>();
 
   return (
-    <ScrollView style={styles.container}>
-      {/* ------------ 로그아웃 모달창 */}
-      <Modal animationType="fade" transparent={true} visible={visibleLogoutModal}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            // backgroundColor: "skyblue",
-          }}
-        >
+    <View style={{ backgroundColor: "white" }}>
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+        {/* ------------ 로그아웃 모달창 */}
+        <Modal animationType="fade" transparent={true} visible={visibleLogoutModal}>
           <View
             style={{
-              flex: 0.6,
-              borderRadius: 25,
-              backgroundColor: "#ffffff",
-              padding: 25,
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              // backgroundColor: "skyblue",
             }}
           >
-            <Spacer size={5} />
             <View
               style={{
-                alignItems: "center",
+                flex: 0.6,
+                borderRadius: 25,
+                backgroundColor: "#ffffff",
+                padding: 25,
               }}
             >
-              <Text style={{ fontSize: 18 }}>로그아웃 하시겠습니까?</Text>
-            </View>
-            <Spacer size={20} />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-              }}
-            >
-              <TextButton
+              <Spacer size={5} />
+              <View
                 style={{
-                  width: "45%",
-                }}
-                onPress={() => {
-                  UserStorage.removeUserData();
+                  alignItems: "center",
                 }}
               >
-                예
-              </TextButton>
-              <TextButton
+                <Text style={{ fontSize: 18 }}>로그아웃 하시겠습니까?</Text>
+              </View>
+              <Spacer size={20} />
+              <View
                 style={{
-                  width: "45%",
-                }}
-                onPress={() => {
-                  setVisibleLogoutModal(false);
+                  flexDirection: "row",
+                  justifyContent: "space-around",
                 }}
               >
-                아니오
-              </TextButton>
+                <TextButton
+                  style={{
+                    width: "45%",
+                  }}
+                  onPress={() => {
+                    UserStorage.removeUserData();
+                  }}
+                >
+                  예
+                </TextButton>
+                <TextButton
+                  style={{
+                    width: "45%",
+                  }}
+                  onPress={() => {
+                    setVisibleLogoutModal(false);
+                  }}
+                >
+                  아니오
+                </TextButton>
+              </View>
+              <Spacer size={5} />
             </View>
-            <Spacer size={5} />
           </View>
-        </View>
-      </Modal>
+        </Modal>
 
-      {/* ------------ 회원탈퇴 전 인증 모달창 */}
-      <Modal animationType="fade" transparent={true} visible={visibleAuthentication}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            // backgroundColor: "skyblue",
-          }}
-        >
+        {/* ------------ 회원탈퇴 전 인증 모달창 */}
+        <Modal animationType="fade" transparent={true} visible={visibleAuthentication}>
           <View
             style={{
-              flex: 0.6,
-              borderRadius: 25,
-              backgroundColor: "#ffffff",
-              padding: 25,
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              // backgroundColor: "skyblue",
             }}
           >
-            <Spacer size={5} />
             <View
               style={{
-                alignItems: "center",
+                flex: 0.6,
+                borderRadius: 25,
+                backgroundColor: "#ffffff",
+                padding: 25,
               }}
             >
-              <Text style={{ fontSize: 18 }}>비밀번호를 입력해주세요.</Text>
-            </View>
-            <Spacer size={20} />
-            <Input
-              style={{ paddingVertical: "5%", backgroundColor: "#e8eaec" }}
-              paddingHorizontal={20}
-              borderRadius={30}
-              placeholder="Password"
-              onChangeText={text => setCheckPassword(text)}
-              value={checkPassword}
-              secureTextEntry={true}
-            ></Input>
-            <Spacer size={20} />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-              }}
-            >
-              <TextButton
+              <Spacer size={5} />
+              <View
                 style={{
-                  width: "45%",
-                }}
-                onPress={() => {
-                  checkPasswordHandler();
+                  alignItems: "center",
                 }}
               >
-                확인
-              </TextButton>
-              <TextButton
+                <Text style={{ fontSize: 18 }}>비밀번호를 입력해주세요.</Text>
+              </View>
+              <Spacer size={20} />
+              <Input
+                style={{ paddingVertical: "5%", backgroundColor: "#e8eaec" }}
+                paddingHorizontal={20}
+                borderRadius={30}
+                placeholder="Password"
+                onChangeText={text => setCheckPassword(text)}
+                value={checkPassword}
+                secureTextEntry={true}
+              ></Input>
+              <Spacer size={20} />
+              <View
                 style={{
-                  width: "45%",
-                }}
-                onPress={() => {
-                  setVisibleAuthentication(false);
+                  flexDirection: "row",
+                  justifyContent: "space-around",
                 }}
               >
-                취소
-              </TextButton>
+                <TextButton
+                  style={{
+                    width: "45%",
+                  }}
+                  onPress={() => {
+                    checkPasswordHandler();
+                  }}
+                >
+                  확인
+                </TextButton>
+                <TextButton
+                  style={{
+                    width: "45%",
+                  }}
+                  onPress={() => {
+                    setVisibleAuthentication(false);
+                  }}
+                >
+                  취소
+                </TextButton>
+              </View>
+              <Spacer size={5} />
             </View>
-            <Spacer size={5} />
           </View>
-        </View>
-      </Modal>
-      {/* ------------ 회원탈퇴 모달창 */}
-      <Modal animationType="fade" transparent={true} visible={visibleWithdrawModal}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            // backgroundColor: "skyblue",
-          }}
-        >
+        </Modal>
+        {/* ------------ 회원탈퇴 모달창 */}
+        <Modal animationType="fade" transparent={true} visible={visibleWithdrawModal}>
           <View
             style={{
-              flex: 0.6,
-              borderRadius: 25,
-              backgroundColor: "#ffffff",
-              padding: 25,
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              // backgroundColor: "skyblue",
             }}
           >
-            <Spacer size={5} />
             <View
               style={{
-                alignItems: "center",
+                flex: 0.6,
+                borderRadius: 25,
+                backgroundColor: "#ffffff",
+                padding: 25,
               }}
             >
-              <Text style={{ fontSize: 18 }}>회원탈퇴 하시겠습니까?</Text>
-            </View>
-            <Spacer size={20} />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-              }}
-            >
-              <TextButton
+              <Spacer size={5} />
+              <View
                 style={{
-                  width: "45%",
-                }}
-                onPress={() => {
-                  DeleteAPI.deleteUser(userProfle!.id);
-                  UserStorage.removeUserData();
+                  alignItems: "center",
                 }}
               >
-                예
-              </TextButton>
-              <TextButton
+                <Text style={{ fontSize: 18 }}>회원탈퇴 하시겠습니까?</Text>
+              </View>
+              <Spacer size={20} />
+              <View
                 style={{
-                  width: "45%",
-                }}
-                onPress={() => {
-                  setVisibleWithdrawModal(false);
+                  flexDirection: "row",
+                  justifyContent: "space-around",
                 }}
               >
-                아니오
-              </TextButton>
+                <TextButton
+                  style={{
+                    width: "45%",
+                  }}
+                  onPress={() => {
+                    DeleteAPI.deleteUser(userProfle!.id);
+                    UserStorage.removeUserData();
+                  }}
+                >
+                  예
+                </TextButton>
+                <TextButton
+                  style={{
+                    width: "45%",
+                  }}
+                  onPress={() => {
+                    setVisibleWithdrawModal(false);
+                  }}
+                >
+                  아니오
+                </TextButton>
+              </View>
+              <Spacer size={5} />
             </View>
-            <Spacer size={5} />
           </View>
-        </View>
-      </Modal>
+        </Modal>
 
-      <MyView />
-      {sections.map((section, index) => (
-        <Section key={index.toString()} item={section} />
-      ))}
-    </ScrollView>
+        <MyView />
+        {sections.map((section, index) => (
+          <Section key={index.toString()} item={section} />
+        ))}
+      </ScrollView>
+    </View>
   );
 }
 
