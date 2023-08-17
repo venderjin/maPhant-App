@@ -49,7 +49,6 @@ const Chatroom: React.FC = () => {
   useEffect(() => {
     if (params.roomId) fetchChatLists(params.roomId);
   }, [params.roomId]);
-  console.log("징징");
 
   function getCurrentTime(targetDate: Date) {
     const hours = targetDate.getHours();

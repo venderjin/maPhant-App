@@ -16,7 +16,6 @@ const Profile: React.FC = () => {
   const route = useRoute();
   const params = route.params as OtherUserId;
   const navigation = useNavigation<NavigationProps>();
-
   const [otherUserProfileList, setOtherUserProfileList] = useState<OtherUserData[]>([]);
   const [cmpid, setCmpId] = useState<MessageList[]>([]);
   useEffect(() => {
@@ -33,13 +32,14 @@ const Profile: React.FC = () => {
       })
       .catch(e => console.error(e));
   }, []);
+
   const chat = () => {
     const roomIds = cmpid.filter(item => item.other_id == params.id);
     const roomId = roomIds.length == 0 ? 0 : roomIds[0].id;
     // 여기 상대방 닉네임이랑, 그 상대방의 id를 같이 넘겨줘야함. id는 board에서 상대 닉네임 클릭시 id랑 같이 넘겨 받아야함. MypageRoute에 추가해줘서 넘어감 이게 맞는 방법인지 잘모르겠음
     navigation.navigate("Chatroom", {
       id: params.id,
-      nickname: otherUserProfileList.user_nickname,
+      nickname: otherUserProfileList[0]?.user_nickname,
       roomId: roomId,
     } as never);
   };
@@ -52,6 +52,8 @@ const Profile: React.FC = () => {
       navigation.navigate("WriteContent", { id: params.id } as never);
     }
   };
+  console.log("여기다", otherUserProfileList);
+
   function OtherProfile() {
     return (
       <Container
@@ -68,8 +70,8 @@ const Profile: React.FC = () => {
           <ImageBox
             // 기본 이미지 설정 되면 나중에 변경해야함
             source={
-              otherUserProfileList.profile_img
-                ? otherUserProfileList.profile_img
+              otherUserProfileList[0]?.profile_img
+                ? { uri: otherUserProfileList[0]?.profile_img }
                 : require("../../../assets/image3.png")
             }
             width={110}
@@ -81,7 +83,7 @@ const Profile: React.FC = () => {
         <Container style={{ alignItems: "center", flex: 1 }}>
           <Container>
             <Text style={{ fontSize: 25, fontWeight: "bold" }}>
-              {otherUserProfileList.user_nickname}
+              {otherUserProfileList[0]?.user_nickname}
             </Text>
           </Container>
           <Container>

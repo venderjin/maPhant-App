@@ -13,6 +13,7 @@ import { NavigationProps } from "../../Navigator/Routes";
 const WriteContent: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
   const route = useRoute();
+
   const params = route.params as OtherUserId;
   const [contentList, setContentList] = useState<OWriteContentList[]>([]);
   useEffect(() => {
@@ -32,8 +33,8 @@ const WriteContent: React.FC = () => {
               style={{ flex: 1, padding: 5, backgroundColor: "#fff" }}
               key={item.id}
               onPress={() => {
+                console.log(item.board_id);
                 navigation.navigate("BoradDetail", { id: item.board_id });
-                console.log(item.id);
               }}
             >
               <Container
