@@ -29,7 +29,8 @@ interface ISearchForm {
 
 const ProfileModify: React.FC = () => {
   const profile = useSelector(UserStorage.userProfileSelector);
-  // const category = useSelector(UserStorage.userCategorySelector);
+  console;
+  const category = useSelector(UserStorage.userCategorySelector);
 
   type UserType = {
     email?: string;
@@ -51,10 +52,10 @@ const ProfileModify: React.FC = () => {
     studentNumber: profile?.sno,
   };
 
-  // const useCategoryModifying: UserCategory = {
-  //   field: category?.categoryName,
-  //   major: category?.majorName,
-  // };
+  const useCategoryModifying: UserCategory = {
+    field: category?.categoryName,
+    major: category?.majorName,
+  };
 
   const [userEmail, setUserEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -537,23 +538,7 @@ const ProfileModify: React.FC = () => {
                   >
                     {({ handleSubmit, errors }) => (
                       <Container style={styles.modalContainer}>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <Text style={styles.text}>계열 추가하기</Text>
-                          <TouchableOpacity
-                            style={{ alignItems: "flex-end" }}
-                            onPress={() => {
-                              setModyfyingFieldModal(false);
-                            }}
-                            hitSlop={{ top: 32, bottom: 32, left: 32, right: 32 }}
-                          >
-                            <AntDesign name="closecircle" size={20} color="#aaa" />
-                          </TouchableOpacity>
-                        </View>
+                        <Text style={styles.text}>계열 추가하기</Text>
                         <Container style={styles.FlistContainer}>
                           <Field
                             placeholder="계열 입력해 주세요."
