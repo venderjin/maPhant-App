@@ -23,12 +23,9 @@ const App = () => {
     UserStorage.loadUserDataOnStartUp();
   }, [isUserDataLoading]);
 
-  return (
-    <>
-      <Spinner visible={showLoadingOverlay} textContent={"Loading..."} />
-      {isLogged || isUserDataLoading ? <MainScreen /> : <Login />}
-    </>
-  );
+  if (isUserDataLoading) return <Spinner visible={true} textContent={"Loading..."} />;
+
+  return <>{isLogged || isUserDataLoading ? <MainScreen /> : <Login />}</>;
 };
 
 const AppWrapper = () => {
