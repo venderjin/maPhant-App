@@ -43,7 +43,7 @@ import { dateFormat, dateTimeFormat } from "./Time";
 const BoardDetail = () => {
   const params = useRoute().params as { id: number; preRender?: BoardArticleBase };
   const { id, preRender } = params;
-
+  console.log("아이디", id);
   const [comments, setComments] = useState<commentType[]>([]);
   const [replies, setReplies] = useState<commentType[]>([]);
   const [post, setPost] = useState({ board: {} } as BoardPost);
@@ -74,7 +74,7 @@ const BoardDetail = () => {
       alert(error);
     }
   };
-  // console.log(boardData)
+  // console.log(boardData);
   const handleUpdate = async () => {
     try {
       const response = await boardEdit(id, post.board.title, post.board.body, post.board.isHide);
@@ -135,6 +135,7 @@ const BoardDetail = () => {
       })
       .catch();
   }, []);
+  console.info(post);
   useEffect(() => {
     commentArticle(id, 1, 50)
       .then(response => {
@@ -150,7 +151,7 @@ const BoardDetail = () => {
     listReportType()
       .then(data => {
         setReportType(data.data as ReportType[]);
-        console.log(data.data);
+        // console.log( data.data);
       })
       .catch(err => console.log(err));
   }, []);
@@ -304,7 +305,7 @@ const BoardDetail = () => {
   console.log(post.board);
 
   const profileNavi = () => {
-    navigation.navigate("Profile");
+    navigation.navigate("Profile", { id: post.board.userId } as never);
   };
 
   const ModalWrapperComment = ({ commentId }: { commentId: number }) => {
@@ -453,6 +454,7 @@ const BoardDetail = () => {
           {comments
             .filter(comment => comment.parent_id === null)
             .map(comment => (
+              // comment.parent_id == null ? (
               <>
                 <View style={styles.commentBox} key={comment.id}>
                   <ModalWrapperComment commentId={commentId} />
@@ -546,11 +548,9 @@ const BoardDetail = () => {
                                   <IconButton
                                     name="thumbs-o-up"
                                     color="skyblue"
-                                    onPress={() => {
-                                      handleCommentLike(reply.id, reply.like_cnt);
-                                    }}
+                                    onPress={() => console.log("추천")}
                                   >
-                                    {reply.like_cnt === 0 ? "추천" : reply.like_cnt}
+                                    추천
                                   </IconButton>
                                   <IconButton
                                     name="exclamation-circle"

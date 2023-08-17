@@ -1,5 +1,4 @@
 import BoardDetail from "../App/Board/BoardDetail";
-import QAdetail from "../App/Board/QAdetail";
 import Chatroom from "../App/Mail/Chatroom";
 import Bookmark from "../App/Mypage/Bookmark";
 import LikeContent from "../App/Mypage/LikeContent";

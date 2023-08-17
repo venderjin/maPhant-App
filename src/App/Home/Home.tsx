@@ -42,19 +42,19 @@ const Home: React.FC = () => {
   const [text, setText] = useState<string>("");
   const [info, setInfo] = useState<[ImageSourcePropType, () => void][]>([
     [
-      require("../../../assets/image1.png"),
+      require("../../../assets/image1.jpg"),
       () => {
         alert("1");
       },
     ],
     [
-      require("../../../assets/image2.png"),
+      require("../../../assets/image2.jpg"),
       () => {
         alert("2");
       },
     ],
     [
-      require("../../../assets/image3.png"),
+      require("../../../assets/image3.jpg"),
       () => {
         alert("3");
       },

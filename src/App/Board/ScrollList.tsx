@@ -33,7 +33,9 @@ function ScrollList(post: BoardArticle | HotBoard): JSX.Element {
   return (
     <TouchableOpacity style={styles.button} onPress={() => detailContent(post.boardId)}>
       <View style={styles.hBody}>
-        <Text style={styles.title}>{post.title} </Text>
+        <Text style={styles.title} numberOfLines={1}>
+          {post.title}{" "}
+        </Text>
         <Text style={styles.comment}>{post.body}</Text>
       </View>
       <View style={styles.bottom}>

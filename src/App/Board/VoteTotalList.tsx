@@ -2,42 +2,40 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import { listHotBoardTotal } from "../../Api/board";
-import { Container } from "../../components/common";
+import { listVoteBoardTotal } from "../../Api/board";
 import { NavigationProps } from "../../Navigator/Routes";
-import { BoardType, HotBoard } from "../../types/Board";
+import { BoardType, VoteBoard } from "../../types/Board";
 import PostSummary from "./PostSummary";
 
-const TotalList = () => {
+const VoteTotalList = () => {
   const params = useRoute().params as { boardType: BoardType };
   const boardType = params?.boardType;
   const navigation = useNavigation<NavigationProps>();
 
-  const [boardData, setboardData] = useState<HotBoard[]>([]);
+  const [voteBoardData, setVoteBoardData] = useState<VoteBoard[]>([]);
 
   useEffect(() => {
-    listHotBoardTotal(1, 50).then(data => setboardData(data.data.list as HotBoard[]));
+    listVoteBoardTotal(1, 50).then(data => setVoteBoardData(data.data.list as VoteBoard[]));
   }, []);
-  const detailContent = (typeId: number, boardId: number) => {
+  const voteDetailContent = (typeId: number, boardId: number) => {
     if (typeId == 2) {
       navigation.navigate("QnAdetail", { id: boardId });
     } else {
       navigation.navigate("BoardDetail", { id: boardId });
     }
   };
+
   return (
-    <Container style={styles.container}>
-      <ScrollView>
-        {boardData.map(board => (
-          <View key={board.boardId} style={styles.body}>
-            <Pressable onPress={() => detailContent(board.typeId, board.boardId)}>
-              <Text style={styles.board}>{board.type}</Text>
-              <PostSummary post={board} boardType={boardType} />
-            </Pressable>
-          </View>
-        ))}
-      </ScrollView>
-    </Container>
+    <ScrollView style={styles.container}>
+      {voteBoardData.map(board => (
+        <View key={board.boardId} style={styles.body}>
+          <Pressable onPress={() => voteDetailContent(board.typeId, board.boardId)}>
+            <Text style={styles.board}>{board.type}</Text>
+            <PostSummary post={board} boardType={boardType} />
+          </Pressable>
+        </View>
+      ))}
+    </ScrollView>
   );
 };
 
@@ -59,4 +57,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TotalList;
+export default VoteTotalList;

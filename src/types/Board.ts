@@ -23,7 +23,7 @@ type BoardArticle = {
   typeId: string;
   userId: number;
   boardId: number;
-  id?: number;
+  id: number;
   tags?: hashTagType[];
 } & BoardArticleBase;
 
@@ -39,6 +39,14 @@ type BoardListItem = {
 } & BoardArticleBase;
 
 type HotBoard = {
+  boardId: number;
+  userId: number;
+  userNickname: string;
+  typeId: number;
+  type: string;
+} & BoardArticleBase;
+
+type VoteBoard = {
   boardId: number;
   userId: number;
   userNickname: string;
@@ -91,4 +99,5 @@ export type {
   HotBoard,
   ReportType,
   SortType,
+  VoteBoard,
 };
