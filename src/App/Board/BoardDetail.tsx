@@ -3,29 +3,39 @@ import Checkbox from "expo-checkbox";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Image,
   Keyboard,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { useSelector } from "react-redux";
 
 import {
   boardDelete,
-  boardEdit,
+  bookMarkArticle,
   commentArticle,
   commentDelete,
   commentInsert,
+  commentLike,
   commentReply,
+  DeletebookMarkArticle,
+  deleteLikeBoard,
   getArticle,
+  insertLikePost,
+  listReportType,
+  ReportComment,
+  ReportPost,
 } from "../../Api/board";
-import { Container, IconButton, Input, TextButton } from "../../components/common";
+import { Container, IconButton, Input, Spacer, TextButton } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import UserStorage from "../../storage/UserStorage";
-import { BoardArticleBase, BoardPost, commentType } from "../../types/Board";
+import { BoardArticleBase, BoardPost, commentType, ReportType } from "../../types/Board";
 import { UserData } from "../../types/User";
 import { dateFormat, dateTimeFormat } from "./Time";
 
@@ -33,49 +43,48 @@ const BoardDetail = () => {
   const params = useRoute().params as { id: number; preRender?: BoardArticleBase };
   const { id, preRender } = params;
 
-  const [comments, setcomments] = useState<commentType[]>([]);
-  const [replies, setReplies] = useState<{ [commentId: number]: commentType[] | undefined }>({});
+  const [comments, setComments] = useState<commentType[]>([]);
+  const [replies, setReplies] = useState<commentType[]>([]);
   const [post, setPost] = useState({ board: {} } as BoardPost);
   // const [post, setPost] = useState({ board: preRender } as BoardPost);
   const [body, setBody] = useState("");
+  const [replyBody, setReplyBody] = useState<string>("");
   const [isAnonymous, setIsAnonymous] = useState(0);
   const [checkList, setCheckList] = useState<string[]>([]);
   const [parent_id, setParentId] = useState<number>(0);
+  const [checked, setChecked] = useState<boolean>(false);
+  const [likeCnt, setLikeCnt] = useState<number>(0);
+  const [reportModal, setReportModal] = useState(false);
+  const [reportCommentModal, setReportCommentModal] = useState(false);
+  const [reportType, setReportType] = React.useState<ReportType[]>([]);
+  const [commentId, setCommentId] = useState<number>(0);
   const user = useSelector(UserStorage.userProfileSelector)! as UserData;
   const navigation = useNavigation<NavigationProps>();
+  const [commentLength, setCommentLength] = useState<number>(0);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
-  const handleDelete = async (board_id: number) => {
+  const handleDelete = async () => {
     try {
-      const response = await boardDelete(board_id);
-      navigation.navigate("DetailList" as never);
+      const response = await boardDelete(id);
+      navigation.goBack();
+
       console.log("삭제 성공", response);
     } catch (error) {
-      console.error("삭제 오류", error);
+      alert(error);
     }
   };
   // console.log(boardData)
-  // console.log(post);
-  const handleUpdate = async () => {
-    try {
-      const response = await boardEdit(
-        post.board.boardId,
-        post.board.title,
-        post.board.body,
-        post.board.isHide,
-      );
-      console.log("수정 가능", response);
-      navigation.navigate("editPost", { post: post, boardType: boardData });
-    } catch (error) {
-      console.error("수정 오류", error);
-    }
+  const handleUpdate = () => {
+    navigation.navigate("editPost", { post: post });
   };
 
   const handlecommentInsert = async () => {
     try {
-      const response = await commentInsert(user.id, id, body, isAnonymous);
-      console.log("댓글 작성 성공", response);
+      const response = await commentInsert(id, body, isAnonymous);
+      console.log(response);
       setBody("");
       setIsAnonymous(0);
+      setCommentLength(commentLength + 1);
       Keyboard.dismiss();
     } catch (error) {
       console.log("댓글 작성 오류", error);
@@ -85,26 +94,19 @@ const BoardDetail = () => {
   const handleCommentDelete = async (id: number) => {
     try {
       const response = await commentDelete(id);
-      console.log("댓글 삭제 성공", response);
+      console.log(response);
+      setCommentLength(commentLength - 1);
     } catch (error) {
       console.log("댓글 삭제 오류", error);
     }
   };
 
-  const handleReplyInput = async (parent_id: number) => {
+  const handleReplyInput = async (parent_id: number, body: string) => {
     try {
-      const response = await commentReply(user.id, id, parent_id, body, isAnonymous);
-      console.log("대댓글 성공", response);
-
-      setReplies(prevReplies => {
-        const newReplies = {
-          ...prevReplies,
-          [parent_id]: [...(prevReplies[parent_id] || []), response.data],
-        };
-        return newReplies;
-      });
-
-      setBody("");
+      const response = await commentReply(parent_id, id, body, isAnonymous);
+      console.log(response);
+      setCommentLength(commentLength + 1);
+      setReplyBody("");
       setIsAnonymous(0);
     } catch (error) {
       console.log("대댓글 오류", error);
@@ -122,37 +124,45 @@ const BoardDetail = () => {
   useEffect(() => {
     getArticle(id)
       .then(data => {
-        if (data.data) setPost(data.data as BoardPost);
-      })
-      .catch();
-
-    commentArticle(id, 1)
-      .then(response => {
-        if (response.data) setcomments(response.data as commentType[]);
-
-        const repliesData = response.data as commentType[];
-        const repliesMap: { [commentId: number]: commentType[] } = {};
-
-        repliesData.forEach(reply => {
-          if (reply.parent_id) {
-            if (!repliesMap[reply.parent_id]) {
-              repliesMap[reply.parent_id] = [];
-            }
-            repliesMap[reply.parent_id].push(reply);
-          }
-        });
-
-        setReplies(repliesMap);
+        setPost(data.data as BoardPost);
       })
       .catch();
   }, []);
+  useEffect(() => {
+    commentArticle(id, 1, 50)
+      .then(response => {
+        setComments(response.data.list as commentType[]);
+        setCommentLength(comments.length);
+        console.log(response.data.list);
+        setReplies(comments.filter(comment => comment.parent_id > 0));
+      })
+      .catch();
+  }, [likeCnt, commentLength, comments.length]);
+
+  useEffect(() => {
+    listReportType()
+      .then(data => {
+        setReportType(data.data as ReportType[]);
+        console.log(data.data);
+      })
+      .catch(err => console.log(err));
+  }, []);
+
+  const handleCommentLike = (comment_id: number, likeCnt: number) => {
+    commentLike(user.id, comment_id)
+      .then(res => {
+        console.log(res.data);
+        setLikeCnt(likeCnt);
+      })
+      .catch();
+  };
 
   function alert() {
     Alert.alert("삭제", "삭제하시겠습니까?", [
       {
         text: "네",
         onPress: () => {
-          handleDelete(id);
+          handleDelete();
         },
       },
       {
@@ -176,27 +186,202 @@ const BoardDetail = () => {
     ]);
   }
 
+  const handleReport = async (board_id: number, reportType_id: number) => {
+    try {
+      const response = await ReportPost(board_id, reportType_id);
+      Alert.alert("신고되었습니다.");
+      console.log(response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+  if (post.board === undefined) {
+    return <></>;
+  }
+
+  const handleCommentReport = async (commentId: number, reportId: number) => {
+    try {
+      const response = await ReportComment(commentId, reportId);
+      Alert.alert("신고되었습니다.");
+      console.log(response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+  if (post.board === undefined) {
+    return <></>;
+  }
+
+  const handleLike = async () => {
+    try {
+      const response = await insertLikePost(id);
+      post.board.isLike = true;
+      setLikeCnt(likeCnt + 1);
+      console.log(response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+  const likeDelete = async () => {
+    try {
+      const response = await deleteLikeBoard(id);
+      post.board.isLike = false;
+      setLikeCnt(likeCnt - 1);
+      console.log("취소", response);
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+
+  const handleBookmarkToggle = async (board_id: number) => {
+    try {
+      if (isBookmarked) {
+        await DeletebookMarkArticle(board_id);
+        Alert.alert("북마크 삭제되었습니다.");
+      } else {
+        await bookMarkArticle(id);
+        Alert.alert("북마크 추가되었습니다.");
+      }
+      setIsBookmarked(!isBookmarked); // 토글 상태 업데이트
+    } catch (error) {
+      Alert.alert(error);
+    }
+  };
+
+  const ModalWrapper = () => {
+    const [selectedReportIndex, setSelectedReportIndex] = useState<number>();
+
+    return (
+      <Modal animationType="fade" transparent={true} visible={reportModal}>
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            {reportType.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  setSelectedReportIndex(index);
+                }}
+                style={[
+                  styles.reportItem,
+                  selectedReportIndex === index && styles.selectedReportItem,
+                  // 선택된 항목의 경우 스타일 적용
+                ]}
+              >
+                <Text style={styles.reportContent}>{item.name}</Text>
+              </TouchableOpacity>
+            ))}
+            <View style={styles.modalBtnDirection}>
+              <TextButton style={styles.modalConfirmBtn} onPress={() => setReportModal(false)}>
+                취소
+              </TextButton>
+              <TextButton
+                style={styles.modalConfirmBtn}
+                onPress={() => {
+                  // 수정된 닉네임 server 전송
+                  if (selectedReportIndex !== null) {
+                    handleReport(id, selectedReportIndex);
+                    console.log(selectedReportIndex);
+                  }
+                  setReportModal(false);
+                }}
+              >
+                신고
+              </TextButton>
+            </View>
+            <Spacer size={5} />
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+  console.log(post.board);
+
+  const profileNavi = () => {
+    navigation.navigate("Profile");
+  };
+
+  const ModalWrapperComment = ({ commentId }: { commentId: number }) => {
+    const [selectedCommentReportIndex, setSelectedCommentReportIndex] = useState<number>();
+
+    return (
+      <Modal animationType="fade" transparent={true} visible={reportCommentModal}>
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            {reportType.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  setSelectedCommentReportIndex(index); // 댓글 신고의 경우
+                }}
+                style={[
+                  styles.reportItem,
+                  selectedCommentReportIndex === index && styles.selectedReportItem,
+                  // 선택된 항목의 경우 스타일 적용
+                ]}
+              >
+                <Text style={styles.reportContent}>{item.name}</Text>
+              </TouchableOpacity>
+            ))}
+            <View style={styles.modalBtnDirection}>
+              <TextButton
+                style={styles.modalConfirmBtn}
+                onPress={() => setReportCommentModal(false)}
+              >
+                취소
+              </TextButton>
+              <TextButton
+                style={styles.modalConfirmBtn}
+                onPress={() => {
+                  // 수정된 닉네임 server 전송
+                  if (selectedCommentReportIndex !== null) {
+                    handleCommentReport(commentId, selectedCommentReportIndex);
+                    console.log(selectedCommentReportIndex);
+                    console.log(commentId);
+                  }
+                  setReportCommentModal(false);
+                }}
+              >
+                신고
+              </TextButton>
+            </View>
+            <Spacer size={5} />
+          </View>
+        </View>
+      </Modal>
+    );
+  };
   return (
     <>
       <ScrollView style={styles.scroll}>
         <Container style={styles.container}>
+          <ModalWrapper />
           <View style={styles.infoBox}>
             <View>
               <View style={styles.header}>
                 <View>
-                  {/* <View>
-                    <Text style={styles.nickname}>{boardData.userNickname}</Text>
-                  </View> */}
+                  <View>
+                    <Text style={styles.nickname}>{post.board.userId}</Text>
+                  </View>
                   <View>
                     <Text style={styles.date}>{dateTimeFormat(post.board.createdAt)}</Text>
                   </View>
                 </View>
-                {/* {user.nickname === boardData.userNickname && ( */}
+                {/* {user.id === post.board.userId && ( */}
                 <View style={styles.buttonBox}>
-                  <TextButton style={styles.button} fontSize={13} onPress={handleUpdate}>
+                  <TextButton
+                    fontColor={"#000"}
+                    style={styles.button}
+                    fontSize={13}
+                    onPress={handleUpdate}
+                  >
                     수정
                   </TextButton>
-                  <TextButton style={styles.button} fontSize={13} onPress={alert}>
+                  <TextButton
+                    fontColor={"#000"}
+                    style={styles.button}
+                    fontSize={13}
+                    onPress={alert}
+                  >
                     삭제
                   </TextButton>
                 </View>
@@ -208,189 +393,188 @@ const BoardDetail = () => {
                 </View>
                 <View>
                   <Text style={styles.context}>{post.board.body}</Text>
+                  {post.board.imagesUrl != null && (
+                    <ScrollView horizontal={true} style={styles.imageContainer}>
+                      {post.board.imagesUrl.map((imageUrl, index) => (
+                        <Image
+                          key={index}
+                          source={{ uri: imageUrl }}
+                          style={{ width: 200, height: 200, marginRight: 5 }}
+                        />
+                      ))}
+                    </ScrollView>
+                  )}
+                  {post.board.tags != null && (
+                    <ScrollView horizontal={true} style={styles.imageContainer}>
+                      {post.board.tags.map((hash, index) => (
+                        <Text key={index}>
+                          <Text style={{ backgroundColor: "#C9E4F9" }}>{"#" + hash.name}</Text>
+                          {"   "}
+                        </Text>
+                      ))}
+                    </ScrollView>
+                  )}
                 </View>
               </View>
             </View>
 
             <View style={styles.cbutBox}>
-              <IconButton name="thumbs-o-up" color="skyblue" onPress={() => console.log("추천")}>
-                추천
+              <IconButton
+                name="thumbs-o-up"
+                color="skyblue"
+                onPress={() => {
+                  post.board.isLike ? likeDelete() : handleLike();
+                }}
+              >
+                {likeCnt === 0 ? "추천" : likeCnt}
               </IconButton>
-              <IconButton name="star-o" color="orange" onPress={() => console.log("스크랩")}>
-                스크랩
+              <IconButton name="star-o" color="orange" onPress={() => handleBookmarkToggle(id)}>
+                북마크
               </IconButton>
-              <IconButton name="exclamation-circle" color="red" onPress={() => console.log("신고")}>
+              <IconButton
+                name="exclamation-circle"
+                color="red"
+                onPress={() => {
+                  setReportModal(true);
+                }}
+              >
                 신고
               </IconButton>
             </View>
           </View>
-          {comments.map(comment => (
-            <View style={styles.commentBox} key={comment.id}>
-              <View style={styles.line} />
-              <View style={{ flex: 1, margin: "3%" }}>
-                <View style={styles.commentHeader}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      paddingHorizontal: 15,
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <Text style={styles.commentName}>{comment.nickname}</Text>
-                    <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
-                  </View>
-                  <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}>
-                    <TextButton
-                      style={styles.button}
-                      fontSize={13}
-                      onPress={() => console.log("수정")}
-                    >
-                      수정
-                    </TextButton>
-                    <TextButton
-                      style={styles.button}
-                      fontSize={13}
-                      onPress={() => {
-                        alertComment(comment.id);
-                      }}
-                    >
-                      삭제
-                    </TextButton>
-                  </View>
-                </View>
-                <View style={{ paddingHorizontal: 10 }}>
-                  <View style={styles.commentContext}>
-                    <Text numberOfLines={3} style={styles.context}>
-                      {comment.body}
-                    </Text>
-                  </View>
-                  <View style={styles.cbutBox}>
-                    <IconButton
-                      name="comment"
-                      color="skyblue"
-                      onPress={() => {
-                        setParentId(comment.id);
-                      }}
-                    >
-                      대댓글
-                    </IconButton>
-                    <IconButton
-                      name="thumbs-o-up"
-                      color="skyblue"
-                      onPress={() => console.log("추천")}
-                    >
-                      추천
-                    </IconButton>
-                    <IconButton
-                      name="exclamation-circle"
-                      color="red"
-                      onPress={() => console.log("신고")}
-                    >
-                      신고
-                    </IconButton>
-                  </View>
-                </View>
-
-                {parent_id === comment.id && (
-                  <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-                    style={{ padding: 5, borderRadius: 5 }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: 5,
-                      }}
-                    >
-                      <Checkbox
-                        style={{ marginRight: 5 }}
-                        value={checkList.includes("anonymous")}
-                        onValueChange={isChecked => {
-                          check("anonymous", isChecked);
-                          setIsAnonymous(isChecked ? 1 : 0);
-                        }}
-                      ></Checkbox>
-                      <Text>익명</Text>
-                      <Input
+          {/* 본문 */}
+          {comments
+            .filter(comment => comment.parent_id === null)
+            .map(comment => (
+              <>
+                <View style={styles.commentBox} key={comment.id}>
+                  <ModalWrapperComment commentId={commentId} />
+                  <View style={styles.line} />
+                  <View style={{ flex: 1, margin: "3%" }}>
+                    <View style={styles.commentHeader}>
+                      <View
                         style={{
-                          flex: 1,
-                          backgroundColor: "white",
-                          paddingVertical: 15,
-                          paddingHorizontal: 12,
-                          marginRight: 5,
-                        }}
-                        placeholder="대댓글을 작성해 주세요 ..."
-                        value={body}
-                        onChangeText={setBody}
-                      ></Input>
-                      <TextButton
-                        onPress={() => {
-                          handleReplyInput(parent_id);
-                          setParentId(0);
-                          setBody("");
+                          flexDirection: "row",
+                          paddingHorizontal: 15,
+                          justifyContent: "flex-start",
                         }}
                       >
-                        작성
-                      </TextButton>
-                    </View>
-                  </KeyboardAvoidingView>
-                )}
-                {parent_id > 0 ? (
-                  <></>
-                ) : (
-                  comment.id === parent_id && (
-                    <View style={styles.replyBox}>
-                      <View style={styles.line} />
-                      <View style={{ margin: "2%" }}>
-                        <View style={styles.commentHeader}>
-                          <View style={{ flexDirection: "column" }}>
-                            <Text style={styles.commentName}>{comment.nickname}</Text>
-                            <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
-                          </View>
-                          <View style={styles.cbutBox}>
-                            <IconButton
-                              name="thumbs-o-up"
-                              color="skyblue"
-                              onPress={() => console.log("추천")}
-                            >
-                              추천
-                            </IconButton>
-                            <IconButton
-                              name="exclamation-circle"
-                              color="red"
-                              onPress={() => console.log("신고")}
-                            >
-                              신고
-                            </IconButton>
-                            <IconButton name="" color="skyblue" onPress={() => console.log("수정")}>
-                              수정
-                            </IconButton>
-                            <IconButton
-                              name=""
-                              color="red"
-                              onPress={() => handleCommentDelete(parent_id)}
-                            >
-                              삭제
-                            </IconButton>
-                          </View>
-                        </View>
-                        <View style={styles.commentContext}>
-                          {replies[comment.id]?.map(reply => (
-                            <Text key={reply.id} numberOfLines={3} style={styles.context}>
-                              {reply.body}
-                            </Text>
-                          ))}
-                        </View>
+                        <TouchableOpacity
+                          onPress={() => {
+                            profileNavi();
+                          }}
+                        >
+                          <Text style={styles.commentName}>{comment.nickname}</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
+                      </View>
+
+                      <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}>
+                        <TextButton
+                          style={styles.button}
+                          fontSize={13}
+                          fontColor={"#000"}
+                          onPress={() => {
+                            alertComment(comment.id);
+                          }}
+                        >
+                          삭제
+                        </TextButton>
                       </View>
                     </View>
-                  )
-                )}
-              </View>
-            </View>
-          ))}
+                    <View style={{ paddingHorizontal: 10 }}>
+                      <View style={styles.commentContext}>
+                        <Text style={styles.context}>{comment.body}</Text>
+                      </View>
+                      <View style={styles.cbutBox}>
+                        <IconButton
+                          name="comment"
+                          color="skyblue"
+                          onPress={() => {
+                            setParentId(comment.id);
+                            setChecked(!checked);
+                          }}
+                        >
+                          대댓글
+                        </IconButton>
+                        <IconButton
+                          name="thumbs-o-up"
+                          color="skyblue"
+                          onPress={() => {
+                            handleCommentLike(comment.id, comment.like_cnt);
+                          }}
+                        >
+                          {comment.like_cnt === 0 ? "추천" : comment.like_cnt}
+                        </IconButton>
+                        <IconButton
+                          name="exclamation-circle"
+                          color="red"
+                          onPress={() => {
+                            setCommentId(comment.id);
+                            setReportCommentModal(true);
+                          }}
+                        >
+                          신고
+                        </IconButton>
+                      </View>
+                    </View>
+
+                    {/* 대댓글 */}
+                    {replies
+                      .filter(reply => reply.parent_id === comment.id)
+                      .map(reply => (
+                        <>
+                          {/* <View style={styles.commentBox}> */}
+                          <View style={styles.replyBox} key={reply.id}>
+                            <View style={styles.line} />
+                            <View style={{ margin: "2%" }}>
+                              <View style={styles.commentHeader}>
+                                <View style={{ flexDirection: "column" }}>
+                                  <Text style={styles.commentName}>{reply.nickname}</Text>
+                                  <Text style={styles.commentDate}>
+                                    {dateFormat(reply.created_at)}
+                                  </Text>
+                                </View>
+                                <View style={styles.cbutBox}>
+                                  <IconButton
+                                    name="thumbs-o-up"
+                                    color="skyblue"
+                                    onPress={() => {
+                                      handleCommentLike(reply.id, reply.like_cnt);
+                                    }}
+                                  >
+                                    {reply.like_cnt === 0 ? "추천" : reply.like_cnt}
+                                  </IconButton>
+                                  <IconButton
+                                    name="exclamation-circle"
+                                    color="red"
+                                    onPress={() => {
+                                      setCommentId(reply.id);
+                                      setReportCommentModal(true);
+                                    }}
+                                  >
+                                    신고
+                                  </IconButton>
+                                  <IconButton
+                                    name=""
+                                    color="red"
+                                    onPress={() => handleCommentDelete(reply.id)}
+                                  >
+                                    삭제
+                                  </IconButton>
+                                </View>
+                              </View>
+                              <View style={styles.commentContext}>
+                                <Text style={styles.context}>{reply.body}</Text>
+                              </View>
+                            </View>
+                          </View>
+                        </>
+                      ))}
+                  </View>
+                </View>
+              </>
+            ))}
         </Container>
       </ScrollView>
       <KeyboardAvoidingView
@@ -423,13 +607,13 @@ const BoardDetail = () => {
               paddingHorizontal: 12,
               marginRight: 5,
             }}
-            placeholder="댓글을 작성해 주세요 ..."
-            value={body}
-            onChangeText={setBody}
+            placeholder={checked ? "대댓글을 작성해 주세요 ..." : "댓글을 작성해 주세요 ..."}
+            value={checked ? replyBody : body}
+            onChangeText={checked ? setReplyBody : setBody}
           ></Input>
           <TextButton
             onPress={() => {
-              handlecommentInsert();
+              checked ? handleReplyInput(parent_id, replyBody) : handlecommentInsert();
             }}
           >
             작성
@@ -540,6 +724,46 @@ const styles = StyleSheet.create({
     maxHeight: 180,
     overflow: "hidden",
     margin: 20,
+  },
+  modalBackground: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContainer: {
+    flex: 0.8,
+    borderRadius: 25,
+    backgroundColor: "#ffffff",
+    padding: 15,
+  },
+  modalInput: {
+    width: "100%",
+    paddingVertical: "5%",
+    backgroundColor: "#D8E1EC",
+  },
+  modalBtnDirection: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  modalConfirmBtn: {
+    width: "45%",
+  },
+  reportContent: {
+    // backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  reportItem: {
+    padding: 8,
+  },
+  selectedReportItem: {
+    backgroundColor: "#5299EB",
+  },
+  imageContainer: {
+    flexDirection: "row",
+    marginTop: "10%",
   },
 });
 
