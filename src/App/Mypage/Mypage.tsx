@@ -184,6 +184,8 @@ function Section({ item }: { item: sectionItem }) {
 }
 
 const MyView = () => {
+  const navigation = useNavigation<NavigationProps>();
+
   const profile = useSelector(UserStorage.userProfileSelector)! as UserData;
   const category = useSelector(UserStorage.userCategorySelector);
 
@@ -268,6 +270,12 @@ const MyView = () => {
               ? "소개글을 입력해주세요"
               : `${introduceTxt}`}
           </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ backgroundColor: "skyblue" }}
+          onPress={() => navigation.navigate("Profile" as any)}
+        >
+          <Text>남의 프로필입구</Text>
         </TouchableOpacity>
       </View>
       <Modal animationType="fade" transparent={true} visible={visibleIntroModal}>
@@ -358,6 +366,8 @@ export default function MyPage() {
 
   const userProfle = useSelector(UserStorage.userProfileSelector);
 
+  const navigation = useNavigation<NavigationProps>();
+
   const checkPasswordHandler = () => {
     PostAPI("/user/changeinfo/identification", {
       password: checkPassword,
@@ -446,7 +456,6 @@ export default function MyPage() {
       ],
     },
   ];
-  const navigation = useNavigation<NavigationProps>();
 
   return (
     <View style={{ backgroundColor: "white" }}>

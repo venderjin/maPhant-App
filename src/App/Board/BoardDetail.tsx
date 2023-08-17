@@ -301,6 +301,11 @@ const BoardDetail = () => {
       </Modal>
     );
   };
+  console.log(post.board);
+
+  const profileNavi = () => {
+    navigation.navigate("Profile");
+  };
 
   const ModalWrapperComment = ({ commentId }: { commentId: number }) => {
     const [selectedCommentReportIndex, setSelectedCommentReportIndex] = useState<number>();
@@ -395,16 +400,27 @@ const BoardDetail = () => {
                 </View>
                 <View>
                   <Text style={styles.context}>{post.board.body}</Text>
-                  <ScrollView horizontal={true} style={styles.imageContainer}>
-                    {post.board.imagesUrl &&
-                      post.board.imagesUrl.map((imageUrl, index) => (
+                  {post.board.imagesUrl != null && (
+                    <ScrollView horizontal={true} style={styles.imageContainer}>
+                      {post.board.imagesUrl.map((imageUrl, index) => (
                         <Image
                           key={index}
                           source={{ uri: imageUrl }}
                           style={{ width: 200, height: 200, marginRight: 5 }}
                         />
                       ))}
-                  </ScrollView>
+                    </ScrollView>
+                  )}
+                  {post.board.tags != null && (
+                    <ScrollView horizontal={true} style={styles.imageContainer}>
+                      {post.board.tags.map((hash, index) => (
+                        <Text key={index}>
+                          <Text style={{ backgroundColor: "#C9E4F9" }}>{"#" + hash.name}</Text>
+                          {"   "}
+                        </Text>
+                      ))}
+                    </ScrollView>
+                  )}
                 </View>
               </View>
             </View>
@@ -437,7 +453,6 @@ const BoardDetail = () => {
           {comments
             .filter(comment => comment.parent_id === null)
             .map(comment => (
-              // comment.parent_id == null ? (
               <>
                 <View style={styles.commentBox} key={comment.id}>
                   <ModalWrapperComment commentId={commentId} />
@@ -451,7 +466,13 @@ const BoardDetail = () => {
                           justifyContent: "flex-start",
                         }}
                       >
-                        <Text style={styles.commentName}>{comment.nickname}</Text>
+                        <TouchableOpacity
+                          onPress={() => {
+                            profileNavi();
+                          }}
+                        >
+                          <Text style={styles.commentName}>{comment.nickname}</Text>
+                        </TouchableOpacity>
                         <Text style={styles.commentDate}>{dateFormat(comment.created_at)}</Text>
                       </View>
 
@@ -525,9 +546,11 @@ const BoardDetail = () => {
                                   <IconButton
                                     name="thumbs-o-up"
                                     color="skyblue"
-                                    onPress={() => console.log("추천")}
+                                    onPress={() => {
+                                      handleCommentLike(reply.id, reply.like_cnt);
+                                    }}
                                   >
-                                    추천
+                                    {reply.like_cnt === 0 ? "추천" : reply.like_cnt}
                                   </IconButton>
                                   <IconButton
                                     name="exclamation-circle"

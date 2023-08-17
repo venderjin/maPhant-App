@@ -104,7 +104,10 @@ function GetAPI<T extends statusResponse = dataResponse>(
 ) {
   if (params != undefined) {
     const urlParams = new URLSearchParams();
-    Object.keys(params).forEach(key => urlParams.append(key, params[key].toString()));
+    Object.keys(params)
+      .filter(key => params[key] !== undefined)
+      .forEach(key => urlParams.append(key, params[key].toString()));
+
     url = `${url}?${urlParams.toString()}`;
   }
 

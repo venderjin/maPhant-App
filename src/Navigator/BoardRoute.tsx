@@ -6,6 +6,8 @@ import Post from "../App/Board/Post";
 import QA_answer from "../App/Board/QA_answer";
 import QAdetail from "../App/Board/QAdetail";
 import QnABoard from "../App/Board/QnAList";
+import TotalList from "../App/Board/TotalList";
+import Profile from "../App/Mypage/Profile";
 import { BoardArticle } from "../types/Board";
 import { RouteType } from "../types/Navigation";
 
@@ -23,7 +25,7 @@ const Routes: RouteType[] = [
     component: DetailList,
   },
   {
-    name: "detail",
+    name: "QnAdetail",
     component: QAdetail,
   },
   {
@@ -42,15 +44,25 @@ const Routes: RouteType[] = [
     name: "QA_answer",
     component: QA_answer,
   },
+  {
+    name: "HotBoard",
+    component: TotalList,
+  },
+  {
+    name: "Profile",
+    component: Profile,
+  },
 ];
 
 export type NavigationProp = {
   BoardList: undefined;
-  QnABoard: undefined;
+  QnABoard: { boardType: BoardType };
   DetailList: { boardType: BoardType };
-  detail: { id: number; preRender?: BoardArticle };
+  BoardDetail: { id: number; preRender?: BoardArticle };
+  QnAdetail: { id: number; preRender?: BoardArticle };
+  Post: { boardType: BoardType };
   QA_answer: { id: number; preRender?: BoardArticle };
-  Post: undefined;
+  HotBoard: undefined;
 };
 
 export default Routes;
