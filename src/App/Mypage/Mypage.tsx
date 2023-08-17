@@ -66,7 +66,7 @@ function uploadAPI<T extends statusResponse>(
         return Promise.reject("서버와 통신 중 오류가 발생했습니다.");
       })
       .then(res => {
-        console.log(res);
+        // console.log(res);
         console.info(res.body);
         // 특수 처리 (로그인 실패시에도 401이 들어옴)
         // 로그인의 경우는 바로 내려 보냄
@@ -187,6 +187,8 @@ const MyView = () => {
   const profile = useSelector(UserStorage.userProfileSelector)! as UserData;
   const category = useSelector(UserStorage.userCategorySelector);
 
+  console.log(profile);
+
   const [visibleIntroModal, setVisibleIntoModal] = useState(false);
   const [introduceTxt, setIntroduceTxt] = useState("");
   let confirmedIntroTxt: string = "";
@@ -195,7 +197,7 @@ const MyView = () => {
   useEffect(() => {
     GetAPI(`/profile?targerUserId=${userID}`).then(res => {
       if (res.success == true) {
-        console.log(res.data);
+        // console.log(res.data);
         setIntroduceTxt(res.data[0].body);
       }
     });
@@ -204,7 +206,7 @@ const MyView = () => {
   useEffect(() => {
     GetAPI(`/profile?targerUserId=${userID}`).then(res => {
       if (res.success == true) {
-        console.log(res.data);
+        // console.log(res.data);
         setIntroduceTxt(res.data[0].body);
       }
     });
@@ -213,10 +215,10 @@ const MyView = () => {
   const editIntro = async () => {
     const formData = new FormData();
     formData.append("body", confirmedIntroTxt);
-    console.log(formData);
+    // console.log(formData);
     try {
       const res = await uploadAPI("PATCH", "/profile", formData);
-      console.log(res);
+      // console.log(res);
       setIntroduceTxt(confirmedIntroTxt);
     } catch (err) {
       console.log(err);
@@ -226,17 +228,17 @@ const MyView = () => {
     const formData = new FormData();
     formData.append("body", "");
 
-    console.log(formData);
+    // console.log(formData);
     try {
       console.log();
       const res = await uploadAPI("PATCH", "/profile", formData);
-      console.log();
-      console.log();
-      console.log();
-      console.log(res);
-      console.log();
-      console.log();
-      console.log();
+      // console.log();
+      // console.log();
+      // console.log();
+      // console.log(res);
+      // console.log();
+      // console.log();
+      // console.log();
 
       setIntroduceTxt("");
     } catch (err) {
@@ -335,7 +337,7 @@ const MyView = () => {
               <TextButton
                 style={styles.modalConfirmBtn}
                 onPress={() => {
-                  console.log(confirmedIntroTxt);
+                  // console.log(confirmedIntroTxt);
                   editIntro();
                 }}
               >
