@@ -3,6 +3,7 @@ import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   ImageSourcePropType,
   NativeScrollEvent,
@@ -66,12 +67,12 @@ const Home: React.FC = () => {
       <ScrollView>
         <MainHeader />
         <SearchBar text={text} onTextChanged={setText} />
-
         <Carousel imageList={info} />
         <Spacer size={20} />
         <TodaysHot />
         <Spacer size={40} />
         <HotPost />
+
         <Spacer size={20} />
       </ScrollView>
     </Container>
@@ -449,7 +450,6 @@ const HotPost: React.FC = () => {
       console.log(res);
       if (res.success === false) {
         console.log(res.errors);
-        return;
       } else {
         setHotPost(res.data.list);
       }
@@ -555,8 +555,10 @@ const HotPost: React.FC = () => {
     },
   });
 
+  console.log(hotPost);
+  //
   if (hotPost.length === 0) {
-    return <View></View>;
+    return <View />;
   }
   return (
     <View style={styles.hotPostBox}>
