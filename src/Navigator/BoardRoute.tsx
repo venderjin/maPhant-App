@@ -61,6 +61,7 @@ export type NavigationProp = {
   BoardDetail: { id: number; preRender?: BoardArticle };
   QnAdetail: { id: number; preRender?: BoardArticle };
   Post: { boardType: BoardType };
+  editPost: { post: BoardArticle };
   QA_answer: { id: number; preRender?: BoardArticle };
   HotBoard: undefined;
 };

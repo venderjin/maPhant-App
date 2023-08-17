@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { listHotBoardTotal } from "../../Api/board";
+import { Container } from "../../components/common";
 import { NavigationProps } from "../../Navigator/Routes";
 import { BoardType, HotBoard } from "../../types/Board";
 import PostSummary from "./PostSummary";
@@ -25,16 +26,18 @@ const TotalList = () => {
     }
   };
   return (
-    <ScrollView style={styles.container}>
-      {boardData.map(board => (
-        <View key={board.boardId} style={styles.body}>
-          <Pressable onPress={() => detailContent(board.typeId, board.boardId)}>
-            <Text style={styles.board}>{board.type}</Text>
-            <PostSummary post={board} boardType={boardType} />
-          </Pressable>
-        </View>
-      ))}
-    </ScrollView>
+    <Container style={styles.container}>
+      <ScrollView>
+        {boardData.map(board => (
+          <View key={board.boardId} style={styles.body}>
+            <Pressable onPress={() => detailContent(board.typeId, board.boardId)}>
+              <Text style={styles.board}>{board.type}</Text>
+              <PostSummary post={board} boardType={boardType} />
+            </Pressable>
+          </View>
+        ))}
+      </ScrollView>
+    </Container>
   );
 };
 

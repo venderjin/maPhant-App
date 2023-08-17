@@ -51,13 +51,7 @@ const QAdetail = () => {
   console.log(post);
   console.log(user);
   const handleUpdate = async () => {
-    try {
-      const response = await boardEdit(id, post.board.title, post.board.body, post.board.isHide);
-      console.log("수정 가능", response);
-      navigation.navigate("editPost", { post: post.board, boardType: boardData });
-    } catch (error) {
-      console.error("수정 오류", error);
-    }
+    navigation.navigate("editPost", { post: post });
   };
 
   useEffect(() => {

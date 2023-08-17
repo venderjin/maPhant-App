@@ -52,12 +52,13 @@ const listHotBoard = (
 ): Promise<dataResponse<{ list: HotBoard[] }>> =>
   GetAPI(`/board/hot?boardTypeId=${boardType_id}&page=${page}&recordSize=${recordSize}`);
 
-function boardEdit(id: number, title: string, body: string, isHide: number) {
+function boardEdit(id: number, title: string, body: string, isHide: number, tags?: string[]) {
   return PutAPI(`/board/update/`, {
     id,
     title,
     body,
     isHide,
+    tags,
   });
 }
 
