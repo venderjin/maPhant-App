@@ -451,7 +451,6 @@ export default function MyPage() {
       ],
     },
   ];
-  const navigation = useNavigation<NavigationProps>();
 
   return (
     <View style={{ backgroundColor: "white" }}>
