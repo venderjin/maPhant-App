@@ -25,6 +25,7 @@ function boardPost(
   isComplete: number,
   isAnonymous: number,
   imagesUrl?: string[],
+  poll?: { title: string; options: string[] },
   tagNames?: string[],
 ) {
   return PostAPI(`/board/create/`, {
@@ -38,6 +39,7 @@ function boardPost(
     isComplete,
     isAnonymous,
     imagesUrl,
+    poll,
     tagNames,
   });
 }
@@ -171,9 +173,8 @@ const commentLikeCnt = (comment_id: number): Promise<dataResponse> =>
 
 const doPoll = (pollId: number): Promise<dataResponse> => PostAPI<dataResponse>(`/poll/${pollId}`);
 
-const postPoll = (boardId: number, title: string, options: string[]): Promise<dataResponse> =>
+const postPoll = (title: string, options: string[]): Promise<dataResponse> =>
   PostAPI<dataResponse>(`/board/poll/`, {
-    boardId,
     title,
     options,
   });

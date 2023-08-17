@@ -131,8 +131,8 @@ const Post: React.FC = () => {
         isHide,
         0,
         isanonymous,
-        //hashtags.join(" "),
         postImageUrl.length == 0 ? undefined : postImageUrl,
+        { title: voteTitle, options: voteOptions },
         DBnewHashtags,
       );
       console.log("게시물 작성 성공", response);
@@ -314,7 +314,7 @@ const Post: React.FC = () => {
             <Container>
               {voteOptions.map((option, index) => (
                 <>
-                  <Container style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Container style={{ flexDirection: "row", alignItems: "center" }} key={index}>
                     <Input
                       style={{ flex: 1 }}
                       key={index}
