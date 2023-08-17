@@ -100,9 +100,9 @@ const Myimg: React.FC = () => {
   useEffect(() => {
     GetAPI(`/profile?targerUserId=${userID}`).then(res => {
       if (res.success == true) {
-        console.log(res.data.profile_img);
-        console.log(res.data);
-        setDefaultImgSrc(res.data.profile_img);
+        console.log("res.data is ", res.data[0]);
+        console.log("res.data.profile_img is ", res.data[0].profile_img);
+        setDefaultImgSrc(res.data[0].profile_img);
       }
     });
   }, []);
@@ -169,9 +169,9 @@ const Myimg: React.FC = () => {
 
     GetAPI(`/profile?targerUserId=${userID}`).then(res => {
       if (res.success == true) {
-        console.log(res.data.profile_img);
-        console.log(res.data);
-        setDefaultImgSrc(res.data.profile_img);
+        console.log(res.data[0].profile_img);
+        console.log(res.data[0]);
+        setDefaultImgSrc(res.data[0].profile_img);
       }
     });
   };
@@ -238,12 +238,6 @@ const Myimg: React.FC = () => {
                 onPress={() => {
                   deleteImage();
                   setDefaultImg(true);
-                  console.log();
-                  console.log();
-                  console.log("defaultImg is ", defaultImg);
-                  console.log("defaultImgSrc is ", defaultImgSrc);
-                  console.log();
-                  console.log();
                   setImgUploadModal(false);
                 }}
               >
@@ -254,6 +248,12 @@ const Myimg: React.FC = () => {
                 onPress={() => {
                   uploadImage();
                   setDefaultImg(false);
+                  console.log();
+                  console.log();
+                  console.log("defaultImg is ", defaultImg);
+                  console.log("defaultImgSrc is ", defaultImgSrc);
+                  console.log();
+                  console.log();
                 }}
               >
                 수정

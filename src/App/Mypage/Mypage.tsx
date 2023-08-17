@@ -196,10 +196,19 @@ const MyView = () => {
     GetAPI(`/profile?targerUserId=${userID}`).then(res => {
       if (res.success == true) {
         console.log(res.data);
-        setIntroduceTxt(res.data.body);
+        setIntroduceTxt(res.data[0].body);
       }
     });
   }, []);
+
+  useEffect(() => {
+    GetAPI(`/profile?targerUserId=${userID}`).then(res => {
+      if (res.success == true) {
+        console.log(res.data);
+        setIntroduceTxt(res.data[0].body);
+      }
+    });
+  }, [introduceTxt]);
 
   const editIntro = async () => {
     const formData = new FormData();
@@ -221,7 +230,14 @@ const MyView = () => {
     try {
       console.log();
       const res = await uploadAPI("PATCH", "/profile", formData);
+      console.log();
+      console.log();
+      console.log();
       console.log(res);
+      console.log();
+      console.log();
+      console.log();
+
       setIntroduceTxt("");
     } catch (err) {
       console.log(err);
@@ -310,8 +326,8 @@ const MyView = () => {
               <TextButton
                 style={styles.modalConfirmBtn}
                 onPress={() => {
-                  setVisibleIntoModal(false);
                   deleteIntro();
+                  setVisibleIntoModal(false);
                 }}
               >
                 삭제
@@ -322,21 +338,6 @@ const MyView = () => {
                   console.log(confirmedIntroTxt);
                   editIntro();
                 }}
-                // onPress={() => {
-                //   PatchAPI("/profile", {
-                //     nickname: null,
-                //     body: confirmedIntroTxt,
-                //     file: null,
-                //   }).then(res => {
-                //     if (res.success == true) {
-                //       console.log("닉네임 업데이트 성공");
-                //       console.log(res.data);
-                //       setIntroduceTxt(confirmedIntroTxt);
-                //       setVisibleIntoModal(false);
-                //     }
-                //   });
-                //   console.log(introduceTxt);
-                // }}
               >
                 수정
               </TextButton>

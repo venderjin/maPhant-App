@@ -544,6 +544,7 @@ const ProfileModify: React.FC = () => {
                 </View>
               </View>
             </Modal>
+            <Modal></Modal>
 
             <TextButton
               style={{
