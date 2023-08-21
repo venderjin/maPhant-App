@@ -280,6 +280,7 @@ const Input: React.FC<InputProps> = props => {
   const theme = useTheme();
   const {
     style = {},
+    ref,
     placeholder = "",
     onChangeText,
     value,
